@@ -1,5 +1,7 @@
 *.iml
 bin
+out
+test
 .idea
 libraries
 s_*.sh

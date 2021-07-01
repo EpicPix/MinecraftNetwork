@@ -19,7 +19,7 @@ public class ServerInfo {
         if(PropertyManager==null) throw new NullPointerException("Could not get a PropertyManager instance.");
         ServerInfo info = new ServerInfo();
         info.id = (String) Reflection.callMethod(PropertyManager.getClass(), "getString", PropertyManager, "server-id", null);
-        if(info.id==null) throw new NullPointerException("Server Id is not defined.");
+        if(info.id==null) System.err.println("Server Id is not defined.");
         info.type = ServerType.UNKNOWN;
         info.maxPlayers = Bukkit.getMaxPlayers();
         return info;

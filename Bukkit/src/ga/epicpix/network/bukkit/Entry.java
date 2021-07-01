@@ -4,7 +4,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Entry extends JavaPlugin {
 
-    public void onEnable() {
+    public void onLoad() {
         System.out.println("Server Info: " + ServerInfo.getThisServer());
     }
 

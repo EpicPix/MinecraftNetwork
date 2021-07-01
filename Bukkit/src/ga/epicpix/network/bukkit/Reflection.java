@@ -21,9 +21,26 @@ public class Reflection {
 
     public static Object callMethod(Class<?> clazz, String methodName, Object ofObj, Object... objs) {
         try {
-            Class<?>[] classes = new Class<?>[objs.length];
-            for(int i = 0; i<objs.length; i++) classes[i] = objs[i].getClass();
-            Method method = clazz.getDeclaredMethod(methodName, classes);
+            Method[] methods = clazz.getDeclaredMethods();
+            Method method = null;
+            for(Method m : methods) {
+                if(m.getName().equals(methodName)) {
+                    boolean possible = m.getParameterCount()==objs.length;
+                    for(int i = 0; i < objs.length; i++) {
+                        if(objs[i]!=null) {
+                            if(!objs[i].getClass().isAssignableFrom(m.getParameterTypes()[i])) {
+                                possible = false;
+                                break;
+                            }
+                        }
+                    }
+                    if(possible) {
+                        method = m;
+                        break;
+                    }
+                }
+            }
+            if(method==null) throw new NoSuchMethodException("Method not found " + clazz.getName() + "." + methodName);
             boolean access = method.isAccessible();
             method.setAccessible(true);
             Object obj = method.invoke(ofObj, objs);

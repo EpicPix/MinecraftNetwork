@@ -1,4 +1,11 @@
 package ga.epicpix.network.bukkit;
 
-public class Entry extends {
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class Entry extends JavaPlugin {
+
+    public void onEnable() {
+        
+    }
+
 }

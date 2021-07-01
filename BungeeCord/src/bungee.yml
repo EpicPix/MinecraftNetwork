@@ -1,0 +1,3 @@
+main: ga.epicpix.network.bungee.Entry
+name: NetworkBungee
+version: 1.0.0

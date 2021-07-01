@@ -3,25 +3,48 @@ package ga.epicpix.network.bukkit;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Reflection {
 
     public static Object getFieldOfClass(Class<?> clazz, String fieldName, Object ofObj) {
         try {
-            Field field = clazz.getDeclaredField(fieldName);
+            Class<?> sclazz = clazz;
+            ArrayList<Field> fields = new ArrayList<>();
+            while(clazz!=Object.class) {
+                fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
+                clazz = clazz.getSuperclass();
+            }
+            Field field = null;
+            for(Field f : fields) {
+                if(f.getName().equals(fieldName)) {
+                    field = f;
+                    break;
+                }
+            }
+            if(field==null) throw new NoSuchFieldException("Field not found " + sclazz + "." + fieldName);
             boolean access = field.isAccessible();
             field.setAccessible(true);
             Object obj = field.get(ofObj);
             field.setAccessible(access);
             return obj;
-        } catch (NoSuchFieldException | IllegalAccessException e) {
+        } catch (IllegalAccessException e) {
+            return null;
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
             return null;
         }
     }
 
     public static Object callMethod(Class<?> clazz, String methodName, Object ofObj, Object... objs) {
         try {
-            Method[] methods = clazz.getDeclaredMethods();
+            ArrayList<Method> methods = new ArrayList<>();
+            Class<?> sclazz = clazz;
+            while(clazz!=Object.class) {
+                methods.addAll(Arrays.asList(clazz.getDeclaredMethods()));
+                clazz = clazz.getSuperclass();
+            }
             Method method = null;
             for(Method m : methods) {
                 if(m.getName().equals(methodName)) {
@@ -40,7 +63,7 @@ public class Reflection {
                     }
                 }
             }
-            if(method==null) throw new NoSuchMethodException("Method not found " + clazz.getName() + "." + methodName);
+            if(method==null) throw new NoSuchMethodException("Method not found " + sclazz.getName() + "." + methodName);
             boolean access = method.isAccessible();
             method.setAccessible(true);
             Object obj = method.invoke(ofObj, objs);

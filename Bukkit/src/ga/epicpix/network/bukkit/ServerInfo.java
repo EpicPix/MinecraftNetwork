@@ -26,6 +26,6 @@ public class ServerInfo {
     }
 
     public String toString() {
-        return "ServerInfo{id='" + id + "', type=" + type + ", maxPlayers=" + maxPlayers + "}";
+        return "ServerInfo{id=" + (id==null?"null":("'" + id + "'")) + ", type=" + type + ", maxPlayers=" + maxPlayers + "}";
     }
 }

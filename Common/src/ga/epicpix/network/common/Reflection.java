@@ -8,22 +8,24 @@ import java.util.Arrays;
 
 public class Reflection {
 
-    public static Object getFieldOfClass(Class<?> clazz, String fieldName, Object ofObj) {
+    public static Field getField(Class<?> clazz, String fieldName) {
+        ArrayList<Field> fields = new ArrayList<>();
+        while(clazz!=Object.class) {
+            fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
+            clazz = clazz.getSuperclass();
+        }
+        for(Field f : fields) {
+            if(f.getName().equals(fieldName)) {
+                return f;
+            }
+        }
+        return null;
+    }
+
+    public static Object getValueOfField(Class<?> clazz, String fieldName, Object ofObj) {
         try {
-            Class<?> sclazz = clazz;
-            ArrayList<Field> fields = new ArrayList<>();
-            while(clazz!=Object.class) {
-                fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
-                clazz = clazz.getSuperclass();
-            }
-            Field field = null;
-            for(Field f : fields) {
-                if(f.getName().equals(fieldName)) {
-                    field = f;
-                    break;
-                }
-            }
-            if(field==null) throw new NoSuchFieldException("Field not found " + sclazz + "." + fieldName);
+            Field field = getField(clazz, fieldName);
+            if(field==null) throw new NoSuchFieldException("Field not found " + clazz.getName() + "." + fieldName);
             boolean access = field.isAccessible();
             field.setAccessible(true);
             Object obj = field.get(ofObj);
@@ -37,33 +39,42 @@ public class Reflection {
         }
     }
 
-    public static Object callMethod(Class<?> clazz, String methodName, Object ofObj, Object... objs) {
-        try {
-            ArrayList<Method> methods = new ArrayList<>();
-            Class<?> sclazz = clazz;
-            while(clazz!=Object.class) {
-                methods.addAll(Arrays.asList(clazz.getDeclaredMethods()));
-                clazz = clazz.getSuperclass();
-            }
-            Method method = null;
-            for(Method m : methods) {
-                if(m.getName().equals(methodName)) {
-                    boolean possible = m.getParameterCount()==objs.length;
-                    for(int i = 0; i < objs.length; i++) {
-                        if(objs[i]!=null) {
-                            if(!objs[i].getClass().isAssignableFrom(m.getParameterTypes()[i])) {
+    public static Method getMethod(Class<?> clazz, String methodName, boolean classes, Object... objs) {
+        ArrayList<Method> methods = new ArrayList<>();
+        while(clazz!=Object.class) {
+            methods.addAll(Arrays.asList(clazz.getDeclaredMethods()));
+            clazz = clazz.getSuperclass();
+        }
+        for(Method m : methods) {
+            if(m.getName().equals(methodName)) {
+                boolean possible = m.getParameterCount()==objs.length;
+                for(int i = 0; i < objs.length; i++) {
+                    if(objs[i]!=null) {
+                        if(classes) {
+                            if (!((Class<?>) objs[i]).isAssignableFrom(m.getParameterTypes()[i])) {
+                                possible = false;
+                                break;
+                            }
+                        }else {
+                            if (!objs[i].getClass().isAssignableFrom(m.getParameterTypes()[i])) {
                                 possible = false;
                                 break;
                             }
                         }
                     }
-                    if(possible) {
-                        method = m;
-                        break;
-                    }
+                }
+                if(possible) {
+                    return m;
                 }
             }
-            if(method==null) throw new NoSuchMethodException("Method not found " + sclazz.getName() + "." + methodName);
+        }
+        return null;
+    }
+
+    public static Object callMethod(Class<?> clazz, String methodName, Object ofObj, Object... objs) {
+        try {
+            Method method = getMethod(clazz, methodName, false, objs);
+            if(method==null) throw new NoSuchMethodException("Method not found " + clazz.getName() + "." + methodName);
             boolean access = method.isAccessible();
             method.setAccessible(true);
             Object obj = method.invoke(ofObj, objs);

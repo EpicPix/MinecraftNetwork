@@ -1,6 +1,7 @@
 package ga.epicpix.network.common;
 
 import com.google.gson.Gson;
+import com.mongodb.ConnectionString;
 
 public class MongoCredentials {
 
@@ -9,8 +10,8 @@ public class MongoCredentials {
     public String host;
     public boolean srv;
 
-    public String toConnectionString() {
-        return "mongodb" + (srv?"-srv":"") + "://" + username + ":" + password + "@" + host;
+    public ConnectionString toConnectionString() {
+        return new ConnectionString("mongodb" + (srv?"-srv":"") + "://" + CommonUtils.urlEncode(username) + ":" + CommonUtils.urlEncode(password) + "@" + host);
     }
 
     public static MongoCredentials get() {

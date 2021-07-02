@@ -7,7 +7,7 @@ import org.bukkit.Bukkit;
 public class BukkitCommon {
 
     public static ServerInfo getThisServer() {
-        Object MinecraftServer = Reflection.getFieldOfClass(Bukkit.getServer().getClass(), "console", Bukkit.getServer());
+        Object MinecraftServer = Reflection.getValueOfField(Bukkit.getServer().getClass(), "console", Bukkit.getServer());
         if(MinecraftServer==null) throw new NullPointerException("Could not get a MinecraftServer instance.");
         Object PropertyManager = Reflection.callMethod(MinecraftServer.getClass(), "getPropertyManager", MinecraftServer);
         //1.14+ fix

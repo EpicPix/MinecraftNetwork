@@ -2,6 +2,7 @@
 bin
 out
 test
+builds
 .idea
 libraries
 s_*.sh

@@ -1,16 +1,10 @@
 package ga.epicpix.network.bukkit;
 
+import ga.epicpix.network.common.Reflection;
+import ga.epicpix.network.common.ServerInfo;
 import org.bukkit.Bukkit;
 
-public class ServerInfo {
-
-    public enum ServerType {
-        UNKNOWN
-    }
-
-    public String id;
-    public ServerType type;
-    public int maxPlayers;
+public class BukkitCommon {
 
     public static ServerInfo getThisServer() {
         Object MinecraftServer = Reflection.getFieldOfClass(Bukkit.getServer().getClass(), "console", Bukkit.getServer());
@@ -22,12 +16,9 @@ public class ServerInfo {
         ServerInfo info = new ServerInfo();
         info.id = (String) Reflection.callMethod(PropertyManager.getClass(), "getString", PropertyManager, "server-id", null);
         if(info.id==null) System.err.println("Server Id is not defined.");
-        info.type = ServerType.UNKNOWN;
+        info.type = ServerInfo.ServerType.UNKNOWN;
         info.maxPlayers = Bukkit.getMaxPlayers();
         return info;
     }
 
-    public String toString() {
-        return "ServerInfo{id=" + (id==null?"null":("'" + id + "'")) + ", type=" + type + ", maxPlayers=" + maxPlayers + "}";
-    }
 }

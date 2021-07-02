@@ -1,4 +1,4 @@
-package ga.epicpix.network.bukkit;
+package ga.epicpix.network.common;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

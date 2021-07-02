@@ -13,7 +13,7 @@ public class Secrets {
 
     private static void loadSecrets() {
         try {
-            InputStream in = Secrets.class.getResourceAsStream("secrets.json");
+            InputStream in = Secrets.class.getResourceAsStream("/secrets.json");
             if(in==null) {
                 System.err.println("Failed to get secrets.json");
                 return;
@@ -31,7 +31,7 @@ public class Secrets {
 
     public static JsonElement getSecret(String secret) {
         if(secrets==null) loadSecrets();
-        return secrets.get(secret).deepCopy();
+        return secrets.get(secret);
     }
 
 }

@@ -48,17 +48,19 @@ public class Reflection {
         for(Method m : methods) {
             if(m.getName().equals(methodName)) {
                 boolean possible = m.getParameterCount()==objs.length;
-                for(int i = 0; i < objs.length; i++) {
-                    if(objs[i]!=null) {
-                        if(classes) {
-                            if (!((Class<?>) objs[i]).isAssignableFrom(m.getParameterTypes()[i])) {
-                                possible = false;
-                                break;
-                            }
-                        }else {
-                            if (!objs[i].getClass().isAssignableFrom(m.getParameterTypes()[i])) {
-                                possible = false;
-                                break;
+                if(possible) {
+                    for (int i = 0; i < objs.length; i++) {
+                        if (objs[i] != null) {
+                            if (classes) {
+                                if (!((Class<?>) objs[i]).isAssignableFrom(m.getParameterTypes()[i])) {
+                                    possible = false;
+                                    break;
+                                }
+                            } else {
+                                if (!objs[i].getClass().isAssignableFrom(m.getParameterTypes()[i])) {
+                                    possible = false;
+                                    break;
+                                }
                             }
                         }
                     }

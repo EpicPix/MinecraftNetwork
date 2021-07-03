@@ -11,7 +11,7 @@ public class MongoCredentials {
     public boolean srv;
 
     public ConnectionString toConnectionString() {
-        return new ConnectionString("mongodb" + (srv?"-srv":"") + "://" + CommonUtils.urlEncode(username) + ":" + CommonUtils.urlEncode(password) + "@" + host);
+        return new ConnectionString("mongodb" + (srv?"+srv":"") + "://" + CommonUtils.urlEncode(username) + ":" + CommonUtils.urlEncode(password) + "@" + host);
     }
 
     public static MongoCredentials get() {

@@ -1,7 +1,6 @@
 package ga.epicpix.network.bukkit;
 
-import ga.epicpix.network.common.Reflection;
-import ga.epicpix.network.common.ServerInfo;
+import ga.epicpix.network.common.*;
 import org.bukkit.Bukkit;
 
 public class BukkitCommon {
@@ -18,6 +17,11 @@ public class BukkitCommon {
         if(info.id==null) System.err.println("Server Id is not defined.");
         info.type = ServerInfo.ServerType.UNKNOWN;
         info.maxPlayers = Bukkit.getMaxPlayers();
+        ServerDetails details = new ServerDetails();
+        details.ip = Bukkit.getIp().isEmpty()?CommonUtils.possibleAddress().getHostAddress():Bukkit.getIp();
+        details.port = Bukkit.getPort();
+        info.details = details;
+        info.version = ServerVersion.getVersionByName((String) Reflection.callMethod(MinecraftServer.getClass(), "getVersion", MinecraftServer));
         return info;
     }
 

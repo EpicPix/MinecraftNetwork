@@ -6,10 +6,10 @@ import java.util.List;
 
 public class ServerInfo {
 
-    public static class ServerType {
-        public static final ServerType UNKNOWN = new ServerType("UNKNOWN");
-
+    public static final class ServerType {
         private static final ArrayList<ServerType> types = new ArrayList<>();
+
+        public static final ServerType UNKNOWN = new ServerType("UNKNOWN");
 
         private final String id;
 
@@ -18,11 +18,11 @@ public class ServerInfo {
             types.add(this);
         }
 
-        public final String getId() {
+        public String getId() {
             return id;
         }
 
-        public final String toString() {
+        public String toString() {
             return getId();
         }
 
@@ -48,8 +48,10 @@ public class ServerInfo {
     public String id;
     public ServerType type = ServerType.UNKNOWN;
     public int maxPlayers;
+    public ServerVersion version;
+    public ServerDetails details;
 
     public String toString() {
-        return "ServerInfo{id=" + (id==null?"null":("'" + id + "'")) + ", type=" + type + ", maxPlayers=" + maxPlayers + "}";
+        return "ServerInfo{id=" + CommonUtils.toString(id) + ", type=" + type + ", maxPlayers=" + maxPlayers + ", version=" + version + ", details=" + details + "}";
     }
 }

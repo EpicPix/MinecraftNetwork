@@ -1,7 +1,10 @@
 package ga.epicpix.network.common;
 
 import com.google.gson.Gson;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
 import java.net.*;
 import java.nio.charset.StandardCharsets;
@@ -74,7 +77,11 @@ public class CommonUtils {
 
     public static <T> T documentToObject(Document doc, Class<T> clazz) {
         if(doc==null) return null;
-        return new Gson().fromJson(doc.toJson(), clazz);
+        try {
+            return new Gson().fromJson(doc.toJson(), clazz);
+        }catch(Exception e) {
+            return null;
+        }
     }
 
     public static <T> ArrayList<T> documentsToObjects(ArrayList<Document> documents, Class<T> clazz) {
@@ -82,4 +89,31 @@ public class CommonUtils {
         for(Document doc : documents) converted.add(documentToObject(doc, clazz));
         return converted;
     }
+
+    public static ServerInfo getServerInfo(String server) {
+        MongoCollection<Document> servers = Mongo.getCollection("data", "servers");
+        return documentToObject(servers.find(Filters.eq("id", server)).first(), ServerInfo.class);
+    }
+
+    public static void updateServerInfo(ServerInfo info) {
+        MongoCollection<Document> servers = Mongo.getCollection("data", "servers");
+        Bson filter = Filters.eq("id", info.id);
+        long amt = servers.countDocuments(filter);
+        if(amt==0) {
+            servers.insertOne(toDocument(info));
+        }else {
+            if(amt!=1) {
+                servers.deleteMany(filter);
+                servers.insertOne(toDocument(info));
+            }else {
+                servers.replaceOne(filter, toDocument(info));
+            }
+        }
+    }
+
+    public static void removeServerInfo(String server) {
+        MongoCollection<Document> servers = Mongo.getCollection("data", "servers");
+        servers.deleteMany(Filters.eq("id", server));
+    }
+
 }

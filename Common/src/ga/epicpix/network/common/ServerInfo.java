@@ -46,12 +46,17 @@ public class ServerInfo {
     }
 
     public String id;
-    public ServerType type = ServerType.UNKNOWN;
+    public String type = ServerType.UNKNOWN.getId();
     public int maxPlayers;
     public ServerVersion version;
     public ServerDetails details;
+    public transient boolean verified = true;
+
+    public ServerType getType() {
+        return ServerType.getType(type);
+    }
 
     public String toString() {
-        return "ServerInfo{id=" + CommonUtils.toString(id) + ", type=" + type + ", maxPlayers=" + maxPlayers + ", version=" + version + ", details=" + details + "}";
+        return "ServerInfo{id=" + CommonUtils.toString(id) + ", type=" + type + ", maxPlayers=" + maxPlayers + ", version=" + version + ", details=" + details + ", verified=" + verified + "}";
     }
 }

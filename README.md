@@ -1,6 +1,6 @@
 # MinecraftNetwork
 
-A open source Minecraft Network built on Bukkit and BungeeCord (Very beta)
+A open source Minecraft Network built on Spigot and BungeeCord (Very beta)
 
 # Requirements
 

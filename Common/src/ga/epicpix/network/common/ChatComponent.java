@@ -1,0 +1,12 @@
+package ga.epicpix.network.common;
+
+public class ChatComponent {
+
+    public String text;
+    public String color;
+    public Boolean bold;
+    public Boolean italic;
+    public Boolean obfuscated;
+    public Boolean underlined;
+
+}

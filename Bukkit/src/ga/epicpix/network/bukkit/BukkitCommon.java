@@ -22,6 +22,7 @@ public class BukkitCommon {
         info.id = getServerId();
         if(info.id==null) System.err.println("Server Id is not defined.");
         info.type = ServerInfo.ServerType.UNKNOWN.getId();
+        info.onlinePlayers = Bukkit.getOnlinePlayers().size();
         info.maxPlayers = Bukkit.getMaxPlayers();
         ServerDetails details = new ServerDetails();
         details.ip = Bukkit.getIp().isEmpty()?CommonUtils.possibleAddress().getHostAddress():Bukkit.getIp();

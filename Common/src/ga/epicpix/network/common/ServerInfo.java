@@ -47,6 +47,7 @@ public class ServerInfo {
 
     public String id;
     public String type = ServerType.UNKNOWN.getId();
+    public int onlinePlayers;
     public int maxPlayers;
     public ServerVersion version;
     public ServerDetails details;
@@ -57,6 +58,6 @@ public class ServerInfo {
     }
 
     public String toString() {
-        return "ServerInfo{id=" + CommonUtils.toString(id) + ", type=" + type + ", maxPlayers=" + maxPlayers + ", version=" + version + ", details=" + details + ", verified=" + verified + "}";
+        return "ServerInfo{id=" + CommonUtils.toString(id) + ", type=" + type + ", onlinePlayers=" + onlinePlayers + ", maxPlayers=" + maxPlayers + ", version=" + version + ", details=" + details + ", verified=" + verified + "}";
     }
 }

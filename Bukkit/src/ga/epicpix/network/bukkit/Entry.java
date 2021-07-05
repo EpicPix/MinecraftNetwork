@@ -1,6 +1,7 @@
 package ga.epicpix.network.bukkit;
 
 import ga.epicpix.network.common.CommonUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Entry extends JavaPlugin {
@@ -12,6 +13,7 @@ public class Entry extends JavaPlugin {
         CommonUtils.updateServerInfo(BukkitCommon.getThisServer());
         System.out.println("Database Server Info: " + CommonUtils.getServerInfo(BukkitCommon.getServerId()));
         Runtime.getRuntime().addShutdownHook(new Thread(() -> CommonUtils.removeServerInfo(BukkitCommon.getServerId())));
+        Bukkit.getServer().getPluginManager().registerEvents(new PluginListener(), this);
     }
 
 }

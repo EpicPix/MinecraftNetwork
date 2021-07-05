@@ -16,6 +16,8 @@ public class Rank {
     @SerializedName("default")
     public boolean def;
     public String id;
+    public int priority;
+    public boolean opAccess;
     public ChatComponent[] prefix = new ChatComponent[0];
     public ChatComponent[] suffix = new ChatComponent[0];
     public String chatColor = "white";
@@ -27,6 +29,16 @@ public class Rank {
 
     public Rank setId(String id) {
         this.id = id;
+        return this;
+    }
+
+    public Rank setPriority(int priority) {
+        this.priority = priority;
+        return this;
+    }
+
+    public Rank setOpAccess(boolean access) {
+        opAccess = access;
         return this;
     }
 
@@ -66,13 +78,13 @@ public class Rank {
             }
             return ranks;
         }else {
-            Rank rank = new Rank().setDefault(true).setId("DEFAULT").setPrefix().setSuffix().setChatColor("white");
+            Rank rank = new Rank().setDefault(true).setId("DEFAULT").setPriority(0).setOpAccess(false).setPrefix().setSuffix().setChatColor("white");
             cdranks.insertOne(CommonUtils.toDocument(rank));
             return new ArrayList<>(Collections.singletonList(rank));
         }
     }
 
     public String toString() {
-        return "Rank{default=" + def + ", id=" + CommonUtils.toString(id) + ", prefix=" + Arrays.toString(prefix) + ", suffix=" + Arrays.toString(suffix) + ", chatColor=" + chatColor + "}";
+        return "Rank{default=" + def + ", id=" + CommonUtils.toString(id) + ", priority=" + priority + ", opAccess=" + opAccess + ", prefix=" + Arrays.toString(prefix) + ", suffix=" + Arrays.toString(suffix) + ", chatColor=" + chatColor + "}";
     }
 }

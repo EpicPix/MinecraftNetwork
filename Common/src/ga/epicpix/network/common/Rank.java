@@ -22,6 +22,7 @@ public class Rank {
     public boolean opAccess;
     public ChatComponent[] prefix = new ChatComponent[0];
     public ChatComponent[] suffix = new ChatComponent[0];
+    public String[] permissions = new String[0];
     public String chatColor = "white";
 
     public Rank setDefault(boolean def) {
@@ -54,6 +55,11 @@ public class Rank {
         return this;
     }
 
+    public Rank setPermissions(String... permissions) {
+        this.permissions = permissions;
+        return this;
+    }
+
     public Rank setChatColor(String color) {
         chatColor = color;
         return this;
@@ -80,7 +86,7 @@ public class Rank {
             }
             return ranks;
         }else {
-            Rank rank = new Rank().setDefault(true).setId("DEFAULT").setPriority(0).setOpAccess(false).setPrefix().setSuffix().setChatColor("white");
+            Rank rank = new Rank().setDefault(true).setId("DEFAULT").setPriority(0).setOpAccess(false).setPrefix().setSuffix().setPermissions().setChatColor("white");
             cdranks.insertOne(CommonUtils.toDocument(rank));
             return new ArrayList<>(Collections.singletonList(rank));
         }

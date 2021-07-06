@@ -5,6 +5,7 @@ import static ga.epicpix.network.common.Language.LanguageEntry;
 public class DefaultLanguage {
 
     public static final Language ENGLISH = new Language()
-            .setId("ENGLISH");
+            .setId("ENGLISH")
+            .addEntry(new LanguageEntry("error.no_permissions", "You don't have enough permissions!"));
 
 }

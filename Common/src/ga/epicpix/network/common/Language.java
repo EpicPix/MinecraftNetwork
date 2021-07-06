@@ -1,6 +1,8 @@
 package ga.epicpix.network.common;
 
+import com.mongodb.client.MongoChangeStreamCursor;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.changestream.ChangeStreamDocument;
 import org.bson.Document;
 
 import java.util.ArrayList;
@@ -15,6 +17,20 @@ public class Language {
         loadedLanguages.clear();
         MongoCollection<Document> dlanguages = Mongo.getCollection("data", "languages");
         loadedLanguages.addAll(CommonUtils.documentsToObjects(CommonUtils.iteratorToList(dlanguages.find().iterator()), Language.class));
+    }
+
+    public static void startWatcher() {
+        final MongoChangeStreamCursor<ChangeStreamDocument<Document>> stream = Mongo.getCollection("data", "languages").watch().cursor();
+        Thread t = new Thread(() -> {
+            while(true) {
+                if(stream.hasNext()) {
+                    stream.next();
+                    loadLanguages();
+                }
+            }
+        });
+        t.setDaemon(true);
+        t.start();
     }
 
     public static class LanguageEntry {
@@ -42,6 +58,15 @@ public class Language {
         return this;
     }
 
+    public String getTranslation(String key) {
+        for(LanguageEntry entry : entries) {
+            if(entry.key.equals(key)) {
+                return entry.value;
+            }
+        }
+        return key;
+    }
+
     public static String getTranslation(String key, String language) {
         for(Language lang : loadedLanguages) {
             if(lang.id.equalsIgnoreCase(language)) {
@@ -53,7 +78,7 @@ public class Language {
                 break;
             }
         }
-        return key;
+        return CommonUtils.getDefaultLanguage().getTranslation(key);
     }
 
     public static Language getLanguage(String language) {

@@ -2,6 +2,11 @@ package ga.epicpix.network.bukkit;
 
 import ga.epicpix.network.common.*;
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
+
+import java.util.Map;
 
 public class BukkitCommon {
 
@@ -31,6 +36,11 @@ public class BukkitCommon {
         info.version = ServerVersion.getVersionByName((String) Reflection.callMethod(MinecraftServer.getClass(), "getVersion", MinecraftServer));
         info.verified = false;
         return info;
+    }
+
+    public static Map<String, Command> getCommandMap() {
+        SimpleCommandMap map = ((CraftServer) Bukkit.getServer()).getCommandMap();
+        return (Map<String, Command>) Reflection.getValueOfField(map.getClass(), "knownCommands", map);
     }
 
 }

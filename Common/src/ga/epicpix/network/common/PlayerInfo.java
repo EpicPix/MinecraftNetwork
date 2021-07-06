@@ -27,7 +27,7 @@ public class PlayerInfo {
         return Language.getLanguage(language);
     }
 
-    public void populate(UUID uuid, String username, Rank rank, Language language) {
+    public PlayerInfo populate(UUID uuid, String username, Rank rank, Language language) {
         this.uuid = uuid.toString();
         this.username = username;
         this.rank = rank.id;
@@ -35,6 +35,7 @@ public class PlayerInfo {
         if(firstLogin==-1) {
             firstLogin = System.currentTimeMillis();
         }
+        return this;
     }
 
     public static PlayerInfo getPlayerInfo(UUID player) {
@@ -43,7 +44,7 @@ public class PlayerInfo {
         return CommonUtils.documentToObject(pl, PlayerInfo.class);
     }
 
-    public static void updatePlayerInfo(PlayerInfo info) {
+    public static PlayerInfo updatePlayerInfo(PlayerInfo info) {
         MongoCollection<Document> players = Mongo.getCollection("data", "players");
         Document pl = players.find(new Document().append("uuid", info.uuid)).first();
         if(pl==null) {
@@ -51,6 +52,7 @@ public class PlayerInfo {
         }else {
             players.updateOne(new Document().append("uuid", info.uuid), CommonUtils.toDocument(info));
         }
+        return info;
     }
 
 }

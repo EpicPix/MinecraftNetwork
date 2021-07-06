@@ -152,4 +152,12 @@ public class CommonUtils {
         return Language.getLanguageOrDefault(Settings.getSettingOrDefault("DEFAULT_LANGUAGE", "ENGLISH"), DefaultLanguage.ENGLISH);
     }
 
+    public static Rank getDefaultRank() {
+        for(Rank r : Rank.getRanks()) {
+            if(r.def) {
+                return r;
+            }
+        }
+        throw new IllegalStateException("No default rank found.");
+    }
 }

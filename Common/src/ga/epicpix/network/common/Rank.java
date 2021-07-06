@@ -23,6 +23,7 @@ public class Rank {
     public ChatComponent[] prefix = new ChatComponent[0];
     public ChatComponent[] suffix = new ChatComponent[0];
     public String[] permissions = new String[0];
+    public String nameColor = "white";
     public String chatColor = "white";
 
     public Rank setDefault(boolean def) {
@@ -65,6 +66,11 @@ public class Rank {
         return this;
     }
 
+    public Rank setNameColor(String color) {
+        nameColor = color;
+        return this;
+    }
+
     public static ArrayList<Rank> getRanks() {
         MongoCollection<Document> cdranks = Mongo.getCollection("data", "ranks");
         if(cdranks.countDocuments()!=0) {
@@ -86,7 +92,7 @@ public class Rank {
             }
             return ranks;
         }else {
-            Rank rank = new Rank().setDefault(true).setId("DEFAULT").setPriority(0).setOpAccess(false).setPrefix().setSuffix().setPermissions().setChatColor("white");
+            Rank rank = new Rank().setDefault(true).setId("DEFAULT").setPriority(0).setOpAccess(false).setPrefix().setSuffix().setPermissions().setNameColor("white").setChatColor("white");
             cdranks.insertOne(CommonUtils.toDocument(rank));
             return new ArrayList<>(Collections.singletonList(rank));
         }

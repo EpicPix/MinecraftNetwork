@@ -7,6 +7,8 @@ import org.bson.Document;
 
 import java.util.ArrayList;
 
+import static ga.epicpix.network.common.ChatColor.convertColorText;
+
 public class Language {
 
     public static final String TYPE = "LANGUAGE";
@@ -61,10 +63,10 @@ public class Language {
     public String getTranslation(String key) {
         for(LanguageEntry entry : entries) {
             if(entry.key.equals(key)) {
-                return entry.value;
+                return convertColorText(entry.value);
             }
         }
-        return key;
+        return convertColorText(key);
     }
 
     public static String getTranslation(String key, String language) {
@@ -72,7 +74,7 @@ public class Language {
             if(lang.id.equalsIgnoreCase(language)) {
                 for(LanguageEntry entry : lang.entries) {
                     if(entry.key.equals(key)) {
-                        return entry.value;
+                        return convertColorText(entry.value);
                     }
                 }
                 break;

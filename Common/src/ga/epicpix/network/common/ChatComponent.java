@@ -7,6 +7,7 @@ public class ChatComponent {
     public String text;
     public String color;
     public Boolean bold;
+    public Boolean strikethrough;
     public Boolean italic;
     public Boolean obfuscated;
     public Boolean underlined;

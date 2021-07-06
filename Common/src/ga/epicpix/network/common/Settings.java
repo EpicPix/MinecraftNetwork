@@ -19,6 +19,15 @@ public class Settings {
         }
     }
 
+    public static <T> T getSettingOrDefault(String settingid, T def) {
+        Object setting = getSetting(settingid);
+        if(setting==null) {
+            setSetting(settingid, def);
+            return def;
+        }
+        return (T) setting;
+    }
+
     public static void setSetting(String setting, Object value) {
         if(!CommonUtils.isPrimitive(value) && !String.class.isAssignableFrom(value.getClass()) && !Document.class.isAssignableFrom(value.getClass())) {
             value = CommonUtils.toDocument(value);

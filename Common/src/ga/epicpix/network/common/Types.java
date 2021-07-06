@@ -9,6 +9,7 @@ public class Types {
     static {
         register(ChatComponent.class);
         register(Language.class);
+        register(PlayerInfo.class);
         register(Rank.class);
         register(ServerDetails.class);
         register(ServerInfo.class);

@@ -86,6 +86,15 @@ public class Rank {
         }
     }
 
+    public static Rank getRankByName(String rank) {
+        for(Rank irank : getRanks()) {
+            if(irank.id.equals(rank)) {
+                return irank;
+            }
+        }
+        return null;
+    }
+
     public String toString() {
         return "Rank{default=" + def + ", id=" + CommonUtils.toString(id) + ", priority=" + priority + ", opAccess=" + opAccess + ", prefix=" + Arrays.toString(prefix) + ", suffix=" + Arrays.toString(suffix) + ", chatColor=" + chatColor + "}";
     }

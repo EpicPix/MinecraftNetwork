@@ -20,10 +20,27 @@ public class Language {
     public static class LanguageEntry {
         public String key;
         public String value;
+
+        public LanguageEntry() {}
+
+        public LanguageEntry(String k, String v) {
+            key = k;
+            value = v;
+        }
     }
 
     public String id;
-    public LanguageEntry[] entries;
+    public ArrayList<LanguageEntry> entries = new ArrayList<>();
+
+    public Language setId(String id) {
+        this.id = id;
+        return this;
+    }
+
+    public Language addEntry(LanguageEntry entry) {
+        entries.add(entry);
+        return this;
+    }
 
     public static String getTranslation(String key, String language) {
         for(Language lang : loadedLanguages) {
@@ -37,6 +54,69 @@ public class Language {
             }
         }
         return key;
+    }
+
+    public static Language getLanguage(String language) {
+        for(Language lang : loadedLanguages) {
+            if(lang.id.equals(language)) {
+                return lang;
+            }
+        }
+        return null;
+    }
+
+    public static ArrayList<LanguageEntry> getMissingKeys(Language x, Language y) {
+        ArrayList<LanguageEntry> missingKeys = new ArrayList<>();
+        for (LanguageEntry e : x.entries) {
+            boolean found = false;
+            for (LanguageEntry f : y.entries) {
+                if (e.key.equals(f.key)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                missingKeys.add(e);
+            }
+        }
+        return missingKeys;
+    }
+
+    public static Language getLanguageOrDefault(String language, Language def) {
+        Language lang = getLanguage(language);
+        if(lang==null) {
+            loadLanguages();
+            lang = getLanguage(language);
+            if(lang==null) {
+                if(def.id.equals(language)) {
+                    Mongo.getCollection("data", "languages").insertOne(CommonUtils.toDocument(def));
+                    loadLanguages();
+                }
+                return def;
+            }
+        }
+        ArrayList<LanguageEntry> missingKeys = getMissingKeys(def, lang);
+        if(missingKeys.size()!=0) {
+            loadLanguages();
+            lang = getLanguage(language);
+            if(lang==null) {
+                if(def.id.equals(language)) {
+                    Mongo.getCollection("data", "languages").insertOne(CommonUtils.toDocument(def));
+                    loadLanguages();
+                }
+                return def;
+            }
+            missingKeys = getMissingKeys(def, lang);
+            if(missingKeys.size()!=0) {
+                if(def.id.equals(language)) {
+                    lang.entries.addAll(missingKeys);
+                    Mongo.getCollection("data", "languages").replaceOne(new Document().append("id", language), CommonUtils.toDocument(lang));
+                    loadLanguages();
+                    return getLanguage(language);
+                }
+            }
+        }
+        return lang;
     }
 
 }

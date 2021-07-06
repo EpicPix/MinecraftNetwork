@@ -147,4 +147,9 @@ public class CommonUtils {
         }
         return null;
     }
+
+    public static Language getDefaultLanguage() {
+        return Language.getLanguageOrDefault(Settings.getSettingOrDefault("DEFAULT_LANGUAGE", "ENGLISH"), DefaultLanguage.ENGLISH);
+    }
+
 }

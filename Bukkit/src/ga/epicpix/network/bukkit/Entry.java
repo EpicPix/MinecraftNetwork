@@ -1,12 +1,14 @@
 package ga.epicpix.network.bukkit;
 
 import ga.epicpix.network.common.CommonUtils;
+import ga.epicpix.network.common.Language;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Entry extends JavaPlugin {
 
     public void onLoad() {
+        Language.loadLanguages();
         System.out.println("Server Info: " + BukkitCommon.getThisServer());
         System.out.println("Database Server Info: " + CommonUtils.getServerInfo(BukkitCommon.getServerId()));
         System.out.println("Updating DB");

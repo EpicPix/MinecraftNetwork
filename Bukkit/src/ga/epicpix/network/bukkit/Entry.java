@@ -13,6 +13,9 @@ public class Entry extends JavaPlugin {
         CommonUtils.updateServerInfo(BukkitCommon.getThisServer());
         System.out.println("Database Server Info: " + CommonUtils.getServerInfo(BukkitCommon.getServerId()));
         Runtime.getRuntime().addShutdownHook(new Thread(() -> CommonUtils.removeServerInfo(BukkitCommon.getServerId())));
+    }
+
+    public void onEnable() {
         Bukkit.getServer().getPluginManager().registerEvents(new PluginListener(), this);
     }
 

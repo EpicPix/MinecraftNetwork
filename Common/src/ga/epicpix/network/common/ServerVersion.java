@@ -4,6 +4,8 @@ import java.util.*;
 
 public final class ServerVersion {
 
+    public static final String TYPE = "SERVER_VERSION";
+
     public static final ArrayList<ServerVersion> VERSIONS = new ArrayList<>();
 
     static {

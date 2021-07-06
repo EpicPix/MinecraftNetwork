@@ -13,6 +13,8 @@ import java.util.Collections;
 
 public class Rank {
 
+    public static final String TYPE = "RANK";
+
     @SerializedName("default")
     public boolean def;
     public String id;

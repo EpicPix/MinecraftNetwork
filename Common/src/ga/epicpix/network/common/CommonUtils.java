@@ -8,10 +8,9 @@ import org.bson.conversions.Bson;
 
 import java.net.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.Iterator;
+import java.util.*;
+
+import static java.util.Map.Entry;
 
 public class CommonUtils {
 
@@ -72,7 +71,11 @@ public class CommonUtils {
 
     public static Document toDocument(Object obj) {
         if(obj==null) return null;
-        return Document.parse(new Gson().toJson(obj));
+        Document out = Document.parse(new Gson().toJson(obj));
+        if(Types.getType(obj.getClass())!=null) {
+            out.append("TYPE", Types.getType(obj.getClass()));
+        }
+        return out;
     }
 
     public static <T> T documentToObject(Document doc, Class<T> clazz) {
@@ -116,4 +119,32 @@ public class CommonUtils {
         servers.deleteMany(Filters.eq("id", server));
     }
 
+    public static boolean isPrimitive(Object obj) {
+        Class<?> clazz = obj.getClass();
+        if(clazz.isPrimitive()) {
+            return true;
+        }
+        return clazz==Boolean.class || clazz==Byte.class || clazz==Short.class || clazz==Integer.class || clazz==Long.class || clazz==Character.class || clazz==Float.class || clazz==Double.class;
+    }
+
+    public static Object convertDocument(Document document) {
+        Object type = document.get("TYPE");
+        if(type==null || type.getClass()!=String.class) return document;
+
+        Class<?> clazz = Types.getType((String) type);
+        if(clazz!=null) {
+            return documentToObject(document, clazz);
+        }else {
+            return document;
+        }
+    }
+
+    public static <K, V> K getValueByKey(V value, Map<K, V> map) {
+        for(Entry<K, V> entry : map.entrySet()) {
+            if(entry.getValue().equals(value)) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
 }

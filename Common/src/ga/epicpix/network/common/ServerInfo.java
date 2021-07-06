@@ -6,6 +6,8 @@ import java.util.List;
 
 public class ServerInfo {
 
+    public static final String TYPE = "SERVER_INFO";
+
     public static final class ServerType {
         private static final ArrayList<ServerType> types = new ArrayList<>();
 

@@ -24,10 +24,10 @@ public class ChatColor {
                 .replace("/yellow/", COLOR_CHAR + "e")
                 .replace("/white/", COLOR_CHAR + "f")
                 .replace("/obfuscated/", COLOR_CHAR + "k")
-                .replace("/bold/", COLOR_CHAR + "k")
-                .replace("/strikethrough/", COLOR_CHAR + "k")
-                .replace("/underline/", COLOR_CHAR + "k")
-                .replace("/italic/", COLOR_CHAR + "k")
+                .replace("/bold/", COLOR_CHAR + "l")
+                .replace("/strikethrough/", COLOR_CHAR + "m")
+                .replace("/underline/", COLOR_CHAR + "n")
+                .replace("/italic/", COLOR_CHAR + "o")
                 ;
     }
 

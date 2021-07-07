@@ -6,6 +6,8 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.entity.Player;
+import org.spigotmc.SpigotConfig;
 
 import java.util.Map;
 
@@ -60,6 +62,23 @@ public class BukkitCommon {
         tc.setObfuscated(comp.obfuscated);
         tc.setUnderlined(comp.underlined);
         return tc;
+    }
+
+    public static void setBungeeCord(boolean bungee) {
+        SpigotConfig.bungee = bungee;
+        Object server = Reflection.getValueOfField(Bukkit.getServer().getClass(), "console", Bukkit.getServer());
+        Reflection.setValueOfField(server.getClass(), "onlineMode", server, !bungee);
+        Object online = Reflection.getValueOfField(Bukkit.getServer().getClass(), "online", Bukkit.getServer());
+        Reflection.setValueOfField(online.getClass(), "value", online, !bungee);
+        System.out.println("BungeeCord mode set to: " + (bungee?"on":"off"));
+        String bungeeCordUpdate = CommonUtils.getDefaultLanguage().getTranslation("kick.update.bungeecord");
+        if(Entry.PLUGIN.isEnabled()) {
+            Bukkit.getScheduler().runTask(Entry.PLUGIN, () -> {
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    player.kickPlayer(bungeeCordUpdate);
+                }
+            });
+        }
     }
 
 }

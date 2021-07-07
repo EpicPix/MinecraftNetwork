@@ -86,4 +86,17 @@ public class Reflection {
             return null;
         }
     }
+
+    public static void setValueOfField(Class<?> clazz, String fieldName, Object ofObj, Object newData) {
+        try {
+            Field field = getField(clazz, fieldName);
+            if(field==null) throw new NoSuchFieldException("Field not found " + clazz.getName() + "." + fieldName);
+            boolean access = field.isAccessible();
+            field.setAccessible(true);
+            field.set(ofObj, newData);
+            field.setAccessible(access);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
 }

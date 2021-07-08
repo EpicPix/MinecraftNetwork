@@ -8,13 +8,9 @@ import ga.epicpix.network.common.CommonUtils;
 import ga.epicpix.network.common.Language;
 import ga.epicpix.network.common.Mongo;
 import ga.epicpix.network.common.Settings;
-import net.minecraft.server.v1_8_R3.MinecraftServer;
-import org.bson.BsonDocument;
 import org.bson.Document;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.spigotmc.SpigotConfig;
 
 public class Entry extends JavaPlugin {
 

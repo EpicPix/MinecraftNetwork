@@ -66,10 +66,12 @@ public class BukkitCommon {
 
     public static void setBungeeCord(boolean bungee) {
         SpigotConfig.bungee = bungee;
+        try {
+            Object online = Reflection.getValueOfField(Bukkit.getServer().getClass(), "online", Bukkit.getServer());
+            Reflection.setValueOfField(online.getClass(), "value", online, !bungee);
+        } catch(Exception e) {}
         Object server = Reflection.getValueOfField(Bukkit.getServer().getClass(), "console", Bukkit.getServer());
         Reflection.setValueOfField(server.getClass(), "onlineMode", server, !bungee);
-        Object online = Reflection.getValueOfField(Bukkit.getServer().getClass(), "online", Bukkit.getServer());
-        Reflection.setValueOfField(online.getClass(), "value", online, !bungee);
         System.out.println("BungeeCord mode set to: " + (bungee?"on":"off"));
         String bungeeCordUpdate = CommonUtils.getDefaultLanguage().getTranslation("kick.update.bungeecord");
         if(Entry.PLUGIN.isEnabled()) {

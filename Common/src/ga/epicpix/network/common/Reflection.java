@@ -25,16 +25,13 @@ public class Reflection {
     public static Object getValueOfField(Class<?> clazz, String fieldName, Object ofObj) {
         try {
             Field field = getField(clazz, fieldName);
-            if(field==null) throw new NoSuchFieldException("Field not found " + clazz.getName() + "." + fieldName);
+            if(field==null) return null;
             boolean access = field.isAccessible();
             field.setAccessible(true);
             Object obj = field.get(ofObj);
             field.setAccessible(access);
             return obj;
         } catch (IllegalAccessException e) {
-            return null;
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
             return null;
         }
     }

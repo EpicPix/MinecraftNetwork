@@ -14,6 +14,7 @@ public class PlayerInfo {
     public String rank;
     public String language;
     public long firstLogin = -1;
+    public long lastLogin = -1;
 
     public UUID getUUID() {
         return UUID.fromString(uuid);
@@ -34,6 +35,9 @@ public class PlayerInfo {
         this.language = language.id;
         if(firstLogin==-1) {
             firstLogin = System.currentTimeMillis();
+        }
+        if(lastLogin==-1) {
+            lastLogin = System.currentTimeMillis();
         }
         return this;
     }

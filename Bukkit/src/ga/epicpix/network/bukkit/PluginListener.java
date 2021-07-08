@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.spigotmc.SpigotConfig;
 
 import java.util.ArrayList;
 
@@ -20,7 +21,11 @@ public class PluginListener implements Listener {
         Player player = e.getPlayer();
         PlayerInfo info = PlayerInfo.getPlayerInfo(player.getUniqueId());
         if(info==null) {
-            info = PlayerInfo.updatePlayerInfo(new PlayerInfo().populate(player.getUniqueId(), player.getName(), CommonUtils.getDefaultRank(), CommonUtils.getDefaultLanguage()));
+            info = new PlayerInfo().populate(player.getUniqueId(), player.getName(), CommonUtils.getDefaultRank(), CommonUtils.getDefaultLanguage());
+        }
+        if(!SpigotConfig.bungee) {
+            info.lastLogin = System.currentTimeMillis();
+            PlayerInfo.updatePlayerInfo(info);
         }
     }
 

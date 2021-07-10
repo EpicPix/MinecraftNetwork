@@ -160,4 +160,9 @@ public class CommonUtils {
         }
         throw new IllegalStateException("No default rank found.");
     }
+
+    public static Document set(Document doc) {
+        return new Document().append("$set", doc);
+    }
+
 }

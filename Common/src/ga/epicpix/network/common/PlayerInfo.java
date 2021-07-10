@@ -1,6 +1,9 @@
 package ga.epicpix.network.common;
 
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
+import org.bson.AbstractBsonWriter;
 import org.bson.Document;
 
 import java.util.UUID;
@@ -54,7 +57,7 @@ public class PlayerInfo {
         if(pl==null) {
             players.insertOne(CommonUtils.toDocument(info));
         }else {
-            players.updateOne(new Document().append("uuid", info.uuid), CommonUtils.toDocument(info));
+            players.updateOne(new Document().append("uuid", info.uuid), CommonUtils.set(CommonUtils.toDocument(info)));
         }
         return info;
     }

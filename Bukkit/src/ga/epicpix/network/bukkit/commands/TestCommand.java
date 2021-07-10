@@ -14,7 +14,7 @@ public class TestCommand extends Command {
     }
 
     public CommandContext createContext() {
-        return new CommandContext() {
+        return new CommandContext(getName()) {
             public void run() {
                 if(isPlayer()) {
                     sendMessage("Player");

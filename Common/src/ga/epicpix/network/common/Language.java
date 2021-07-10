@@ -22,17 +22,11 @@ public class Language {
     }
 
     public static void startWatcher() {
-        final MongoChangeStreamCursor<ChangeStreamDocument<Document>> stream = Mongo.getCollection("data", "languages").watch().cursor();
-        Thread t = new Thread(() -> {
-            while(true) {
-                if(stream.hasNext()) {
-                    stream.next();
-                    loadLanguages();
-                }
+        Mongo.registerWatcher(new MongoWatcher("data", "languages") {
+            public void run(ChangeStreamDocument<Document> handle) {
+                loadLanguages();
             }
         });
-        t.setDaemon(true);
-        t.start();
     }
 
     public static class LanguageEntry {

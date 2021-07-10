@@ -4,10 +4,7 @@ import com.mongodb.client.MongoChangeStreamCursor;
 import com.mongodb.client.model.changestream.ChangeStreamDocument;
 import com.mongodb.client.model.changestream.OperationType;
 import ga.epicpix.network.bukkit.commands.TestCommand;
-import ga.epicpix.network.common.CommonUtils;
-import ga.epicpix.network.common.Language;
-import ga.epicpix.network.common.Mongo;
-import ga.epicpix.network.common.Settings;
+import ga.epicpix.network.common.*;
 import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -22,22 +19,16 @@ public class Entry extends JavaPlugin {
         Language.startWatcher();
         BukkitCommon.setBungeeCord(Settings.getSettingOrDefault("BUNGEE_CORD", false));
 
-        final MongoChangeStreamCursor<ChangeStreamDocument<Document>> stream = Mongo.getCollection("data", "settings").watch().cursor();
-        Thread t = new Thread(() -> {
-            while(true) {
-                if(stream.hasNext()) {
-                    ChangeStreamDocument<Document> next = stream.next();
-                    if(next.getOperationType()!=OperationType.DELETE && next.getOperationType()!=OperationType.DROP) {
-                        Document fullDocument = Mongo.getCollection("data", "settings").find(next.getDocumentKey()).first();
-                        if(fullDocument.getString("id").equals("BUNGEE_CORD")) {
-                            BukkitCommon.setBungeeCord(fullDocument.getBoolean("value"));
-                        }
+        Mongo.registerWatcher(new MongoWatcher("data", "settings") {
+            public void run(ChangeStreamDocument<Document> handle) {
+                if(handle.getOperationType()!=OperationType.DELETE && handle.getOperationType()!=OperationType.DROP) {
+                    Document fullDocument = Mongo.getCollection("data", "settings").find(handle.getDocumentKey()).first();
+                    if(fullDocument.getString("id").equals("BUNGEE_CORD")) {
+                        BukkitCommon.setBungeeCord(fullDocument.getBoolean("value"));
                     }
                 }
             }
         });
-        t.setDaemon(true);
-        t.start();
 
         System.out.println("Server Info: " + BukkitCommon.getThisServer());
         System.out.println("Database Server Info: " + CommonUtils.getServerInfo(BukkitCommon.getServerId()));

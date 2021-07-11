@@ -165,4 +165,56 @@ public class CommonUtils {
         return new Document().append("$set", doc);
     }
 
+    public static String makeStringLength(String string, int length, String c) {
+        while(string.length() <= length) {
+            string = c + string;
+        }
+        return string;
+    }
+
+    public static String componentsToString(ChatComponent[] components) {
+        Boolean bold = null, strikethrough = null, italic = null, obfuscated = null, underlined = null;
+        String color = "white";
+
+        String generated = "";
+        for(ChatComponent component : components) {
+            boolean reupdate = false;
+            if(component.bold!=null && component.bold!=bold) {
+                bold = component.bold;
+                reupdate = true;
+            }
+            if(component.strikethrough!=null && component.strikethrough!=strikethrough) {
+                strikethrough = component.strikethrough;
+                reupdate = true;
+            }
+            if(component.italic!=null && component.italic!=italic) {
+                italic = component.italic;
+                reupdate = true;
+            }
+            if(component.obfuscated!=null && component.obfuscated!=obfuscated) {
+                obfuscated = component.obfuscated;
+                reupdate = true;
+            }
+            if(component.underlined!=null && component.underlined!=underlined) {
+                underlined = component.underlined;
+                reupdate = true;
+            }
+            if(component.color!=null && !component.color.equals(color)) {
+                color = component.color;
+                reupdate = true;
+            }
+
+            if(reupdate) {
+                generated += ChatColor.convertColorText("/" + color + "/");
+                if(bold) generated += ChatColor.convertColorText("/bold/");
+                if(strikethrough) generated += ChatColor.convertColorText("/strikethrough/");
+                if(italic) generated += ChatColor.convertColorText("/italic/");
+                if(obfuscated) generated += ChatColor.convertColorText("/obfuscated/");
+                if(underlined) generated += ChatColor.convertColorText("/underlined/");
+            }
+            generated += component.text;
+        }
+
+        return generated;
+    }
 }

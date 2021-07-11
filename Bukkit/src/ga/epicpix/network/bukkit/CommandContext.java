@@ -1,72 +1,26 @@
 package ga.epicpix.network.bukkit;
 
-import ga.epicpix.network.common.CommonUtils;
-import ga.epicpix.network.common.PlayerInfo;
+import ga.epicpix.network.common.AbstractCommandContext;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
-public abstract class CommandContext {
-
-    private boolean dataSet = false;
-    private CommandSender sender;
-    private PlayerInfo playerInfo;
-    private String[] arguments;
-
-    private final String commandName;
+public abstract class CommandContext extends AbstractCommandContext<CommandSender, Player> {
 
     public CommandContext(String commandName) {
-        this.commandName = commandName;
-    }
-
-    public final CommandContext setData(CommandSender sender, PlayerInfo playerInfo, String[] arguments) {
-        if(!dataSet) {
-            this.sender = sender;
-            this.playerInfo = playerInfo;
-            this.arguments = arguments;
-            dataSet = true;
-        }
-        return this;
-    }
-
-    public final CommandSender getSender() {
-        return sender;
-    }
-
-    public final String[] getArguments() {
-        return arguments;
+        super(commandName);
     }
 
     public final boolean isPlayer() {
-        return sender instanceof Player;
-    }
-
-    public final Player getPlayer() {
-        return (Player) sender;
+        return getSender() instanceof Player;
     }
 
     public final boolean isConsole() {
-        return sender instanceof ConsoleCommandSender;
+        return getSender() instanceof ConsoleCommandSender;
     }
 
     public final void sendMessage(String message) {
         getSender().sendMessage(message);
-    }
-
-    public final void sendUsage() {
-        sendTranslated("command.usage." + commandName);
-    }
-
-    public final void sendTranslated(String message) {
-        if(isPlayer()) {
-            sendMessage(getPlayerInfo().getLanguage().getTranslation(message));
-        }else {
-            sendMessage(CommonUtils.getDefaultLanguage().getTranslation(message));
-        }
-    }
-
-    public final PlayerInfo getPlayerInfo() {
-        return playerInfo;
     }
 
     public abstract void run();

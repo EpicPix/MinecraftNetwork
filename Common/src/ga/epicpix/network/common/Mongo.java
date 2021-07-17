@@ -34,14 +34,18 @@ public class Mongo {
             final MongoChangeStreamCursor<ChangeStreamDocument<Document>> stream = getMongoClient().watch().cursor();
             Thread t = new Thread(() -> {
                 while (true) {
-                    if (stream.hasNext()) {
-                        ChangeStreamDocument<Document> next = stream.next();
-                        MongoNamespace namespace = next.getNamespace();
-                        for (MongoWatcher watcher : watchers) {
-                            if (watcher.getNamespace().equals(namespace)) {
-                                watcher.run(next);
+                    try {
+                        if (stream.hasNext()) {
+                            ChangeStreamDocument<Document> next = stream.next();
+                            MongoNamespace namespace = next.getNamespace();
+                            for (MongoWatcher watcher : watchers) {
+                                if (watcher.getNamespace().equals(namespace)) {
+                                    watcher.run(next);
+                                }
                             }
                         }
+                    }catch(Exception e) {
+                        return;
                     }
                 }
             });
@@ -55,4 +59,7 @@ public class Mongo {
         return getMongoClient().getDatabase(database).getCollection(collection);
     }
 
+    public static void disconnect() {
+        getMongoClient().close();
+    }
 }

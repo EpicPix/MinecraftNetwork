@@ -1,22 +1,26 @@
 package ga.epicpix.network.bungee;
 
-import ga.epicpix.network.common.AbstractCommandContext;
-import net.md_5.bungee.api.CommandSender;
+import ga.epicpix.network.bungee.commands.BungeeCommandConsole;
+import ga.epicpix.network.bungee.commands.BungeeCommandPlayer;
+import ga.epicpix.network.common.commands.CommonCommandContext;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.command.ConsoleCommandSender;
 
-public abstract class CommandContext extends AbstractCommandContext<CommandSender, ProxiedPlayer> {
+public abstract class CommandContext extends CommonCommandContext {
 
     public CommandContext(String commandName) {
         super(commandName);
     }
 
     public final boolean isPlayer() {
-        return getSender() instanceof ProxiedPlayer;
+        return getSender() instanceof BungeeCommandPlayer;
+    }
+
+    public final ProxiedPlayer getBungeePlayer() {
+        return ((BungeeCommandPlayer) super.getPlayer()).getPlayer();
     }
 
     public final boolean isConsole() {
-        return getSender() instanceof ConsoleCommandSender;
+        return getSender() instanceof BungeeCommandConsole;
     }
 
     public final void sendMessage(String message) {

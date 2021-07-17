@@ -32,11 +32,11 @@ public class ServerCommand extends Command {
                         if(serverInfo==null) {
                             sendTranslated("error.server.unknown");
                         }else {
-                            net.md_5.bungee.api.config.ServerInfo currentServer = getPlayer().getServer().getInfo();
+                            net.md_5.bungee.api.config.ServerInfo currentServer = getBungeePlayer().getServer().getInfo();
                             if(serverInfo.id.equals(currentServer.getName()) || new InetSocketAddress(serverInfo.details.ip, serverInfo.details.port).equals(currentServer.getSocketAddress())) {
                                 sendTranslated("error.server.already_connected");
                             }else {
-                                getPlayer().connect(ServerConnectRequest.builder()
+                                getBungeePlayer().connect(ServerConnectRequest.builder()
                                         .retry(false)
                                         .reason(ServerConnectEvent.Reason.COMMAND)
                                         .connectTimeout(5000)

@@ -279,4 +279,35 @@ public class CommonUtils {
         return generated.toString();
     }
 
+    public static String repeat(String x, int amount) {
+        StringBuilder builder = new StringBuilder();
+        for(int i = 0; i<amount; i++) {
+            builder.append(x);
+        }
+        return builder.toString();
+    }
+
+    public static String replaceAt(String str, int at, String to) {
+        StringBuilder n = new StringBuilder(str);
+        for(int i = 0; i<to.length(); i++) {
+            n.setCharAt(i + at, to.charAt(i));
+        }
+        return n.toString();
+    }
+
+    public static String replaceCharactersSpecial(String in, String check, char what, char with) {
+        int amt = Math.min(in.length(), check.length());
+        int left = Math.max(0, in.length()-check.length());
+        StringBuilder gen = new StringBuilder();
+        for(int i = 0; i<amt; i++) {
+            if(check.charAt(i)==what) {
+                gen.append(with);
+            }else {
+                gen.append(in.charAt(i));
+            }
+        }
+        gen.append(in.substring(in.length() - left));
+        return gen.toString();
+    }
+
 }

@@ -1,10 +1,12 @@
 package ga.epicpix.network.bukkit;
 
+import ga.epicpix.network.bukkit.commands.BukkitCommandConsole;
+import ga.epicpix.network.bukkit.commands.BukkitCommandPlayer;
 import ga.epicpix.network.common.CommonUtils;
 import ga.epicpix.network.common.Language;
 import ga.epicpix.network.common.PlayerInfo;
-import ga.epicpix.network.common.Rank;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
@@ -38,7 +40,7 @@ public abstract class Command {
                         }
                     }
                 }
-                cmd.createContext().setData(sender, info, args).run();
+                cmd.createContext().setData(sender instanceof Player ? new BukkitCommandPlayer((Player) sender) : new BukkitCommandConsole((ConsoleCommandSender) sender), info, args).run();
                 return true;
             }
         });

@@ -19,4 +19,7 @@ public class BukkitCommandPlayer extends CommandPlayer {
         return player;
     }
 
+    public void sendMessage(String message) {
+        player.sendMessage(message);
+    }
 }

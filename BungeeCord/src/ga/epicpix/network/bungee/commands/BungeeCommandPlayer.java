@@ -18,4 +18,8 @@ public class BungeeCommandPlayer extends CommandPlayer {
     public ProxiedPlayer getPlayer() {
         return player;
     }
+
+    public void sendMessage(String message) {
+        player.sendMessage(message);
+    }
 }

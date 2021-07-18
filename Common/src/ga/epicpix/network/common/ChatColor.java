@@ -28,6 +28,7 @@ public class ChatColor {
                 .replace("/strikethrough/", COLOR_CHAR + "m")
                 .replace("/underline/", COLOR_CHAR + "n")
                 .replace("/italic/", COLOR_CHAR + "o")
+                .replace("/reset/", COLOR_CHAR + "r")
                 ;
     }
 

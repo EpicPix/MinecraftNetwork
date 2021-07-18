@@ -63,9 +63,11 @@ public class ServerInfo {
         return ServerType.getType(type);
     }
 
-    public void sendSignal(ServerSignal action) {
+    public boolean sendSignal(ServerSignal action) {
         if(verified) {
-            Mongo.getCollection("data", "servers").updateOne(new Document().append("id", id), new Document().append("$set", new Document().append("action", action.name())));
+            return Mongo.getCollection("data", "servers").updateOne(new Document().append("id", id), new Document().append("$set", new Document().append("action", action.name()))).getModifiedCount()!=0;
+        }else {
+            return false;
         }
     }
 

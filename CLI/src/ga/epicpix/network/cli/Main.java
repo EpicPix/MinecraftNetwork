@@ -2,7 +2,8 @@ package ga.epicpix.network.cli;
 
 import ga.epicpix.network.common.CommonUtils;
 import ga.epicpix.network.common.Mongo;
-import ga.epicpix.network.common.ServerInfo;
+import ga.epicpix.network.common.servers.ServerInfo;
+import ga.epicpix.network.common.servers.ServerSignal;
 import org.bson.Document;
 
 import java.io.IOException;
@@ -35,18 +36,28 @@ public class Main {
             }else if(cmdline.equals("help")) {
                 System.out.println("exit - Exits this manager");
                 System.out.println("help - Show help");
-                System.out.println("list servers - List servers");
-            }else if(cmdline.equals("list")) {
-                String option = getParam(cmd, 1);
-                if(option==null) {
-                    System.out.println("Usage: list <servers>");
-                }else if(option.equals("servers")) {
-                    ArrayList<Document> documents = CommonUtils.iteratorToList(Mongo.getCollection("data", "servers").find().iterator());
-                    ArrayList<ServerInfo> servers = CommonUtils.documentsToObjects(documents, ServerInfo.class);
-                    showServerListing(servers);
+                System.out.println("server <id> stop - Stop a server");
+                System.out.println("servers - List servers");
+            }else if(cmdline.equals("server")) {
+                if(getParam(cmd, 1) != null) {
+                    ServerInfo server = CommonUtils.getServerInfo(getParam(cmd, 1));
+                    if(server==null) {
+                        System.out.println("Unknown server! Use \"servers\" to list servers");
+                    }else {
+                        if(getParam(cmd, 2) != null && getParam(cmd, 2).equals("stop")) {
+                            server.sendSignal(ServerSignal.STOP);
+                            System.out.println("Signal sent");
+                        }else {
+                            System.out.println("Usage: server " + server.id + " <stop>");
+                        }
+                    }
                 }else {
-                    System.out.println("Usage: list <servers>");
+                    System.out.println("Wrong usage! Use \"help\" for help");
                 }
+            }else if(cmdline.equals("servers")) {
+                ArrayList<Document> documents = CommonUtils.iteratorToList(Mongo.getCollection("data", "servers").find().iterator());
+                ArrayList<ServerInfo> servers = CommonUtils.documentsToObjects(documents, ServerInfo.class);
+                showServerListing(servers);
             }else {
                 System.out.println("Unknown command. Type \"help\" for help");
             }

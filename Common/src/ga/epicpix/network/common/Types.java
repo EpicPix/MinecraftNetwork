@@ -1,5 +1,9 @@
 package ga.epicpix.network.common;
 
+import ga.epicpix.network.common.servers.ServerDetails;
+import ga.epicpix.network.common.servers.ServerInfo;
+import ga.epicpix.network.common.servers.ServerVersion;
+
 import java.util.HashMap;
 
 public class Types {

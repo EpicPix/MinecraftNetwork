@@ -1,4 +1,8 @@
-package ga.epicpix.network.common;
+package ga.epicpix.network.common.servers;
+
+import ga.epicpix.network.common.CommonUtils;
+import ga.epicpix.network.common.Mongo;
+import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,6 +61,12 @@ public class ServerInfo {
 
     public ServerType getType() {
         return ServerType.getType(type);
+    }
+
+    public void sendSignal(ServerSignal action) {
+        if(verified) {
+            Mongo.getCollection("data", "servers").updateOne(new Document().append("id", id), new Document().append("$set", new Document().append("action", action.name())));
+        }
     }
 
     public String toString() {

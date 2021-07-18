@@ -1,4 +1,4 @@
-package ga.epicpix.network.common;
+package ga.epicpix.network.common.servers;
 
 import java.util.*;
 

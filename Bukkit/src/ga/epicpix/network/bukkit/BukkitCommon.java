@@ -1,6 +1,9 @@
 package ga.epicpix.network.bukkit;
 
 import ga.epicpix.network.common.*;
+import ga.epicpix.network.common.servers.ServerDetails;
+import ga.epicpix.network.common.servers.ServerInfo;
+import ga.epicpix.network.common.servers.ServerVersion;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;

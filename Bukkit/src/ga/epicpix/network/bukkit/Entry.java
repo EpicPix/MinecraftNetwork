@@ -5,6 +5,7 @@ import com.mongodb.client.model.changestream.ChangeStreamDocument;
 import com.mongodb.client.model.changestream.OperationType;
 import ga.epicpix.network.bukkit.commands.TestCommand;
 import ga.epicpix.network.common.*;
+import ga.epicpix.network.common.servers.ServerInfo;
 import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -51,6 +52,24 @@ public class Entry extends JavaPlugin {
                             iteam.setSuffix((rank.suffix.length==0?"":ChatColor.convertColorText("/white/ ")) + CommonUtils.componentsToString(rank.suffix));
                         });
                     }
+                }
+            }
+        });
+
+        Mongo.registerWatcher(new MongoWatcher("data", "servers") {
+            public void run(ChangeStreamDocument<Document> handle) {
+                if(handle.getOperationType()!=OperationType.DELETE && handle.getOperationType()!=OperationType.DROP) {
+                    if(handle.getUpdateDescription()!=null) {
+                        if (handle.getUpdateDescription().getUpdatedFields().containsKey("action")) {
+                            Document fullDocument = Mongo.getCollection("data", "servers").find(handle.getDocumentKey()).first();
+                            ServerInfo serverInfo = CommonUtils.documentToObject(fullDocument, ServerInfo.class);
+                            if(serverInfo.id.equals(BukkitCommon.getServerId())) {
+                                System.out.println("Signal received to stop server.");
+                                Bukkit.shutdown();
+                            }
+                        }
+                    }
+
                 }
             }
         });

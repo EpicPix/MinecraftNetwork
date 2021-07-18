@@ -1,4 +1,6 @@
-package ga.epicpix.network.common;
+package ga.epicpix.network.common.servers;
+
+import ga.epicpix.network.common.CommonUtils;
 
 public class ServerDetails {
 

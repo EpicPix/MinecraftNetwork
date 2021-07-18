@@ -40,6 +40,7 @@ public class BukkitCommon {
         details.port = Bukkit.getPort();
         info.details = details;
         info.version = ServerVersion.getVersionByName((String) Reflection.callMethod(MinecraftServer.getClass(), "getVersion", MinecraftServer));
+        info.start = Entry.start;
         info.verified = false;
         return info;
     }

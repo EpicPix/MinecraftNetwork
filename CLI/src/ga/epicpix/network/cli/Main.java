@@ -74,7 +74,6 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
-        System.out.println("Network Manager CLI");
 
         Logger.getLogger("org.mongodb.driver").setLevel(Level.SEVERE);
         Logger.getLogger("org.bson").setLevel(Level.SEVERE);
@@ -87,6 +86,8 @@ public class Main {
                 super.print(ansi(s, true));
             }
         });
+
+        System.out.println("Network Manager CLI");
 
         System.out.println("Type \"help\" for help");
 
@@ -141,7 +142,28 @@ public class Main {
         }
     }
 
+    public static String convertTime(long timems) {
+        boolean neg = timems<0;
+        timems = Math.abs(timems);
+        long sec = (timems/1000)%60;
+        long min = (timems/60000)%60;
+        long hr = (timems/3600000)%24;
+        long d = timems/86400000;
+        if(d!=0) {
+            return (neg?"-":"") + d + "d " + hr + "h " + min + "m " + sec + "s";
+        }else if(hr!=0) {
+            return (neg?"-":"") + hr + "h " + min + "m " + sec + "s";
+        }else if(min!=0) {
+            return (neg?"-":"") + min + "m " + sec + "s";
+        }else {
+            return (neg?"-":"") + sec + "s";
+        }
+    }
+
     public static void showServerListing(ArrayList<ServerInfo> servers) {
+
+        final long time = System.currentTimeMillis();
+
         int id = 2;
         for(ServerInfo server : servers) if(id < server.id.length()) id = server.id.length();
 
@@ -157,19 +179,24 @@ public class Main {
         int ip = 2;
         for(ServerInfo server : servers) if(ip < (server.details.ip + ":" + server.details.port).length()) ip = (server.details.ip + ":" + server.details.port).length();
 
+        int uptime = 6;
+        for(ServerInfo server : servers) if(uptime < convertTime(time-server.start).length()) uptime = convertTime(time-server.start).length();
+
         id += 2;
         type += 2;
         players += 2;
         version += 2;
         ip += 2;
+        uptime += 2;
 
-        String rep = "║" + repeat(" ", id) + "|" + repeat(" ", type) + "|" + repeat(" ", players) + "|" + repeat(" ", version) + "|" + repeat(" ", ip) + "║";
+        String rep = "║" + repeat(" ", id) + "|" + repeat(" ", type) + "|" + repeat(" ", players) + "|" + repeat(" ", version) + "|" + repeat(" ", ip) + "|" + repeat(" ", uptime) + "║";
 
         if(servers.size()==0) {
-            System.out.println("/red/╔" + repeat("═", rep.length()-2) + "╗");
-            String x = "║" + repeat(" ", rep.length()-2) + "║";
-            System.out.println("/red/" + replaceAt(x, rep.length()/2-8, "No servers found."));
-            System.out.println("/red/╚" + repeat("═", rep.length()-2) + "╝");
+            int amt = "No servers found".length()+20;
+            System.out.println("/red/╔" + repeat("═", amt) + "╗");
+            String x = "║" + repeat(" ", amt) + "║";
+            System.out.println("/red/" + replaceAt(x, amt/2-8, "No servers found."));
+            System.out.println("/red/╚" + repeat("═", amt) + "╝");
             return;
         }
 
@@ -178,13 +205,14 @@ public class Main {
         rep = replaceAt(rep, 1+id+1+type+1+(players-1)/2-3, "PLAYERS");
         rep = replaceAt(rep, 1+id+1+type+1+players+1+(version-1)/2-3, "VERSION");
         rep = replaceAt(rep, 1+id+1+type+1+players+1+version+1+(ip-1)/2, "IP");
+        rep = replaceAt(rep, 1+id+1+type+1+players+1+version+1+ip+1+(uptime-1)/2-2, "UPTIME");
 
         System.out.println("/green/" + replaceCharactersSpecial("╔" + repeat("═", rep.length()-2) + "╗", rep, '|', '╤'));
         System.out.println("/green/" + rep.replace('|', '│'));
         System.out.println("/green/" + replaceCharactersSpecial("╟" + repeat("─", rep.length()-2) + "╢", rep, '|', '┼'));
 
         for(ServerInfo server : servers) {
-            String serverOut = ansi("/green/║" + repeat(" ", id+(ansi?AQUA.length()+GREEN.length():0)) + "│" + repeat(" ", type+(ansi?AQUA.length()+GREEN.length():0)) + "│" + repeat(" ", players+(ansi?AQUA.length()+GREEN.length():0)) + "│" + repeat(" ", version+(ansi?AQUA.length()+GREEN.length():0)) + "│" + repeat(" ", ip+(ansi?AQUA.length()+GREEN.length():0)) + "║", true);
+            String serverOut = ansi("/green/║" + repeat(" ", id+(ansi?AQUA.length()+GREEN.length():0)) + "│" + repeat(" ", type+(ansi?AQUA.length()+GREEN.length():0)) + "│" + repeat(" ", players+(ansi?AQUA.length()+GREEN.length():0)) + "│" + repeat(" ", version+(ansi?AQUA.length()+GREEN.length():0)) + "│" + repeat(" ", ip+(ansi?AQUA.length()+GREEN.length():0)) + "│" + repeat(" ", uptime+(ansi?AQUA.length()+GREEN.length():0)) + "║", true);
 
             int x = 2+(ansi?GREEN.length():0);
             serverOut = replaceAt(serverOut, x, ansi("/aqua/" + server.id + "/green/", false));
@@ -196,6 +224,8 @@ public class Main {
             serverOut = replaceAt(serverOut, x, ansi("/aqua/" + server.version.getName() + "/green/", false));
             x += 1+version+(ansi?AQUA.length()+GREEN.length():0);
             serverOut = replaceAt(serverOut, x, ansi("/aqua/" + server.details.ip + ":" + server.details.port + "/green/", false));
+            x += 1+ip+(ansi?AQUA.length()+GREEN.length():0);
+            serverOut = replaceAt(serverOut, x, ansi("/aqua/" + convertTime(time-server.start) + "/green/", false));
 
             System.out.println(serverOut);
         }

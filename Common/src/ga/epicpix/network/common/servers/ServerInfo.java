@@ -57,6 +57,7 @@ public class ServerInfo {
     public int maxPlayers;
     public ServerVersion version;
     public ServerDetails details;
+    public long start;
     public transient boolean verified = true;
 
     public ServerType getType() {
@@ -72,6 +73,6 @@ public class ServerInfo {
     }
 
     public String toString() {
-        return "ServerInfo{id=" + CommonUtils.toString(id) + ", type=" + type + ", onlinePlayers=" + onlinePlayers + ", maxPlayers=" + maxPlayers + ", version=" + version + ", details=" + details + ", verified=" + verified + "}";
+        return "ServerInfo{id=" + CommonUtils.toString(id) + ", type=" + type + ", onlinePlayers=" + onlinePlayers + ", maxPlayers=" + maxPlayers + ", version=" + version + ", details=" + details + ", start=" + start + ", verified=" + verified + "}";
     }
 }

@@ -16,6 +16,8 @@ public class Entry extends JavaPlugin {
 
     public static Entry PLUGIN;
 
+    public static final long start = System.currentTimeMillis();
+
     public void onLoad() {
         PLUGIN = this;
         Language.loadLanguages();

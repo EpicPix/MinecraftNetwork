@@ -19,8 +19,7 @@ public abstract class Command {
 
             public boolean execute(CommandSender sender, String usedCommandName, String[] args) {
                 PlayerInfo info = null;
-                if(sender instanceof Player) {
-                    Player player = (Player) sender;
+                if(sender instanceof Player player) {
                     info = PlayerInfo.getPlayerInfo(player.getUniqueId());
                     if(info==null) {
                         info = PlayerInfo.updatePlayerInfo(new PlayerInfo().populate(player.getUniqueId(), player.getName(), CommonUtils.getDefaultRank(), CommonUtils.getDefaultLanguage()));

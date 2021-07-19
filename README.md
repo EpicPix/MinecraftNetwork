@@ -6,7 +6,7 @@ A open source Minecraft Network built on Spigot and BungeeCord (Very beta)
 
 You will require
 
- - Java 8 JDK
+ - Java 16 JDK
  - An IDE to compile everything
  - A MongoDB host that supports Change Streams (MongoDB Atlas will work fine)
  - A server to host the server on (Local machine would work fine)

@@ -2,7 +2,7 @@ package ga.epicpix.network.common.servers;
 
 import java.util.*;
 
-public final class ServerVersion {
+public record ServerVersion(int protocol, String name) {
 
     public static final String TYPE = "SERVER_VERSION";
 
@@ -52,29 +52,13 @@ public final class ServerVersion {
         VERSIONS.add(new ServerVersion(755, "1.17"));
     }
 
-    private final int protocol;
-    private final String name;
-
-    public ServerVersion(int protocol, String name) {
-        this.protocol = protocol;
-        this.name = name;
-    }
-
-    public int getProtocol() {
-        return protocol;
-    }
-
-    public String getName() {
-        return name;
-    }
-
     public String toString() {
-        return getName();
+        return name();
     }
 
     public static ServerVersion getVersionByName(String name) {
-        for(ServerVersion version : VERSIONS) {
-            if (version.getName().equals(name)) {
+        for (ServerVersion version : VERSIONS) {
+            if (version.name().equals(name)) {
                 return version;
             }
         }
@@ -82,8 +66,8 @@ public final class ServerVersion {
     }
 
     public static ServerVersion getVersionByProtocol(int protocol) {
-        for(ServerVersion version : VERSIONS) {
-            if(version.getProtocol()==protocol) {
+        for (ServerVersion version : VERSIONS) {
+            if (version.protocol() == protocol) {
                 return version;
             }
         }

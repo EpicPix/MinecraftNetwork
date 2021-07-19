@@ -1,6 +1,5 @@
 package ga.epicpix.network.bukkit;
 
-import com.mongodb.client.MongoChangeStreamCursor;
 import com.mongodb.client.model.changestream.ChangeStreamDocument;
 import com.mongodb.client.model.changestream.OperationType;
 import ga.epicpix.network.bukkit.commands.TestCommand;
@@ -8,7 +7,6 @@ import ga.epicpix.network.common.*;
 import ga.epicpix.network.common.servers.ServerInfo;
 import org.bson.Document;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Team;
 

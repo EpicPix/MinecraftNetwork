@@ -32,13 +32,10 @@ public class BukkitCommon {
         ServerInfo info = new ServerInfo();
         info.id = getServerId();
         if(info.id==null) System.err.println("Server Id is not defined.");
-        info.type = ServerInfo.ServerType.UNKNOWN.getId();
+        info.type = ServerInfo.ServerType.UNKNOWN.id();
         info.onlinePlayers = Bukkit.getOnlinePlayers().size();
         info.maxPlayers = Bukkit.getMaxPlayers();
-        ServerDetails details = new ServerDetails();
-        details.ip = Bukkit.getIp().isEmpty()?CommonUtils.possibleAddress().getHostAddress():Bukkit.getIp();
-        details.port = Bukkit.getPort();
-        info.details = details;
+        info.details = new ServerDetails(Bukkit.getIp().isEmpty()?CommonUtils.possibleAddress().getHostAddress():Bukkit.getIp(), Bukkit.getPort());
         info.version = ServerVersion.getVersionByName((String) Reflection.callMethod(MinecraftServer.getClass(), "getVersion", MinecraftServer));
         info.start = Entry.start;
         info.verified = false;

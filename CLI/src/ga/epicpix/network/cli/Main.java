@@ -7,7 +7,6 @@ import ga.epicpix.network.common.servers.ServerInfo;
 import ga.epicpix.network.common.servers.ServerSignal;
 import org.bson.Document;
 
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -73,7 +72,7 @@ public class Main {
         return rebuilt.toString();
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
         Logger.getLogger("org.mongodb.driver").setLevel(Level.SEVERE);
         Logger.getLogger("org.bson").setLevel(Level.SEVERE);
@@ -174,10 +173,10 @@ public class Main {
         for(ServerInfo server : servers) if(players < (server.onlinePlayers + "/" + server.maxPlayers).length()) players = (server.onlinePlayers + "/" + server.maxPlayers).length();
 
         int version = 7;
-        for(ServerInfo server : servers) if(version < server.version.getName().length()) version = server.version.getName().length();
+        for(ServerInfo server : servers) if(version < server.version.name().length()) version = server.version.name().length();
 
         int ip = 2;
-        for(ServerInfo server : servers) if(ip < (server.details.ip + ":" + server.details.port).length()) ip = (server.details.ip + ":" + server.details.port).length();
+        for(ServerInfo server : servers) if(ip < (server.details.ip() + ":" + server.details.port()).length()) ip = (server.details.ip() + ":" + server.details.port()).length();
 
         int uptime = 6;
         for(ServerInfo server : servers) if(uptime < convertTime(time-server.start).length()) uptime = convertTime(time-server.start).length();
@@ -189,14 +188,14 @@ public class Main {
         ip += 2;
         uptime += 2;
 
-        String rep = "║" + repeat(" ", id) + "|" + repeat(" ", type) + "|" + repeat(" ", players) + "|" + repeat(" ", version) + "|" + repeat(" ", ip) + "|" + repeat(" ", uptime) + "║";
+        String rep = "║" + " ".repeat(id) + "|" + " ".repeat(type) + "|" + " ".repeat(players) + "|" + " ".repeat(version) + "|" + " ".repeat(ip) + "|" + " ".repeat(uptime) + "║";
 
         if(servers.size()==0) {
             int amt = "No servers found".length()+20;
-            System.out.println("/red/╔" + repeat("═", amt) + "╗");
-            String x = "║" + repeat(" ", amt) + "║";
+            System.out.println("/red/╔" + "═".repeat(amt) + "╗");
+            String x = "║" + " ".repeat(amt) + "║";
             System.out.println("/red/" + replaceAt(x, amt/2-8, "No servers found."));
-            System.out.println("/red/╚" + repeat("═", amt) + "╝");
+            System.out.println("/red/╚" + "═".repeat(amt) + "╝");
             return;
         }
 
@@ -207,12 +206,17 @@ public class Main {
         rep = replaceAt(rep, 1+id+1+type+1+players+1+version+1+(ip-1)/2, "IP");
         rep = replaceAt(rep, 1+id+1+type+1+players+1+version+1+ip+1+(uptime-1)/2-2, "UPTIME");
 
-        System.out.println("/green/" + replaceCharactersSpecial("╔" + repeat("═", rep.length()-2) + "╗", rep, '|', '╤'));
+        System.out.println("/green/" + replaceCharactersSpecial("╔" + "═".repeat(rep.length()-2) + "╗", rep, '|', '╤'));
         System.out.println("/green/" + rep.replace('|', '│'));
-        System.out.println("/green/" + replaceCharactersSpecial("╟" + repeat("─", rep.length()-2) + "╢", rep, '|', '┼'));
+        System.out.println("/green/" + replaceCharactersSpecial("╟" + "─".repeat(rep.length()-2) + "╢", rep, '|', '┼'));
 
         for(ServerInfo server : servers) {
-            String serverOut = ansi("/green/║" + repeat(" ", id+(ansi?AQUA.length()+GREEN.length():0)) + "│" + repeat(" ", type+(ansi?AQUA.length()+GREEN.length():0)) + "│" + repeat(" ", players+(ansi?AQUA.length()+GREEN.length():0)) + "│" + repeat(" ", version+(ansi?AQUA.length()+GREEN.length():0)) + "│" + repeat(" ", ip+(ansi?AQUA.length()+GREEN.length():0)) + "│" + repeat(" ", uptime+(ansi?AQUA.length()+GREEN.length():0)) + "║", true);
+            String serverOut = ansi("/green/║" + " ".repeat(id+(ansi?AQUA.length()+GREEN.length():0))
+                    + "│" + " ".repeat( type+(ansi?AQUA.length()+GREEN.length():0))
+                    + "│" + " ".repeat( players+(ansi?AQUA.length()+GREEN.length():0))
+                    + "│" + " ".repeat( version+(ansi?AQUA.length()+GREEN.length():0))
+                    + "│" + " ".repeat( ip+(ansi?AQUA.length()+GREEN.length():0))
+                    + "│" + " ".repeat( uptime+(ansi?AQUA.length()+GREEN.length():0)) + "║", true);
 
             int x = 2+(ansi?GREEN.length():0);
             serverOut = replaceAt(serverOut, x, ansi("/aqua/" + server.id + "/green/", false));
@@ -221,16 +225,16 @@ public class Main {
             x += 1+type+(ansi?AQUA.length()+GREEN.length():0);
             serverOut = replaceAt(serverOut, x, ansi("/aqua/" + server.onlinePlayers + "/" + server.maxPlayers + "/green/", false));
             x += 1+players+(ansi?AQUA.length()+GREEN.length():0);
-            serverOut = replaceAt(serverOut, x, ansi("/aqua/" + server.version.getName() + "/green/", false));
+            serverOut = replaceAt(serverOut, x, ansi("/aqua/" + server.version.name() + "/green/", false));
             x += 1+version+(ansi?AQUA.length()+GREEN.length():0);
-            serverOut = replaceAt(serverOut, x, ansi("/aqua/" + server.details.ip + ":" + server.details.port + "/green/", false));
+            serverOut = replaceAt(serverOut, x, ansi("/aqua/" + server.details.ip() + ":" + server.details.port() + "/green/", false));
             x += 1+ip+(ansi?AQUA.length()+GREEN.length():0);
             serverOut = replaceAt(serverOut, x, ansi("/aqua/" + convertTime(time-server.start) + "/green/", false));
 
             System.out.println(serverOut);
         }
 
-        System.out.println("/green/" + replaceCharactersSpecial("╚" + repeat("═", rep.length()-2) + "╝", rep, '|', '╧'));
+        System.out.println("/green/" + replaceCharactersSpecial("╚" + "═".repeat( rep.length()-2) + "╝", rep, '|', '╧'));
 
     }
 

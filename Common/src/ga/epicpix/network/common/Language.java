@@ -1,6 +1,5 @@
 package ga.epicpix.network.common;
 
-import com.mongodb.client.MongoChangeStreamCursor;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.changestream.ChangeStreamDocument;
 import org.bson.Document;
@@ -29,17 +28,7 @@ public class Language {
         });
     }
 
-    public static class LanguageEntry {
-        public String key;
-        public String value;
-
-        public LanguageEntry() {}
-
-        public LanguageEntry(String k, String v) {
-            key = k;
-            value = v;
-        }
-    }
+    public static record LanguageEntry(String key, String value) {}
 
     public String id;
     public ArrayList<LanguageEntry> entries = new ArrayList<>();

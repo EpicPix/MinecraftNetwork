@@ -8,6 +8,7 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -17,11 +18,10 @@ import static java.util.Map.Entry;
 public class CommonUtils {
 
     public static String urlEncode(String str) {
-        if(Reflection.getMethod(URLEncoder.class, "encode", true, String.class, String.class) != null) {
-            return (String) Reflection.callMethod(URLEncoder.class, "encode", false, str, StandardCharsets.UTF_8.toString());
-        }else {
-            return (String) Reflection.callMethod(URLEncoder.class, "encode", false, str, StandardCharsets.UTF_8);
-        }
+        try {
+            return URLEncoder.encode(str, StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException e) {}
+        return str;
     }
 
     public static String toString(String string) {
@@ -64,7 +64,7 @@ public class CommonUtils {
     }
 
     public static <T> ArrayList<T> iteratorToList(Iterator<T> iterator) {
-        ArrayList<T> list = new ArrayList<>();
+        var list = new ArrayList<T>();
         while(iterator.hasNext()) {
             list.add(iterator.next());
         }
@@ -73,7 +73,7 @@ public class CommonUtils {
 
     public static Document toDocument(Object obj) {
         if(obj==null) return null;
-        Document out = Document.parse(new Gson().toJson(obj));
+        var out = Document.parse(new Gson().toJson(obj));
         if(Types.getType(obj.getClass())!=null) {
             out.append("TYPE", Types.getType(obj.getClass()));
         }
@@ -90,8 +90,8 @@ public class CommonUtils {
     }
 
     public static <T> ArrayList<T> documentsToObjects(ArrayList<Document> documents, Class<T> clazz) {
-        ArrayList<T> converted = new ArrayList<>();
-        for(Document doc : documents) converted.add(documentToObject(doc, clazz));
+        var converted = new ArrayList<T>();
+        for(var doc : documents) converted.add(documentToObject(doc, clazz));
         return converted;
     }
 
@@ -101,8 +101,8 @@ public class CommonUtils {
     }
 
     public static void updateServerInfo(ServerInfo info) {
-        MongoCollection<Document> servers = Mongo.getCollection("data", "servers");
-        Bson filter = Filters.eq("id", info.id);
+        var servers = Mongo.getCollection("data", "servers");
+        var filter = Filters.eq("id", info.id);
         long amt = servers.countDocuments(filter);
         if(amt==0) {
             servers.insertOne(toDocument(info));
@@ -117,23 +117,20 @@ public class CommonUtils {
     }
 
     public static void removeServerInfo(String server) {
-        MongoCollection<Document> servers = Mongo.getCollection("data", "servers");
-        servers.deleteMany(Filters.eq("id", server));
+        Mongo.getCollection("data", "servers").deleteMany(Filters.eq("id", server));
     }
 
     public static boolean isPrimitive(Object obj) {
-        Class<?> clazz = obj.getClass();
-        if(clazz.isPrimitive()) {
-            return true;
-        }
+        var clazz = obj.getClass();
+        if(clazz.isPrimitive()) return true;
         return clazz==Boolean.class || clazz==Byte.class || clazz==Short.class || clazz==Integer.class || clazz==Long.class || clazz==Character.class || clazz==Float.class || clazz==Double.class;
     }
 
     public static Object convertDocument(Document document) {
-        Object type = document.get("TYPE");
+        var type = document.get("TYPE");
         if(type==null || type.getClass()!=String.class) return document;
 
-        Class<?> clazz = Types.getType((String) type);
+        var clazz = Types.getType((String) type);
         if(clazz!=null) {
             return documentToObject(document, clazz);
         }else {
@@ -142,7 +139,7 @@ public class CommonUtils {
     }
 
     public static <K, V> K getValueByKey(V value, Map<K, V> map) {
-        for(Entry<K, V> entry : map.entrySet()) {
+        for(var entry : map.entrySet()) {
             if(entry.getValue().equals(value)) {
                 return entry.getKey();
             }
@@ -167,18 +164,19 @@ public class CommonUtils {
         return new Document().append("$set", doc);
     }
 
-    public static String makeStringLength(String string, int length, String c) {
-        while(string.length() <= length) {
-            string = c + string;
+    public static String makeStringLengthPrepend(String string, int length, String c) {
+        StringBuilder builder = new StringBuilder(string);
+        while(builder.length() <= length) {
+            builder.insert(0, c);
         }
-        return string;
+        return builder.toString();
     }
 
     public static String componentsToString(ChatComponent[] components) {
         Boolean bold = null, strikethrough = null, italic = null, obfuscated = null, underlined = null;
         String color = "white";
 
-        String generated = "";
+        StringBuilder generated = new StringBuilder();
         for(ChatComponent component : components) {
             boolean reupdate = false;
             if(component.bold!=null && component.bold!=bold) {
@@ -207,29 +205,17 @@ public class CommonUtils {
             }
 
             if(reupdate) {
-                generated += ChatColor.convertColorText("/" + color + "/");
-                if(bold) generated += ChatColor.convertColorText("/bold/");
-                if(strikethrough) generated += ChatColor.convertColorText("/strikethrough/");
-                if(italic) generated += ChatColor.convertColorText("/italic/");
-                if(obfuscated) generated += ChatColor.convertColorText("/obfuscated/");
-                if(underlined) generated += ChatColor.convertColorText("/underlined/");
+                generated.append(ChatColor.convertColorText("/" + color + "/"));
+                if(bold) generated.append(ChatColor.convertColorText("/bold/"));
+                if(strikethrough) generated.append(ChatColor.convertColorText("/strikethrough/"));
+                if(italic) generated.append(ChatColor.convertColorText("/italic/"));
+                if(obfuscated) generated.append(ChatColor.convertColorText("/obfuscated/"));
+                if(underlined) generated.append(ChatColor.convertColorText("/underlined/"));
             }
-            generated += component.text;
+            generated.append(component.text);
         }
 
-        return generated;
-    }
-
-    public static boolean hasInternetAccess() {
-        try {
-            Socket socket = new Socket();
-            socket.setSoTimeout(2000);
-            socket.connect(new InetSocketAddress("google.com", 443));
-            socket.close();
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
+        return generated.toString();
     }
 
     public static final int ENC_SIZE = 32;
@@ -278,14 +264,6 @@ public class CommonUtils {
             }
         }
         return generated.toString();
-    }
-
-    public static String repeat(String x, int amount) {
-        StringBuilder builder = new StringBuilder();
-        for(int i = 0; i<amount; i++) {
-            builder.append(x);
-        }
-        return builder.toString();
     }
 
     public static String replaceAt(String str, int at, String to) {

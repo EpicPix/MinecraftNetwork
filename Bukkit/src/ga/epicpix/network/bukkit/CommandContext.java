@@ -3,7 +3,6 @@ package ga.epicpix.network.bukkit;
 import ga.epicpix.network.bukkit.commands.BukkitCommandConsole;
 import ga.epicpix.network.bukkit.commands.BukkitCommandPlayer;
 import ga.epicpix.network.common.commands.CommonCommandContext;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 public abstract class CommandContext extends CommonCommandContext {

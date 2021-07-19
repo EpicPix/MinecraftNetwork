@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 public class Secrets {
 
@@ -23,7 +24,7 @@ public class Secrets {
             for (int length; (length = in.read(buffer)) != -1; ) {
                 result.write(buffer, 0, length);
             }
-            secrets = new Gson().fromJson(result.toString("UTF-8"), JsonObject.class);
+            secrets = new Gson().fromJson(result.toString(StandardCharsets.UTF_8), JsonObject.class);
         }catch(Exception e) {
             System.err.println("Failed to load the secrets!");
         }

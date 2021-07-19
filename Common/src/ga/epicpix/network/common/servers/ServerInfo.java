@@ -12,24 +12,17 @@ public class ServerInfo {
 
     public static final String TYPE = "SERVER_INFO";
 
-    public static final class ServerType {
+    public record ServerType(String id) {
         private static final ArrayList<ServerType> types = new ArrayList<>();
 
         public static final ServerType UNKNOWN = new ServerType("UNKNOWN");
 
-        private final String id;
-
-        public ServerType(String id) {
-            this.id = id;
+        public ServerType {
             types.add(this);
         }
 
-        public String getId() {
-            return id;
-        }
-
         public String toString() {
-            return getId();
+            return id();
         }
 
         public static List<ServerType> getTypes() {
@@ -41,8 +34,8 @@ public class ServerInfo {
         }
 
         public static ServerType getType(String id, boolean ignoreCase) {
-            for(ServerType type : types) {
-                if((ignoreCase && type.getId().equalsIgnoreCase(id)) || (!ignoreCase && type.getId().equals(id))) {
+            for (ServerType type : types) {
+                if ((ignoreCase && type.id().equalsIgnoreCase(id)) || (!ignoreCase && type.id().equals(id))) {
                     return type;
                 }
             }
@@ -52,7 +45,7 @@ public class ServerInfo {
     }
 
     public String id;
-    public String type = ServerType.UNKNOWN.getId();
+    public String type = ServerType.UNKNOWN.id();
     public int onlinePlayers;
     public int maxPlayers;
     public ServerVersion version;

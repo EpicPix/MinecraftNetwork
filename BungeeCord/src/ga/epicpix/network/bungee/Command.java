@@ -10,8 +10,6 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.command.ConsoleCommandSender;
 
-import java.util.Map;
-
 public abstract class Command {
 
     public static void registerCommand(Command cmd) {
@@ -19,8 +17,7 @@ public abstract class Command {
 
             public void execute(CommandSender sender, String[] args) {
                 PlayerInfo info = null;
-                if(sender instanceof ProxiedPlayer) {
-                    ProxiedPlayer player = (ProxiedPlayer) sender;
+                if(sender instanceof ProxiedPlayer player) {
                     info = PlayerInfo.getPlayerInfo(player.getUniqueId());
                     if(info==null) {
                         info = PlayerInfo.updatePlayerInfo(new PlayerInfo().populate(player.getUniqueId(), player.getName(), CommonUtils.getDefaultRank(), CommonUtils.getDefaultLanguage()));

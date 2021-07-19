@@ -80,6 +80,22 @@ public class Reflection {
             method.setAccessible(access);
             return obj;
         } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static Object callMethodByClasses(Class<?> clazz, String methodName, Object ofObj, Class<?>[] classes, Object... objs) {
+        try {
+            Method method = getMethod(clazz, methodName, true, (Object[]) classes);
+            if(method==null) throw new NoSuchMethodException("Method not found " + clazz.getName() + "." + methodName);
+            boolean access = method.isAccessible();
+            method.setAccessible(true);
+            Object obj = method.invoke(ofObj, objs);
+            method.setAccessible(access);
+            return obj;
+        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
             return null;
         }
     }

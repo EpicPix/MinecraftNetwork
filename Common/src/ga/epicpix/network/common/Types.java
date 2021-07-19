@@ -1,8 +1,6 @@
 package ga.epicpix.network.common;
 
-import ga.epicpix.network.common.servers.ServerDetails;
-import ga.epicpix.network.common.servers.ServerInfo;
-import ga.epicpix.network.common.servers.ServerVersion;
+import ga.epicpix.network.common.servers.*;
 
 import java.util.HashMap;
 
@@ -11,20 +9,21 @@ public class Types {
     private static final HashMap<String, Class<?>> types = new HashMap<>();
 
     static {
-        register(ChatComponent.class);
-        register(Language.class);
-        register(PlayerInfo.class);
-        register(Rank.class);
-        register(ServerDetails.class);
-        register(ServerInfo.class);
-        register(ServerVersion.class);
+        register(Language.class, PlayerInfo.class, Rank.class);
+        register(ServerDetails.class, ServerInfo.class, ServerVersion.class);
+    }
+
+    public static void register(Class<?>... clazz) {
+        for(Class<?> c : clazz) {
+            register(c);
+        }
     }
 
     public static void register(Class<?> clazz) {
-        if(Reflection.getField(clazz, "TYPE")!=null) {
-            registerType((String) Reflection.getValueOfField(clazz, "TYPE", null), clazz);
+        if(clazz.getAnnotation(TypeClass.class)!=null) {
+            registerType(clazz.getAnnotation(TypeClass.class).value(), clazz);
         }else {
-            System.err.println("Tried to register a type with no TYPE field: " + clazz.getName());
+            System.err.println("Tried to register a type with no @TypeClass annotation: " + clazz.getName());
         }
     }
 

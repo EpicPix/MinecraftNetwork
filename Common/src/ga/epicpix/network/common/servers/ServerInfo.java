@@ -2,15 +2,15 @@ package ga.epicpix.network.common.servers;
 
 import ga.epicpix.network.common.CommonUtils;
 import ga.epicpix.network.common.Mongo;
+import ga.epicpix.network.common.TypeClass;
 import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@TypeClass("SERVER_INFO")
 public class ServerInfo {
-
-    public static final String TYPE = "SERVER_INFO";
 
     public record ServerType(String id) {
         private static final ArrayList<ServerType> types = new ArrayList<>();

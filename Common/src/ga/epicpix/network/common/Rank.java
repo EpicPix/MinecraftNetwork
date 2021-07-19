@@ -10,9 +10,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
+@TypeClass("RANK")
 public class Rank {
-
-    public static final String TYPE = "RANK";
 
     @SerializedName("default")
     public boolean def;

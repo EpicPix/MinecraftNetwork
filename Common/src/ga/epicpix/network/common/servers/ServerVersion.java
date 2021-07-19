@@ -1,10 +1,11 @@
 package ga.epicpix.network.common.servers;
 
+import ga.epicpix.network.common.TypeClass;
+
 import java.util.*;
 
+@TypeClass("SERVER_VERSION")
 public record ServerVersion(int protocol, String name) {
-
-    public static final String TYPE = "SERVER_VERSION";
 
     public static final ArrayList<ServerVersion> VERSIONS = new ArrayList<>();
 

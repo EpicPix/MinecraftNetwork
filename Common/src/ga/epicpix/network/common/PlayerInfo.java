@@ -8,9 +8,8 @@ import org.bson.Document;
 
 import java.util.UUID;
 
+@TypeClass("PLAYER_INFO")
 public class PlayerInfo {
-
-    public static final String TYPE = "PLAYER_INFO";
 
     public String uuid;
     public String username;

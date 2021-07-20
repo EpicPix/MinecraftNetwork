@@ -5,6 +5,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
@@ -16,8 +18,7 @@ public class Secrets {
         try {
             InputStream in = Secrets.class.getResourceAsStream("/secrets.json");
             if(in==null) {
-                System.err.println("Failed to get secrets.json");
-                return;
+                throw new FileNotFoundException("Secrets file not found! (secrsts.json)");
             }
             ByteArrayOutputStream result = new ByteArrayOutputStream();
             byte[] buffer = new byte[1024];
@@ -25,13 +26,16 @@ public class Secrets {
                 result.write(buffer, 0, length);
             }
             secrets = new Gson().fromJson(result.toString(StandardCharsets.UTF_8), JsonObject.class);
-        }catch(Exception e) {
-            System.err.println("Failed to load the secrets!");
+        }catch(IOException e) {
+            e.printStackTrace();
         }
     }
 
     public static JsonElement getSecret(String secret) {
         if(secrets==null) loadSecrets();
+        if(secret.equalsIgnoreCase("serverController") && !Reflection.getCaller().equals("ga.epicpix.network.common.websocket.WebSocketCredentials")) {
+            throw new IllegalCallerException("Tried to access Server Controller Login Credentials secrets!");
+        }
         return secrets.get(secret);
     }
 

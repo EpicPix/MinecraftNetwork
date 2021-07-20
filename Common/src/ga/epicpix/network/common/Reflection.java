@@ -112,4 +112,8 @@ public class Reflection {
             e.printStackTrace();
         }
     }
+
+    public static String getCaller() {
+        return new Exception().getStackTrace()[2].getClassName();
+    }
 }

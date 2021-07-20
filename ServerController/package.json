@@ -1,0 +1,20 @@
+{
+  "name": "servercontroller",
+  "version": "1.0.0",
+  "description": "Server Controller responsible for ranks, players, servers and more",
+  "main": "src/index.js",
+  "keywords": [],
+  "author": "EpicPix",
+  "dependencies": {
+    "@types/node": "^16.3.3",
+    "@types/ws": "^7.4.6",
+    "mongodb": "^4.0.0",
+    "ws": "^7.5.3"
+  },
+  "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/EpicPix/MinecraftNetwork.git"
+  }
+}

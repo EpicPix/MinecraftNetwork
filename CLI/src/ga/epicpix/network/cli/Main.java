@@ -5,6 +5,8 @@ import ga.epicpix.network.common.CommonUtils;
 import ga.epicpix.network.common.Mongo;
 import ga.epicpix.network.common.servers.ServerInfo;
 import ga.epicpix.network.common.servers.ServerSignal;
+import ga.epicpix.network.common.websocket.ClientType;
+import ga.epicpix.network.common.websocket.WebSocketConnection;
 import org.bson.Document;
 
 import java.io.PrintStream;
@@ -73,6 +75,9 @@ public class Main {
     }
 
     public static void main(String[] args) {
+
+        WebSocketConnection.setClientType(ClientType.CLI);
+        WebSocketConnection.connect();
 
         Logger.getLogger("org.mongodb.driver").setLevel(Level.SEVERE);
         Logger.getLogger("org.bson").setLevel(Level.SEVERE);

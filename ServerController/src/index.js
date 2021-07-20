@@ -21,17 +21,31 @@ function getSecrets() {
     return new Secrets(secretsjson.mongodb);
 }
 
+var logins = [];
+
+module.exports = { logins };
+
+const port = 8080;
+
 async function main() {
 
-    //const Mongo = new MongoClient(getSecrets().getConnectionString());
-    //await Mongo.connect();
+    const Mongo = new MongoClient(getSecrets().getConnectionString());
+    await Mongo.connect();
 
-    console.log('Connected?')
+    console.log('Connected to MongoDB')
 
-    const wss = new Server({ port: 8080 });
+    logins.push(...await Mongo.db('data').collection('auth').find().toArray());
+
+    if(logins.length === 0) {
+        console.log('No accounts are created, login using admin account');
+        console.log("Password and Username is set to 'admin'")
+        logins.push({username: 'admin', password: 'admin'})
+    }
+
+    const wss = new Server({ port });
 
     wss.on('connection', function (ws) {
-        ws.userData = {authenticated: false};
+        ws.userData = { authenticated: false };
         ws.respond = function(message, data) {
             data.rid = message.rid;
             ws.send(JSON.stringify(data));
@@ -46,7 +60,12 @@ async function main() {
             
             var operationCode = json['opcode'];
 
-            if(!(Number.isInteger(operationCode))) {
+            if(typeof operationCode === 'undefined' || operationCode === null) {
+                ws.close(4002, 'Opcode not provided');
+                return;
+            }
+
+            if(!Number.isInteger(operationCode)) {
                 ws.close(4001, "Unknown opcode.");
                 return;
             }
@@ -60,6 +79,8 @@ async function main() {
             }
         });
     });
+
+    console.log(`WebSocket Server listening at port ${port}`)
 
     /*
 

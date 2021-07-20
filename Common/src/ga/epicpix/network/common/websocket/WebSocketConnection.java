@@ -2,7 +2,6 @@ package ga.epicpix.network.common.websocket;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import ga.epicpix.network.common.MongoCredentials;
 
 import java.net.http.HttpClient;
 import java.net.http.WebSocket;
@@ -12,6 +11,8 @@ import java.util.concurrent.CompletionStage;
 
 public final class WebSocketConnection implements WebSocket.Listener {
 
+    private static ClientType clientType = ClientType.OTHER;
+
     private static WebSocket webSocket;
     private static WebSocketConnection connection;
     private static boolean connected = false;
@@ -20,22 +21,35 @@ public final class WebSocketConnection implements WebSocket.Listener {
 
     private static final ArrayList<RequestFuture> futures = new ArrayList<>();
 
+    public static void setClientType(ClientType clientType) {
+        if(clientType==null) {
+            throw new NullPointerException("ClientType is null!");
+        }
+        if(WebSocketConnection.clientType!=ClientType.OTHER) {
+            WebSocketConnection.clientType = clientType;
+        }
+    }
+
+    public static ClientType getClientType() {
+        return clientType;
+    }
+
     public static void connect() {
         if(!connected) {
             connection = new WebSocketConnection();
             WebSocketCredentials creds = WebSocketCredentials.get();
             webSocket = HttpClient.newBuilder().build().newWebSocketBuilder().buildAsync(creds.toURI(), connection).join();
             connected = true;
-            if(!connection.sendAuthenticateRequest(creds)) {
-                System.err.println("Could not authenticate!");
-            }
+            connection.sendAuthenticateRequest(creds);
         }
     }
 
     private boolean sendAuthenticateRequest(WebSocketCredentials credentials) {
         JsonObject req = new JsonObject();
-//        System.out.println(sendRequest(req, Opcodes.AUTHENTICATE));
-        return true;
+        req.addProperty("username", credentials.username());
+        req.addProperty("password", credentials.password());
+        req.addProperty("clientType", clientType.name());
+        return sendRequest(req, Opcodes.AUTHENTICATE).get("success").getAsBoolean();
     }
 
     private JsonObject sendRequest(JsonObject request, int opcode) {
@@ -96,6 +110,12 @@ public final class WebSocketConnection implements WebSocket.Listener {
         nextRequestId = 0;
         connection = null;
         ws = null;
+
+        if(statusCode==4005) {
+            System.err.println("Failed to authenticate! Make sure you have provided the correct authentication credentials");
+        }else {
+            System.out.println("WebSocket closed: " + statusCode + " for the reason" + reason);
+        }
         return null;
     }
 

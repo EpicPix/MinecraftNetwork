@@ -2,7 +2,10 @@ package ga.epicpix.network.common.websocket;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import ga.epicpix.network.common.Reflection;
 import ga.epicpix.network.common.ReturnableRunnable;
+import ga.epicpix.network.common.websocket.requests.Request;
+import ga.epicpix.network.common.websocket.requests.data.AuthenticateRequestData;
 
 import java.net.http.HttpClient;
 import java.net.http.WebSocket;
@@ -74,12 +77,15 @@ public final class WebSocketConnection implements WebSocket.Listener {
         }
     }
 
+    public static JsonObject sendRequest(Request req) {
+        if(!Reflection.getCaller().equals(Request.class.getName())) {
+            throw new SecurityException("Use the Request class to call sendRequest");
+        }
+        return connection.sendRequest(req.getData().toJson(), req.getOpcode());
+    }
+
     private boolean sendAuthenticateRequest(WebSocketCredentials credentials) {
-        JsonObject req = new JsonObject();
-        req.addProperty("username", credentials.username());
-        req.addProperty("password", credentials.password());
-        req.addProperty("clientType", clientType.name());
-        return sendRequest(req, Opcodes.AUTHENTICATE).get("success").getAsBoolean();
+        return Request.sendRequest(Request.createRequest(Opcodes.AUTHENTICATE, AuthenticateRequestData.build(credentials.username(), credentials.password(), clientType))).get("success").getAsBoolean();
     }
 
     private JsonObject sendRequest(JsonObject request, int opcode) {

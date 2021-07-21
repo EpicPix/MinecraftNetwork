@@ -38,7 +38,7 @@ async function main() {
 
     if(logins.length === 0) {
         console.log('No accounts are created, login using admin account');
-        console.log("Password and Username is set to 'admin'")
+        console.log("Username and Password are 'admin'")
         logins.push({username: 'admin', password: 'admin'})
     }
 

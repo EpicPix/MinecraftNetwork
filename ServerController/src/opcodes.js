@@ -6,10 +6,12 @@
 const StringOpcodes = {
     AUTHENTICATE: 0x00,
 
-    //REGISTER_SERVER: 0x10,
-    //UNREGISTER_SERVER: 0x11,
-    //SEND_SIGNAL: 0x12,
-    //LIST_SERVERS: 0x13
+    //REGISTER_SERVER: 0x01,
+    //UNREGISTER_SERVER: 0x02,
+    //SEND_SIGNAL: 0x03,
+    //LIST_SERVERS: 0x04
+
+    //SERVER_SIGNAL: 0x8000
 }
 
 
@@ -36,7 +38,7 @@ const OpcodeHandler = {
             }
             websocket.userData.authenticated = success;
             websocket.userData.clientType = json['clientType'];
-            websocket.respond(json, {opcode: StringOpcodes.AUTHENTICATION_RESPONSE, success});
+            websocket.respond(json, {success});
             if(!success) websocket.close(4005, 'Authentication failed');
         }
     }

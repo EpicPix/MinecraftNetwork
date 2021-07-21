@@ -9,6 +9,7 @@ import ga.epicpix.network.common.websocket.ClientType;
 import ga.epicpix.network.common.websocket.WebSocketConnection;
 import org.bson.Document;
 
+import java.io.Console;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -23,6 +24,7 @@ public class Main {
     public static final String AQUA = "\u001b[36;1m";
     public static final String GREEN = "\u001b[32;1m";
     public static final String RED = "\u001b[31;1m";
+    public static final String YELLOW = "\u001b[33m";
     public static final String WHITE = "\u001b[37;1m";
     public static final String GRAY = "\u001b[30;1m";
     public static final String LIGHT_GRAY = "\u001b[37m";
@@ -50,6 +52,8 @@ public class Main {
                         rebuilt.append(AQUA);
                     }else if(c=='c') {
                         rebuilt.append(RED);
+                    }else if(c=='e') {
+                        rebuilt.append(YELLOW);
                     }else if(c=='f') {
                         rebuilt.append(WHITE);
                     }else if(c=='r') {
@@ -74,14 +78,9 @@ public class Main {
         return rebuilt.toString();
     }
 
+    private static boolean warningShown = false;
+
     public static void main(String[] args) {
-
-        WebSocketConnection.setClientType(ClientType.CLI);
-        WebSocketConnection.connect();
-
-        Logger.getLogger("org.mongodb.driver").setLevel(Level.SEVERE);
-        Logger.getLogger("org.bson").setLevel(Level.SEVERE);
-
         System.setOut(new PrintStream(System.out) {
             public void println(String s) {
                 super.println(ansi(s, true));
@@ -90,9 +89,61 @@ public class Main {
                 super.print(ansi(s, true));
             }
         });
+        System.setErr(new PrintStream(System.err) {
+            public void println(String s) {
+                if(ansi) {
+                    System.out.println("/red/" + s);
+                }else {
+                    super.println(ansi(s, false));
+                }
+            }
+            public void print(String s) {
+                if(ansi) {
+                    System.out.print("/red/" + s);
+                }else {
+                    super.print(ansi(s, false));
+                }
+            }
+        });
+
+        System.out.println("Logging in...");
+
+        WebSocketConnection.setClientType(ClientType.CLI);
+        WebSocketConnection.addHook("type_auth", () -> {
+            System.out.println("/red/Could not authenticate, type the credentials");
+
+            Console console = System.console();
+            // console will be probably null if it's run inside a IDE
+            String username = "";
+            String password = "";
+            if(console==null) {
+                if(!warningShown) {
+                    System.out.println("/yellow/Warning! /red/The password will be visible");
+                    warningShown = true;
+                }
+                Scanner sc = new Scanner(System.in);
+                System.out.print("/green/Username: ");
+                username = sc.nextLine();
+                System.out.print("/yellow/Password: ");
+                password = sc.nextLine();
+            }else {
+                if(!warningShown) {
+                    System.out.println("/red/(The password will not be visible)");
+                    warningShown = true;
+                }
+                System.out.print("/green/Username: ");
+                username = console.readLine();
+                System.out.println("yellow/Password: ");
+                password = new String(console.readPassword());
+            }
+            return new String[] {username, password};
+        });
+        WebSocketConnection.connect();
+
+        Logger.getLogger("org.mongodb.driver").setLevel(Level.SEVERE);
+        Logger.getLogger("org.bson").setLevel(Level.SEVERE);
 
         System.out.println("Network Manager CLI");
-
         System.out.println("Type \"help\" for help");
 
         Scanner sc = new Scanner(System.in);

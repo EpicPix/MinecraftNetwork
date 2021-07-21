@@ -29,8 +29,6 @@ const OpcodeHandler = {
             const logins = require('./index').logins;
             var success = logins.length===0;
             for(const login of logins) {
-                console.log(login)
-                console.log(`${login['username']} / ${username}`);
                 if(login['username']===username && login['password']===password) {
                     success = true;
                     break;

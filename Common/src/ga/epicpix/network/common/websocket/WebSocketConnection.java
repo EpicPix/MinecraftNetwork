@@ -2,11 +2,14 @@ package ga.epicpix.network.common.websocket;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import ga.epicpix.network.common.ReturnableRunnable;
 
 import java.net.http.HttpClient;
 import java.net.http.WebSocket;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 
 public final class WebSocketConnection implements WebSocket.Listener {
@@ -20,12 +23,18 @@ public final class WebSocketConnection implements WebSocket.Listener {
     private static long nextRequestId = 0;
 
     private static final ArrayList<RequestFuture> futures = new ArrayList<>();
+    private static final HashMap<String, ReturnableRunnable> hooks = new HashMap<>();
+
+    public static void addHook(String hook, ReturnableRunnable run) {
+        hooks.remove(hook);
+        hooks.put(hook, run);
+    }
 
     public static void setClientType(ClientType clientType) {
         if(clientType==null) {
             throw new NullPointerException("ClientType is null!");
         }
-        if(WebSocketConnection.clientType!=ClientType.OTHER) {
+        if(WebSocketConnection.clientType==ClientType.OTHER) {
             WebSocketConnection.clientType = clientType;
         }
     }
@@ -36,11 +45,32 @@ public final class WebSocketConnection implements WebSocket.Listener {
 
     public static void connect() {
         if(!connected) {
-            connection = new WebSocketConnection();
-            WebSocketCredentials creds = WebSocketCredentials.get();
+            connectWithCredentials(WebSocketCredentials.get());
+        }
+    }
+
+    private static void connectWithCredentials(WebSocketCredentials creds) {
+        connection = new WebSocketConnection();
+        try {
             webSocket = HttpClient.newBuilder().build().newWebSocketBuilder().buildAsync(creds.toURI(), connection).join();
             connected = true;
-            connection.sendAuthenticateRequest(creds);
+            if(!connection.sendAuthenticateRequest(creds)) {
+                if(hooks.containsKey("type_auth")) {
+                    var objauth = hooks.get("type_auth").run();
+                    if(objauth instanceof String[] auth) {
+                        if(auth.length<2) {
+                            System.err.println("The auth array is not 2 elements");
+                        }else {
+                            connectWithCredentials(WebSocketCredentials.set(creds, auth[0], auth[1]));
+                        }
+                    }else {
+                        System.err.println("Return type is not String[]!");
+                    }
+                }
+            }
+        } catch(CompletionException e) {
+            connection = null;
+            System.err.println("Could not connect");
         }
     }
 
@@ -111,9 +141,7 @@ public final class WebSocketConnection implements WebSocket.Listener {
         connection = null;
         ws = null;
 
-        if(statusCode==4005) {
-            System.err.println("Failed to authenticate! Make sure you have provided the correct authentication credentials");
-        }else {
+        if(statusCode!=4005) {
             System.out.println("WebSocket closed: " + statusCode + " for the reason" + reason);
         }
         return null;

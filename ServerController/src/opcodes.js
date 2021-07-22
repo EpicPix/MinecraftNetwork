@@ -4,12 +4,12 @@
 //any other server packet should have a Request ID so that the server can respond to the client without a Packet ID
 
 const StringOpcodes = {
-    AUTHENTICATE: 0x00,
+    AUTHENTICATE: 0x0000,
+    UPDATE_SERVER_DATA: 0x0001,
+    REMOVE_SERVER: 0x0002,
 
-    //REGISTER_SERVER: 0x01,
-    //UNREGISTER_SERVER: 0x02,
-    //SEND_SIGNAL: 0x03,
-    //LIST_SERVERS: 0x04
+    //SEND_SIGNAL: 0x0003,
+    //LIST_SERVERS: 0x0004
 
     //SERVER_SIGNAL: 0x8000
 }
@@ -41,6 +41,16 @@ const OpcodeHandler = {
             websocket.respond(json, {success});
             if(!success) websocket.close(4005, 'Authentication failed');
         }
+    },
+    handleUpdateServerData: function(websocket, json) {
+        if(websocket.checkAuth()) {
+            
+        }
+    },
+    handleRemoveServer: function(websocket, json) {
+        if(websocket.checkAuth()) {
+            
+        }
     }
 }
 
@@ -61,7 +71,11 @@ function toOpcodeName(opcodev) {
 function toOpcodeFunctionName(opcode) {
     var name = toOpcodeName(opcode);
     if(name==null) return null;
-    return `handle${name[0]}${name.toLowerCase().slice(1)}`;
+    var words = name.toLowerCase().split('_');
+    for(var i = 0; i < words.length; i++) {
+        words[i] = `${words[i][0].toUpperCase()}${words[i].slice(1)}`;
+    }
+    return `handle${words.join('')}`;
 }
 
 for(var opcode of Object.values(StringOpcodes)) {

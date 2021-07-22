@@ -22,13 +22,15 @@ function getSecrets() {
 }
 
 var logins = [];
+var servers = [];
 
-module.exports = { logins };
+module.exports = { logins, servers };
 
 const port = 8080;
 
 async function main() {
 
+    //TODO: Make it possible to make a ServerController which doesn't use Mongo
     const Mongo = new MongoClient(getSecrets().getConnectionString());
     await Mongo.connect();
 
@@ -49,6 +51,13 @@ async function main() {
         ws.respond = function(message, data) {
             data.rid = message.rid;
             ws.send(JSON.stringify(data));
+        };
+        ws.checkAuth = function() {
+            if(!ws.userData.authenticated) {
+                ws.close(4006, "Not authenticated");
+                return false;
+            }
+            return true;
         };
         ws.on('message', function (message) {
             var json;

@@ -5,15 +5,11 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import ga.epicpix.network.common.servers.ServerInfo;
 import org.bson.Document;
-import org.bson.conversions.Bson;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-
-import static java.util.Map.Entry;
 
 public class CommonUtils {
 
@@ -221,41 +217,6 @@ public class CommonUtils {
         }
 
         return generated.toString();
-    }
-
-    public static final int ENC_SIZE = 32;
-
-    public static String createHash(String data) {
-        byte[] bytes = data.getBytes(StandardCharsets.UTF_8);
-
-        int[] ks = new int[ENC_SIZE];
-        for(int i = 0; i<ks.length; i++) {
-            ks[i] = (char) (data.charAt(i%data.length()) ^ ks[i]);
-        }
-        for(int i = 0; i<bytes.length; i++) {
-            int indx = i%ks.length;
-            ks[indx] = bytes[i] - i * 11;
-            if(indx!=0) {
-                ks[indx] += ks[indx-1] ^ (indx*21-16);
-            }
-            ks[indx] = ks[indx] & 0xff;
-        }
-        for(int t = 0; t<0x100000; t++) {
-            ks[t%ks.length] ^= ks[(t+3)%ks.length]+t*9;
-        }
-        String safe = "";
-        for(int c : ks) {
-            String x = Integer.toHexString(c&0xff);
-            while(x.length()<2) {
-                x = "0" + x;
-            }
-            safe += x;
-        }
-        return safe;
-    }
-
-    public static boolean validateHash(String hashed, String data) {
-        return hashed.length()==ENC_SIZE*2 && createHash(data).equals(hashed);
     }
 
     public static String removeColorCodes(String str) {

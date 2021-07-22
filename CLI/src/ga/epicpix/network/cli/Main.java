@@ -4,7 +4,6 @@ import ga.epicpix.network.common.ChatColor;
 import ga.epicpix.network.common.CommonUtils;
 import ga.epicpix.network.common.Mongo;
 import ga.epicpix.network.common.servers.ServerInfo;
-import ga.epicpix.network.common.servers.ServerSignal;
 import ga.epicpix.network.common.websocket.ClientType;
 import ga.epicpix.network.common.websocket.WebSocketConnection;
 import org.bson.Document;
@@ -175,7 +174,7 @@ public class Main {
                         System.out.println("/red/Unknown server! Use \"servers\" to list servers");
                     }else {
                         if(getParam(cmd, 2) != null && getParam(cmd, 2).equals("stop")) {
-                            if(server.sendSignal(ServerSignal.STOP)) {
+                            if(ServerInfo.sendSignal(server.id, ServerInfo.ServerSignal.STOP).get("ok").getAsBoolean()) {
                                 System.out.println("/green/Signal sent");
                             }else {
                                 System.out.println("/red/Could not send signal");

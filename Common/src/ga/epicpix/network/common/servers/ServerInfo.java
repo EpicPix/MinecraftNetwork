@@ -2,18 +2,32 @@ package ga.epicpix.network.common.servers;
 
 import com.google.gson.JsonObject;
 import ga.epicpix.network.common.CommonUtils;
-import ga.epicpix.network.common.Mongo;
 import ga.epicpix.network.common.websocket.Opcodes;
 import ga.epicpix.network.common.websocket.requests.Request;
 import ga.epicpix.network.common.websocket.requests.data.RemoveServerRequest;
 import ga.epicpix.network.common.websocket.requests.data.UpdateServerDataRequest;
-import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class ServerInfo {
+
+    public enum ServerSignal {
+
+        STOP;
+
+        public static ServerSignal getSignal(String signal) {
+            signal = signal.toUpperCase();
+            for(ServerSignal sig : values()) {
+                if(sig.name().equals(signal)) {
+                    return sig;
+                }
+            }
+            return null;
+        }
+
+    }
 
     public static record ServerType(String id) {
         private static final ArrayList<ServerType> types = new ArrayList<>();
@@ -78,16 +92,22 @@ public class ServerInfo {
         return Request.sendRequest(Request.createRequest(Opcodes.REMOVE_SERVER, RemoveServerRequest.build(server)));
     }
 
+    public static JsonObject makeWebSocketServerOwner(String server) {
+        //TODO: Implement makeWebSocketServerOwner
+        return null;
+    }
+
+    public static JsonObject sendSignal(String server, ServerSignal signal) {
+        //TODO: Implement sendSignal
+        return null;
+    }
+
     public ServerInfo(String id) {
         this.id = id;
     }
 
     public ServerType getType() {
         return ServerType.getType(type);
-    }
-
-    public boolean sendSignal(ServerSignal action) {
-        return Mongo.getCollection("data", "servers").updateOne(new Document().append("id", id), new Document().append("$set", new Document().append("action", action.name()))).getModifiedCount()!=0;
     }
 
     public String toString() {

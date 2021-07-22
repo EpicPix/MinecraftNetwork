@@ -7,9 +7,10 @@ const StringOpcodes = {
     AUTHENTICATE: 0x0000,
     UPDATE_SERVER_DATA: 0x0001,
     REMOVE_SERVER: 0x0002,
+    MAKE_WEB_SOCKET_SERVER_OWNER: 0x0003,
+    SEND_SIGNAL: 0x0004
 
-    //SEND_SIGNAL: 0x0003,
-    //LIST_SERVERS: 0x0004
+    //LIST_SERVERS: 0x0005
 
     //SERVER_SIGNAL: 0x8000
 }
@@ -101,6 +102,12 @@ const OpcodeHandler = {
                 websocket.respond(json, {error: {id: 1, message: "No server field specified"}});
             }
         }
+    },
+    handleMakeWebSocketServerOwner: function(websocket, json) {
+
+    },
+    handleSendSignal: function(websocket, json) {
+
     }
 }
 

@@ -70,6 +70,7 @@ public class Entry extends JavaPlugin {
                 .setVersion(BukkitCommon.getVersion())
                 .setDetails(BukkitCommon.getDetails())
                 .setBootMillis(start));
+        ServerInfo.makeWebSocketServerOwner(Bukkit.getServerId());
         System.out.println("Database Server Info: " + CommonUtils.getServerInfo(BukkitCommon.getServerId()));
         Runtime.getRuntime().addShutdownHook(new Thread(() -> ServerInfo.removeServer(BukkitCommon.getServerId())));
         Command.registerCommand(new TestCommand());

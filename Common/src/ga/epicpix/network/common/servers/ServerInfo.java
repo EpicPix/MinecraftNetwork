@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import ga.epicpix.network.common.CommonUtils;
 import ga.epicpix.network.common.websocket.Opcodes;
 import ga.epicpix.network.common.websocket.requests.Request;
+import ga.epicpix.network.common.websocket.requests.data.ListServersRequest;
 import ga.epicpix.network.common.websocket.requests.data.RemoveServerRequest;
 import ga.epicpix.network.common.websocket.requests.data.UpdateServerDataRequest;
 
@@ -100,6 +101,10 @@ public class ServerInfo {
     public static JsonObject sendSignal(String server, ServerSignal signal) {
         //TODO: Implement sendSignal
         return null;
+    }
+
+    public static JsonObject requestServerList() {
+        return Request.sendRequest(Request.createRequest(Opcodes.LIST_SERVERS, ListServersRequest.build()));
     }
 
     public ServerInfo(String id) {

@@ -8,11 +8,10 @@ const StringOpcodes = {
     UPDATE_SERVER_DATA: 0x0001,
     REMOVE_SERVER: 0x0002,
     MAKE_WEB_SOCKET_SERVER_OWNER: 0x0003,
-    SEND_SIGNAL: 0x0004
+    SEND_SIGNAL: 0x0004,
+    LIST_SERVERS: 0x0005,
 
-    //LIST_SERVERS: 0x0005
-
-    //SERVER_SIGNAL: 0x8000
+    SERVER_SIGNAL: 0x8000
 }
 
 
@@ -58,7 +57,7 @@ const OpcodeHandler = {
                     var flags = 0x0000;
                     if(server === null) {
                         flags |= 0x0001;
-                        server = { id: json['server'], type: "UNKNOWN", onlinePlayers: -1, maxPlayers: -1, version: {protocol: -1, name: "???"}, details: {ip: "0.0.0.0", port: -1}, bootMillis: -1 };
+                        server = { id: json['server'], type: "UNKNOWN", onlinePlayers: -1, maxPlayers: -1, version: {protocol: -1, name: "???"}, details: {ip: "0.0.0.0", port: 0}, bootMillis: -1 };
                         servers.push(server);
                     }
                     var data = json['data'];
@@ -96,7 +95,6 @@ const OpcodeHandler = {
                         break;
                     }
                 }
-                console.log(servers);
                 websocket.respond(json, {ok: true});
             }else {
                 websocket.respond(json, {error: {id: 1, message: "No server field specified"}});
@@ -104,10 +102,15 @@ const OpcodeHandler = {
         }
     },
     handleMakeWebSocketServerOwner: function(websocket, json) {
-
+        websocket.respond(json, {error: {id: 3, message: "Not implemented yet!"}});
     },
     handleSendSignal: function(websocket, json) {
-
+        websocket.respond(json, {error: {id: 3, message: "Not implemented yet!"}});
+    },
+    handleListServers: function(websocket, json) {
+        if(websocket.checkAuth()) {
+            websocket.respond(json, {ok: true, servers: require('./index').servers});
+        }
     }
 }
 
@@ -136,7 +139,7 @@ function toOpcodeFunctionName(opcode) {
 }
 
 for(var opcode of Object.values(StringOpcodes)) {
-    if((opcode >> 31) == 0) {
+    if((opcode >> 15) == 0) {
         if(!OpcodeHandler[toOpcodeFunctionName(opcode)]) {
             console.error(`Handler for opcode '${toOpcodeName(opcode)}' not found! ${toOpcodeFunctionName(opcode)}()`);
             process.exit(1);

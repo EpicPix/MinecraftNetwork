@@ -55,6 +55,11 @@ public class CommonUtils {
         return InetAddress.getLoopbackAddress();
     }
 
+    public static <T> ArrayList<T> toList(T[] array) {
+        return new ArrayList<>(Arrays.asList(array));
+    }
+
+    @Deprecated(forRemoval = true)
     public static <T> ArrayList<T> iteratorToList(Iterator<T> iterator) {
         var list = new ArrayList<T>();
         while(iterator.hasNext()) {

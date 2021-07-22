@@ -1,12 +1,17 @@
 package ga.epicpix.network.cli;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import ga.epicpix.network.common.ChatColor;
 import ga.epicpix.network.common.CommonUtils;
-import ga.epicpix.network.common.Mongo;
+import ga.epicpix.network.common.servers.ServerDetails;
 import ga.epicpix.network.common.servers.ServerInfo;
+import ga.epicpix.network.common.servers.ServerVersion;
 import ga.epicpix.network.common.websocket.ClientType;
 import ga.epicpix.network.common.websocket.WebSocketConnection;
-import org.bson.Document;
+import ga.epicpix.network.common.websocket.requests.data.UpdateServerDataRequest;
 
 import java.io.Console;
 import java.io.PrintStream;
@@ -15,7 +20,8 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static ga.epicpix.network.common.CommonUtils.*;
+import static ga.epicpix.network.common.CommonUtils.replaceAt;
+import static ga.epicpix.network.common.CommonUtils.replaceCharactersSpecial;
 
 public class Main {
 
@@ -139,6 +145,8 @@ public class Main {
         });
         WebSocketConnection.connect();
 
+        ServerInfo.updateServer("test", new UpdateServerDataRequest.Data());
+
         Logger.getLogger("org.mongodb.driver").setLevel(Level.SEVERE);
         Logger.getLogger("org.bson").setLevel(Level.SEVERE);
 
@@ -187,9 +195,25 @@ public class Main {
                     System.out.println("/red/Wrong usage! Use \"help\" for help");
                 }
             }else if(cmdline.equals("servers")) {
-                ArrayList<Document> documents = CommonUtils.iteratorToList(Mongo.getCollection("data", "servers").find().iterator());
-                ArrayList<ServerInfo> servers = CommonUtils.documentsToObjects(documents, ServerInfo.class);
-                showServerListing(servers);
+                JsonObject resp = ServerInfo.requestServerList();
+                if(resp.get("ok").getAsBoolean()) {
+                    ArrayList<ServerInfo> infos = new ArrayList<>();
+                    JsonArray arr = resp.getAsJsonArray("servers");
+                    for(JsonElement e : arr) {
+                        JsonObject obj = (JsonObject) e;
+                        ServerInfo info = new ServerInfo(obj.get("id").getAsString());
+                        info.type = obj.get("type").getAsString();
+                        info.onlinePlayers = obj.get("onlinePlayers").getAsInt();
+                        info.maxPlayers = obj.get("maxPlayers").getAsInt();
+                        info.version = ServerVersion.getVersionByName(obj.getAsJsonObject("version").get("name").getAsString());
+                        info.details = new ServerDetails(obj.getAsJsonObject("details").get("ip").getAsString(), obj.getAsJsonObject("details").get("port").getAsInt());
+                        info.start = obj.get("bootMillis").getAsLong();
+                        infos.add(info);
+                    }
+                    showServerListing(infos);
+                }else {
+                    System.out.println("/red/Could not request server list!");
+                }
             }else {
                 System.out.println("/red/Unknown command. Type \"help\" for help");
             }

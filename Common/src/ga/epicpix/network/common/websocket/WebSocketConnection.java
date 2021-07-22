@@ -37,7 +37,7 @@ public final class WebSocketConnection implements WebSocket.Listener {
         if(clientType==null) {
             throw new NullPointerException("ClientType is null!");
         }
-        if(WebSocketConnection.clientType==ClientType.OTHER) {
+        if(WebSocketConnection.getClientType()==ClientType.OTHER) {
             WebSocketConnection.clientType = clientType;
         }
     }
@@ -87,7 +87,7 @@ public final class WebSocketConnection implements WebSocket.Listener {
     }
 
     private boolean sendAuthenticateRequest(WebSocketCredentials credentials) {
-        return Request.sendRequest(Request.createRequest(Opcodes.AUTHENTICATE, AuthenticateRequest.build(credentials.username(), credentials.password(), clientType))).get("success").getAsBoolean();
+        return Request.sendRequest(Request.createRequest(Opcodes.AUTHENTICATE, AuthenticateRequest.build(credentials.username(), credentials.password(), getClientType()))).get("success").getAsBoolean();
     }
 
     private JsonObject sendRequest(JsonObject request, int opcode) {
@@ -120,6 +120,17 @@ public final class WebSocketConnection implements WebSocket.Listener {
                     future.complete(data);
                     break;
                 }
+            }
+        }else {
+            if(data.has("opcode")) {
+                int opcode = data.get("opcode").getAsInt();
+                if((opcode & 0x8000) == 0x8000) {
+                    //TODO: Implement a handler
+                }else {
+                    System.err.println("Not a server handle opcode: " + opcode);
+                }
+            }else {
+                System.err.println("Unknown message: " + data);
             }
         }
         ws.request(1);

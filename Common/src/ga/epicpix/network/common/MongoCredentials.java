@@ -3,6 +3,7 @@ package ga.epicpix.network.common;
 import com.google.gson.Gson;
 import com.mongodb.ConnectionString;
 
+@Deprecated(forRemoval = true)
 public class MongoCredentials {
 
     public String username;

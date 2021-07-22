@@ -10,6 +10,7 @@ import org.bson.Document;
 
 import java.util.ArrayList;
 
+@Deprecated(forRemoval = true)
 public class Mongo {
 
     private static MongoClient client;

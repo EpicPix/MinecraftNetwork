@@ -4,6 +4,7 @@ import ga.epicpix.network.common.servers.*;
 
 import java.util.HashMap;
 
+@Deprecated(forRemoval = true)
 public class Types {
 
     private static final HashMap<String, Class<?>> types = new HashMap<>();

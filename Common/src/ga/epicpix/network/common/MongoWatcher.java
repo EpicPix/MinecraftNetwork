@@ -4,6 +4,7 @@ import com.mongodb.MongoNamespace;
 import com.mongodb.client.model.changestream.ChangeStreamDocument;
 import org.bson.Document;
 
+@Deprecated(forRemoval = true)
 public abstract class MongoWatcher {
 
     private final MongoNamespace namespace;

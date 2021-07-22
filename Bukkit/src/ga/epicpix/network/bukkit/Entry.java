@@ -19,7 +19,6 @@ public class Entry extends JavaPlugin {
     public void onLoad() {
         PLUGIN = this;
         Language.loadLanguages();
-        Language.startWatcher();
         BukkitCommon.setBungeeCord(Settings.getSettingOrDefault("BUNGEE_CORD", false));
 
         Mongo.registerWatcher(new MongoWatcher("data", "settings") {
@@ -52,24 +51,6 @@ public class Entry extends JavaPlugin {
                             iteam.setSuffix((rank.suffix.length==0?"":ChatColor.convertColorText("/white/ ")) + CommonUtils.componentsToString(rank.suffix));
                         });
                     }
-                }
-            }
-        });
-
-        Mongo.registerWatcher(new MongoWatcher("data", "servers") {
-            public void run(ChangeStreamDocument<Document> handle) {
-                if(handle.getOperationType()!=OperationType.DELETE && handle.getOperationType()!=OperationType.DROP) {
-                    if(handle.getUpdateDescription()!=null) {
-                        if (handle.getUpdateDescription().getUpdatedFields().containsKey("action")) {
-                            Document fullDocument = Mongo.getCollection("data", "servers").find(handle.getDocumentKey()).first();
-                            ServerInfo serverInfo = CommonUtils.documentToObject(fullDocument, ServerInfo.class);
-                            if(serverInfo.id.equals(BukkitCommon.getServerId())) {
-                                System.out.println("Signal received to stop server.");
-                                Bukkit.shutdown();
-                            }
-                        }
-                    }
-
                 }
             }
         });

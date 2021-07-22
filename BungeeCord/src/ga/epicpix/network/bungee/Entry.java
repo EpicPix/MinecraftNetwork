@@ -12,7 +12,6 @@ public class Entry extends Plugin {
     public void onLoad() {
         INSTANCE = this;
         Language.loadLanguages();
-        Language.startWatcher();
 
         Command.registerCommand(new ServerCommand());
     }

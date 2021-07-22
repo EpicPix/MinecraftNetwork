@@ -19,14 +19,6 @@ public class Language {
         loadedLanguages.addAll(CommonUtils.documentsToObjects(CommonUtils.iteratorToList(dlanguages.find().iterator()), Language.class));
     }
 
-    public static void startWatcher() {
-        Mongo.registerWatcher(new MongoWatcher("data", "languages") {
-            public void run(ChangeStreamDocument<Document> handle) {
-                loadLanguages();
-            }
-        });
-    }
-
     public static record LanguageEntry(String key, String value) {}
 
     public String id;

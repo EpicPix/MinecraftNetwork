@@ -1,9 +1,6 @@
 package ga.epicpix.network.common;
 
 import com.google.gson.Gson;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.model.Filters;
-import ga.epicpix.network.common.servers.ServerInfo;
 import org.bson.Document;
 
 import java.io.UnsupportedEncodingException;
@@ -93,11 +90,6 @@ public class CommonUtils {
         var converted = new ArrayList<T>();
         for(var doc : documents) converted.add(documentToObject(doc, clazz));
         return converted;
-    }
-
-    public static ServerInfo getServerInfo(String server) {
-        MongoCollection<Document> servers = Mongo.getCollection("data", "servers");
-        return documentToObject(servers.find(Filters.eq("id", server)).first(), ServerInfo.class);
     }
 
     public static boolean isPrimitive(Object obj) {

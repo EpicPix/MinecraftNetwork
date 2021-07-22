@@ -103,6 +103,14 @@ public class ServerInfo {
         return Request.sendRequest(Request.createRequest(Opcodes.LIST_SERVERS, ListServersRequest.build()));
     }
 
+    public static ServerInfo getServerInfo(String server) {
+        JsonObject data = Request.sendRequest(Request.createRequest(Opcodes.GET_SERVER, GetServerRequest.build(server)));
+        if(!data.get("ok").getAsBoolean()) {
+            return null;
+        }
+        return fromJson(data.getAsJsonObject("server"));
+    }
+
     public ServerInfo(String id) {
         this.id = id;
     }
@@ -113,5 +121,16 @@ public class ServerInfo {
 
     public String toString() {
         return "ServerInfo{id=" + CommonUtils.toString(id) + ", type=" + type + ", onlinePlayers=" + onlinePlayers + ", maxPlayers=" + maxPlayers + ", version=" + version + ", details=" + details + ", start=" + start + "}";
+    }
+
+    public static ServerInfo fromJson(JsonObject obj) {
+        ServerInfo info = new ServerInfo(obj.get("id").getAsString());
+        info.type = obj.get("type").getAsString();
+        info.onlinePlayers = obj.get("onlinePlayers").getAsInt();
+        info.maxPlayers = obj.get("maxPlayers").getAsInt();
+        info.version = ServerVersion.getVersionByName(obj.getAsJsonObject("version").get("name").getAsString());
+        info.details = new ServerDetails(obj.getAsJsonObject("details").get("ip").getAsString(), obj.getAsJsonObject("details").get("port").getAsInt());
+        info.start = obj.get("bootMillis").getAsLong();
+        return info;
     }
 }

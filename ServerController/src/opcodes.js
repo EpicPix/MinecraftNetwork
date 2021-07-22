@@ -10,6 +10,7 @@ const StringOpcodes = {
     MAKE_WEB_SOCKET_SERVER_OWNER: 0x0003,
     SEND_SIGNAL: 0x0004,
     LIST_SERVERS: 0x0005,
+    GET_SERVER: 0x0006,
 
     SERVER_SIGNAL: 0x8000
 }
@@ -85,10 +86,10 @@ const OpcodeHandler = {
                     copy(public, data, 'bootMillis', 0x0040);
                     websocket.respond(json, {ok: true, server: public, flags});
                 }else {
-                    websocket.respond(json, {errno: ErrorNumbers.NO_DATA_FIELD});
+                    websocket.respond(json, {ok: false, errno: ErrorNumbers.NO_DATA_FIELD});
                 }
             }else {
-                websocket.respond(json, {errno: ErrorNumbers.NO_SERVER_FIELD});
+                websocket.respond(json, {ok: false, errno: ErrorNumbers.NO_SERVER_FIELD});
             }
         }
     },
@@ -107,7 +108,7 @@ const OpcodeHandler = {
                 }
                 websocket.respond(json, {ok: true});
             }else {
-                websocket.respond(json, {errno: ErrorNumbers.NO_SERVER_FIELD});
+                websocket.respond(json, {ok: false, errno: ErrorNumbers.NO_SERVER_FIELD});
             }
         }
     },
@@ -130,10 +131,10 @@ const OpcodeHandler = {
                     server.websocket = websocket;
                     websocket.respond(json, {ok: true});
                 }else {
-                    websocket.respond(json, {errno: ErrorNumbers.SERVER_NOT_FOUND});
+                    websocket.respond(json, {ok: false, errno: ErrorNumbers.SERVER_NOT_FOUND});
                 }
             }else {
-                websocket.respond(json, {errno: ErrorNumbers.NO_SERVER_FIELD});
+                websocket.respond(json, {ok: false, errno: ErrorNumbers.NO_SERVER_FIELD});
             }
         }
     },
@@ -154,14 +155,14 @@ const OpcodeHandler = {
                             server.websocket.send(JSON.stringify({opcode: StringOpcodes.SERVER_SIGNAL, signal: json.signal}));
                             websocket.respond(json, {ok: true});
                         }else {
-                            websocket.respond(json, {errno: ErrorNumbers.NO_SERVER_WEBSOCKET});
+                            websocket.respond(json, {ok: false, errno: ErrorNumbers.NO_SERVER_WEBSOCKET});
                         }
                     }else {
-                        websocket.respond(json, {errno: ErrorNumbers.SERVER_NOT_FOUND});
+                        websocket.respond(json, {ok: false, errno: ErrorNumbers.SERVER_NOT_FOUND});
                     }
                 }
             }else {
-                websocket.respond(json, {errno: ErrorNumbers.NO_SERVER_FIELD});
+                websocket.respond(json, {ok: false, errno: ErrorNumbers.NO_SERVER_FIELD});
             }
         }
     },
@@ -172,6 +173,23 @@ const OpcodeHandler = {
                 safeServers.push(server.public);
             });
             websocket.respond(json, {ok: true, servers: safeServers});
+        }
+    },
+    handleGetServer: function(websocket, json) {
+        if(websocket.checkAuth()) {
+            if(json['server']) {
+                const servers = require('./index').servers;
+                var server = null;
+                for(var serv of servers) {
+                    if(serv.public.id === json['server']) {
+                        server = serv;
+                        break;
+                    }
+                }
+                websocket.respond(json, {ok: true, server: server.public});
+            }else {
+                websocket.respond(json, {ok: false, errno: ErrorNumbers.NO_SERVER_FIELD});
+            }
         }
     }
 }

@@ -2,13 +2,10 @@ package ga.epicpix.network.bungee.commands;
 
 import ga.epicpix.network.bungee.Command;
 import ga.epicpix.network.bungee.CommandContext;
-import ga.epicpix.network.common.CommonUtils;
-import ga.epicpix.network.common.Mongo;
 import ga.epicpix.network.common.servers.ServerInfo;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.ServerConnectRequest;
 import net.md_5.bungee.api.event.ServerConnectEvent;
-import org.bson.Document;
 
 import java.net.InetSocketAddress;
 
@@ -27,7 +24,7 @@ public class ServerCommand extends Command {
             public void run() {
                 if(isPlayer()) {
                     if(getArguments().length>=1) {
-                        ServerInfo serverInfo = CommonUtils.documentToObject(Mongo.getCollection("data", "servers").find(new Document().append("id", getArguments()[0])).first(), ServerInfo.class);
+                        ServerInfo serverInfo = ServerInfo.getServerInfo(getArguments()[0]);
                         if(serverInfo==null) {
                             sendTranslated("error.server.unknown");
                         }else {

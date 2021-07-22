@@ -1,17 +1,13 @@
 package ga.epicpix.network.cli;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import ga.epicpix.network.common.ChatColor;
 import ga.epicpix.network.common.CommonUtils;
-import ga.epicpix.network.common.servers.ServerDetails;
 import ga.epicpix.network.common.servers.ServerInfo;
-import ga.epicpix.network.common.servers.ServerVersion;
 import ga.epicpix.network.common.websocket.ClientType;
 import ga.epicpix.network.common.websocket.WebSocketConnection;
-import ga.epicpix.network.common.websocket.requests.data.UpdateServerDataRequest;
 
 import java.io.Console;
 import java.io.PrintStream;
@@ -175,7 +171,7 @@ public class Main {
                 System.out.println("servers - List servers");
             }else if(cmdline.equals("server")) {
                 if(getParam(cmd, 1) != null) {
-                    ServerInfo server = CommonUtils.getServerInfo(getParam(cmd, 1));
+                    ServerInfo server = ServerInfo.getServerInfo(getParam(cmd, 1));
                     if(server==null) {
                         System.out.println("/red/Unknown server! Use \"servers\" to list servers");
                     }else {
@@ -198,15 +194,7 @@ public class Main {
                     ArrayList<ServerInfo> infos = new ArrayList<>();
                     JsonArray arr = resp.getAsJsonArray("servers");
                     for(JsonElement e : arr) {
-                        JsonObject obj = (JsonObject) e;
-                        ServerInfo info = new ServerInfo(obj.get("id").getAsString());
-                        info.type = obj.get("type").getAsString();
-                        info.onlinePlayers = obj.get("onlinePlayers").getAsInt();
-                        info.maxPlayers = obj.get("maxPlayers").getAsInt();
-                        info.version = ServerVersion.getVersionByName(obj.getAsJsonObject("version").get("name").getAsString());
-                        info.details = new ServerDetails(obj.getAsJsonObject("details").get("ip").getAsString(), obj.getAsJsonObject("details").get("port").getAsInt());
-                        info.start = obj.get("bootMillis").getAsLong();
-                        infos.add(info);
+                        infos.add(ServerInfo.fromJson((JsonObject) e));
                     }
                     showServerListing(infos);
                 }else {

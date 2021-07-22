@@ -1,12 +1,11 @@
 package ga.epicpix.network.common.websocket.requests.data;
 
-import com.google.gson.JsonObject;
+import ga.epicpix.network.common.SerializableJson;
 
-public abstract class RequestData {
+public abstract class RequestData implements SerializableJson {
 
     RequestData() {}
 
     public abstract int getOpcode();
-    public abstract JsonObject toJson();
 
 }

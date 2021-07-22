@@ -5,6 +5,10 @@ import com.mongodb.client.model.changestream.OperationType;
 import ga.epicpix.network.bukkit.commands.TestCommand;
 import ga.epicpix.network.common.*;
 import ga.epicpix.network.common.servers.ServerInfo;
+import ga.epicpix.network.common.websocket.ClientType;
+import ga.epicpix.network.common.websocket.WebSocketConnection;
+import ga.epicpix.network.common.websocket.requests.Request;
+import ga.epicpix.network.common.websocket.requests.data.UpdateServerDataRequest;
 import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -18,6 +22,8 @@ public class Entry extends JavaPlugin {
 
     public void onLoad() {
         PLUGIN = this;
+        WebSocketConnection.setClientType(ClientType.BUKKIT);
+        WebSocketConnection.connect();
         Language.loadLanguages();
         BukkitCommon.setBungeeCord(Settings.getSettingOrDefault("BUNGEE_CORD", false));
 
@@ -58,7 +64,13 @@ public class Entry extends JavaPlugin {
         System.out.println("Server Info: " + BukkitCommon.getThisServer());
         System.out.println("Database Server Info: " + CommonUtils.getServerInfo(BukkitCommon.getServerId()));
         System.out.println("Updating DB");
-        CommonUtils.updateServerInfo(BukkitCommon.getThisServer());
+        new ServerInfo(BukkitCommon.getServerId()).updateServer(new UpdateServerDataRequest.Data()
+                .setType(ServerInfo.ServerType.UNKNOWN)
+                .setOnlinePlayers(Bukkit.getOnlinePlayers().size())
+                .setMaxPlayers(Bukkit.getMaxPlayers())
+                .setVersion(BukkitCommon.getVersion())
+                .setDetails(BukkitCommon.getDetails())
+                .setBootMillis(start));
         System.out.println("Database Server Info: " + CommonUtils.getServerInfo(BukkitCommon.getServerId()));
         Runtime.getRuntime().addShutdownHook(new Thread(() -> CommonUtils.removeServerInfo(BukkitCommon.getServerId())));
         Command.registerCommand(new TestCommand());

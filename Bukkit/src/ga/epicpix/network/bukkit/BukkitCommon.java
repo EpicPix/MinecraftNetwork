@@ -4,9 +4,11 @@ import ga.epicpix.network.common.*;
 import ga.epicpix.network.common.servers.ServerDetails;
 import ga.epicpix.network.common.servers.ServerInfo;
 import ga.epicpix.network.common.servers.ServerVersion;
+import ga.epicpix.network.common.websocket.requests.data.UpdateServerDataRequest;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
+import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.entity.Player;
@@ -26,17 +28,29 @@ public class BukkitCommon {
         return (String) Reflection.callMethod(PropertyManager.getClass(), "getString", PropertyManager, "server-id", null);
     }
 
-    public static ServerInfo getThisServer() {
+    public static Object getMinecraftServer() {
         Object MinecraftServer = Reflection.getValueOfField(Bukkit.getServer().getClass(), "console", Bukkit.getServer());
         if(MinecraftServer==null) throw new NullPointerException("Could not get a MinecraftServer instance.");
-        ServerInfo info = new ServerInfo();
-        info.id = getServerId();
+        return MinecraftServer;
+    }
+
+    public static ServerVersion getVersion() {
+        Object MinecraftServer = getMinecraftServer();
+        return ServerVersion.getVersionByName((String) Reflection.callMethod(MinecraftServer.getClass(), "getVersion", MinecraftServer));
+    }
+
+    public static ServerDetails getDetails() {
+        return new ServerDetails(Bukkit.getIp().isEmpty()?CommonUtils.possibleAddress().getHostAddress():Bukkit.getIp(), Bukkit.getPort());
+    }
+
+    public static ServerInfo getThisServer() {
+        ServerInfo info = new ServerInfo(getServerId());
         if(info.id==null) System.err.println("Server Id is not defined.");
         info.type = ServerInfo.ServerType.UNKNOWN.id();
         info.onlinePlayers = Bukkit.getOnlinePlayers().size();
         info.maxPlayers = Bukkit.getMaxPlayers();
-        info.details = new ServerDetails(Bukkit.getIp().isEmpty()?CommonUtils.possibleAddress().getHostAddress():Bukkit.getIp(), Bukkit.getPort());
-        info.version = ServerVersion.getVersionByName((String) Reflection.callMethod(MinecraftServer.getClass(), "getVersion", MinecraftServer));
+        info.details = getDetails();
+        info.version = getVersion();
         info.start = Entry.start;
         info.verified = false;
         return info;

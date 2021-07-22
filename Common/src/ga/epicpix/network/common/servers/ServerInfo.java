@@ -1,7 +1,11 @@
 package ga.epicpix.network.common.servers;
 
+import com.google.gson.JsonObject;
 import ga.epicpix.network.common.CommonUtils;
 import ga.epicpix.network.common.Mongo;
+import ga.epicpix.network.common.websocket.Opcodes;
+import ga.epicpix.network.common.websocket.requests.Request;
+import ga.epicpix.network.common.websocket.requests.data.UpdateServerDataRequest;
 import org.bson.Document;
 
 import java.util.ArrayList;
@@ -10,7 +14,7 @@ import java.util.List;
 
 public class ServerInfo {
 
-    public record ServerType(String id) {
+    public static record ServerType(String id) {
         private static final ArrayList<ServerType> types = new ArrayList<>();
 
         public static final ServerType UNKNOWN = new ServerType("UNKNOWN");
@@ -42,7 +46,7 @@ public class ServerInfo {
 
     }
 
-    public String id;
+    public final String id;
     public String type = ServerType.UNKNOWN.id();
     public int onlinePlayers;
     public int maxPlayers;
@@ -50,6 +54,17 @@ public class ServerInfo {
     public ServerDetails details;
     public long start;
     public transient boolean verified = true;
+
+    public JsonObject updateServer(UpdateServerDataRequest.Data data) {
+        if(data==null) {
+            throw new NullPointerException("Data is null");
+        }
+        return Request.sendRequest(Request.createRequest(Opcodes.UPDATE_SERVER_DATA, UpdateServerDataRequest.build(id, data)));
+    }
+
+    public ServerInfo(String id) {
+        this.id = id;
+    }
 
     public ServerType getType() {
         return ServerType.getType(type);

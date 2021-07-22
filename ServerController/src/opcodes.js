@@ -44,12 +44,47 @@ const OpcodeHandler = {
     },
     handleUpdateServerData: function(websocket, json) {
         if(websocket.checkAuth()) {
-            
+            if(json['server']) {
+                if(json['data']) {
+                    const servers = require('./index').servers;
+                    var server = null;
+                    for(var serv of servers) {
+                        if(serv.id === json['server']) {
+                            server = serv;
+                            break;
+                        }
+                    }
+                    var flags = 0x0000;
+                    if(server === null) {
+                        flags |= 0x0001;
+                        server = { id: json['server'], type: "UNKNOWN", onlinePlayers: -1, maxPlayers: -1, version: {protocol: -1, name: "???"}, details: {ip: "0.0.0.0", port: -1}, bootMillis: -1 };
+                        servers.push(server);
+                    }
+                    var data = json['data'];
+                    var copy = function(a, b, c, d) {
+                        if(typeof b[c] !== 'undefined') {
+                            a[c] = b[c];
+                            flags |= d;
+                        }
+                    }
+                    copy(server, data, 'type', 0x0002);
+                    copy(server, data, 'onlinePlayers', 0x0004);
+                    copy(server, data, 'maxPlayers', 0x0008);
+                    copy(server, data, 'version', 0x0010);
+                    copy(server, data, 'details', 0x0020);
+                    copy(server, data, 'bootMillis', 0x0040);
+                    websocket.respond(json, {ok: true, server, flags});
+                }else {
+                    websocket.respond(json, {error: {id: 2, message: "No data field specified"}});
+                }
+            }else {
+                websocket.respond(json, {error: {id: 1, message: "No server field specified"}});
+            }
         }
     },
     handleRemoveServer: function(websocket, json) {
         if(websocket.checkAuth()) {
-            
+            //TODO
         }
     }
 }

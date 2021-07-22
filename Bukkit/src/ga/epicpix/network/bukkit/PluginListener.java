@@ -1,7 +1,9 @@
 package ga.epicpix.network.bukkit;
 
 import ga.epicpix.network.common.*;
+import ga.epicpix.network.common.websocket.requests.data.UpdateServerDataRequest;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,7 +23,7 @@ public class PluginListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
-        CommonUtils.updateServerInfo(BukkitCommon.getThisServer());
+        BukkitCommon.getThisServer().updateServer(new UpdateServerDataRequest.Data().setOnlinePlayers(Bukkit.getOnlinePlayers().size()));
 
         Player player = e.getPlayer();
         PlayerInfo info = PlayerInfo.getPlayerInfo(player.getUniqueId());
@@ -54,7 +56,7 @@ public class PluginListener implements Listener {
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e) {
-        CommonUtils.updateServerInfo(BukkitCommon.getThisServer());
+        BukkitCommon.getThisServer().updateServer(new UpdateServerDataRequest.Data().setOnlinePlayers(Bukkit.getOnlinePlayers().size()));
     }
 
     @EventHandler

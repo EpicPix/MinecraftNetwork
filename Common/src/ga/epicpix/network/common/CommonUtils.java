@@ -99,22 +99,6 @@ public class CommonUtils {
         return documentToObject(servers.find(Filters.eq("id", server)).first(), ServerInfo.class);
     }
 
-    public static void updateServerInfo(ServerInfo info) {
-        var servers = Mongo.getCollection("data", "servers");
-        var filter = Filters.eq("id", info.id);
-        long amt = servers.countDocuments(filter);
-        if(amt==0) {
-            servers.insertOne(toDocument(info));
-        }else {
-            if(amt!=1) {
-                servers.deleteMany(filter);
-                servers.insertOne(toDocument(info));
-            }else {
-                servers.replaceOne(filter, toDocument(info));
-            }
-        }
-    }
-
     public static void removeServerInfo(String server) {
         Mongo.getCollection("data", "servers").deleteMany(Filters.eq("id", server));
     }

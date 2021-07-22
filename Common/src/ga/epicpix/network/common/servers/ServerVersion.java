@@ -1,12 +1,19 @@
 package ga.epicpix.network.common.servers;
 
+import com.google.gson.JsonObject;
+import ga.epicpix.network.common.SerializableJson;
+
 import java.util.*;
 
-public record ServerVersion(int protocol, String name) {
+public record ServerVersion(int protocol, String name) implements SerializableJson {
 
     public static final ArrayList<ServerVersion> VERSIONS = new ArrayList<>();
 
+    public static final ServerVersion UNKNOWN;
+
     static {
+        VERSIONS.add(UNKNOWN = new ServerVersion(-1, "???"));
+
         VERSIONS.add(new ServerVersion(47, "1.8"));
         VERSIONS.add(new ServerVersion(47, "1.8.1"));
         VERSIONS.add(new ServerVersion(47, "1.8.2"));
@@ -60,7 +67,7 @@ public record ServerVersion(int protocol, String name) {
                 return version;
             }
         }
-        return null;
+        return UNKNOWN;
     }
 
     public static ServerVersion getVersionByProtocol(int protocol) {
@@ -69,7 +76,13 @@ public record ServerVersion(int protocol, String name) {
                 return version;
             }
         }
-        return null;
+        return UNKNOWN;
     }
 
+    public JsonObject toJson() {
+        JsonObject obj = new JsonObject();
+        obj.addProperty("name", name);
+        obj.addProperty("protocol", protocol);
+        return obj;
+    }
 }

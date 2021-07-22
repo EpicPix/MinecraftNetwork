@@ -81,7 +81,9 @@ public final class WebSocketConnection implements WebSocket.Listener {
         if(!Reflection.getCaller().equals(Request.class.getName())) {
             throw new SecurityException("Use the Request class to call sendRequest");
         }
-        return connection.sendRequest(req.getData().toJson(), req.getOpcode());
+        JsonObject resp = connection.sendRequest(req.getData().toJson(), req.getOpcode());
+        resp.remove("rid");
+        return resp;
     }
 
     private boolean sendAuthenticateRequest(WebSocketCredentials credentials) {

@@ -30,7 +30,7 @@ const port = 8080;
 
 async function main() {
 
-    //TODO: Make it possible to make a ServerController which doesn't use Mongo
+    //TODO: Make it so you don't need Mongo at all
     const Mongo = new MongoClient(getSecrets().getConnectionString());
     await Mongo.connect();
 

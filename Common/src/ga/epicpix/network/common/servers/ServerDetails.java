@@ -1,8 +1,10 @@
 package ga.epicpix.network.common.servers;
 
+import com.google.gson.JsonObject;
 import ga.epicpix.network.common.CommonUtils;
+import ga.epicpix.network.common.SerializableJson;
 
-public record ServerDetails(String ip, int port) {
+public record ServerDetails(String ip, int port) implements SerializableJson {
 
     public ServerDetails {
         if(ip==null) {
@@ -18,5 +20,12 @@ public record ServerDetails(String ip, int port) {
                 "ip=" + CommonUtils.toString(ip) +
                 ", port=" + port +
                 '}';
+    }
+
+    public JsonObject toJson() {
+        JsonObject obj = new JsonObject();
+        obj.addProperty("ip", ip);
+        obj.addProperty("port", port);
+        return obj;
     }
 }

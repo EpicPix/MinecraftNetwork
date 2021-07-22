@@ -7,14 +7,17 @@ import ga.epicpix.network.common.websocket.requests.RequestPolicies;
 
 public class RemoveServerRequest extends RequestData {
 
-    private RemoveServerRequest() {
+    private final String serverName;
+
+    private RemoveServerRequest(String serverName) {
+        this.serverName = serverName;
     }
 
-    public static RemoveServerRequest build() {
+    public static RemoveServerRequest build(String serverName) {
         if(!RequestPolicies.isAllowed(Opcodes.REMOVE_SERVER, Reflection.getCaller())) {
             throw new SecurityException("Cannot build this request data!");
         }
-        return new RemoveServerRequest();
+        return new RemoveServerRequest(serverName);
     }
 
     public int getOpcode() {
@@ -23,6 +26,7 @@ public class RemoveServerRequest extends RequestData {
 
     public JsonObject toJson() {
         JsonObject obj = new JsonObject();
+        obj.addProperty("server", serverName);
         return obj;
     }
 

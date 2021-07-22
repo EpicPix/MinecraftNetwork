@@ -55,10 +55,6 @@ public class CommonUtils {
         return InetAddress.getLoopbackAddress();
     }
 
-    public static <T> ArrayList<T> toList(T[] array) {
-        return new ArrayList<>(Arrays.asList(array));
-    }
-
     public static <T> ArrayList<T> iteratorToList(Iterator<T> iterator) {
         var list = new ArrayList<T>();
         while(iterator.hasNext()) {
@@ -97,10 +93,6 @@ public class CommonUtils {
     public static ServerInfo getServerInfo(String server) {
         MongoCollection<Document> servers = Mongo.getCollection("data", "servers");
         return documentToObject(servers.find(Filters.eq("id", server)).first(), ServerInfo.class);
-    }
-
-    public static void removeServerInfo(String server) {
-        Mongo.getCollection("data", "servers").deleteMany(Filters.eq("id", server));
     }
 
     public static boolean isPrimitive(Object obj) {

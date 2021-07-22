@@ -62,7 +62,7 @@ public class UpdateServerDataRequest extends RequestData {
             JsonObject obj = new JsonObject();
             if(type!=null) obj.addProperty("type", type);
             if(onlinePlayers!=null) obj.addProperty("onlinePlayers", onlinePlayers);
-            if(maxPlayers !=null) obj.addProperty("maxPlayers", maxPlayers);
+            if(maxPlayers!=null) obj.addProperty("maxPlayers", maxPlayers);
             if(version!=null) obj.add("version", version.toJson());
             if(details!=null) obj.add("details", details.toJson());
             if(bootMillis!=null) obj.addProperty("bootMillis", bootMillis);

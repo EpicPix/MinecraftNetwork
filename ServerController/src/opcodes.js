@@ -84,7 +84,22 @@ const OpcodeHandler = {
     },
     handleRemoveServer: function(websocket, json) {
         if(websocket.checkAuth()) {
-            //TODO
+            if(json['server']) {
+                const servers = require('./index').servers;
+                for(var serv of servers) {
+                    if(serv.id === json['server']) {
+                        const index = servers.indexOf(serv);
+                        if (index > -1) {
+                            servers.splice(index, 1);
+                        }
+                        break;
+                    }
+                }
+                console.log(servers);
+                websocket.respond(json, {ok: true});
+            }else {
+                websocket.respond(json, {error: {id: 1, message: "No server field specified"}});
+            }
         }
     }
 }

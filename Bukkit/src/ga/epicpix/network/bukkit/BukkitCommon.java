@@ -52,7 +52,6 @@ public class BukkitCommon {
         info.details = getDetails();
         info.version = getVersion();
         info.start = Entry.start;
-        info.verified = false;
         return info;
     }
 

@@ -5,6 +5,7 @@ import ga.epicpix.network.common.CommonUtils;
 import ga.epicpix.network.common.Mongo;
 import ga.epicpix.network.common.websocket.Opcodes;
 import ga.epicpix.network.common.websocket.requests.Request;
+import ga.epicpix.network.common.websocket.requests.data.RemoveServerRequest;
 import ga.epicpix.network.common.websocket.requests.data.UpdateServerDataRequest;
 import org.bson.Document;
 
@@ -53,13 +54,28 @@ public class ServerInfo {
     public ServerVersion version;
     public ServerDetails details;
     public long start;
-    public transient boolean verified = true;
 
-    public JsonObject updateServer(UpdateServerDataRequest.Data data) {
+    public static JsonObject updateServer(String server, UpdateServerDataRequest.Data data) {
+        if(server==null) {
+            throw new NullPointerException("Server is null");
+        }
+        if(server.isEmpty()) {
+            throw new IllegalArgumentException("Server name is empty");
+        }
         if(data==null) {
             throw new NullPointerException("Data is null");
         }
-        return Request.sendRequest(Request.createRequest(Opcodes.UPDATE_SERVER_DATA, UpdateServerDataRequest.build(id, data)));
+        return Request.sendRequest(Request.createRequest(Opcodes.UPDATE_SERVER_DATA, UpdateServerDataRequest.build(server, data)));
+    }
+
+    public static JsonObject removeServer(String server) {
+        if(server==null) {
+            throw new NullPointerException("Server is null");
+        }
+        if(server.isEmpty()) {
+            throw new IllegalArgumentException("Server name is empty");
+        }
+        return Request.sendRequest(Request.createRequest(Opcodes.REMOVE_SERVER, RemoveServerRequest.build(server)));
     }
 
     public ServerInfo(String id) {
@@ -71,14 +87,10 @@ public class ServerInfo {
     }
 
     public boolean sendSignal(ServerSignal action) {
-        if(verified) {
-            return Mongo.getCollection("data", "servers").updateOne(new Document().append("id", id), new Document().append("$set", new Document().append("action", action.name()))).getModifiedCount()!=0;
-        }else {
-            return false;
-        }
+        return Mongo.getCollection("data", "servers").updateOne(new Document().append("id", id), new Document().append("$set", new Document().append("action", action.name()))).getModifiedCount()!=0;
     }
 
     public String toString() {
-        return "ServerInfo{id=" + CommonUtils.toString(id) + ", type=" + type + ", onlinePlayers=" + onlinePlayers + ", maxPlayers=" + maxPlayers + ", version=" + version + ", details=" + details + ", start=" + start + ", verified=" + verified + "}";
+        return "ServerInfo{id=" + CommonUtils.toString(id) + ", type=" + type + ", onlinePlayers=" + onlinePlayers + ", maxPlayers=" + maxPlayers + ", version=" + version + ", details=" + details + ", start=" + start + "}";
     }
 }

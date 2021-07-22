@@ -7,7 +7,6 @@ import ga.epicpix.network.common.*;
 import ga.epicpix.network.common.servers.ServerInfo;
 import ga.epicpix.network.common.websocket.ClientType;
 import ga.epicpix.network.common.websocket.WebSocketConnection;
-import ga.epicpix.network.common.websocket.requests.Request;
 import ga.epicpix.network.common.websocket.requests.data.UpdateServerDataRequest;
 import org.bson.Document;
 import org.bukkit.Bukkit;
@@ -64,7 +63,7 @@ public class Entry extends JavaPlugin {
         System.out.println("Server Info: " + BukkitCommon.getThisServer());
         System.out.println("Database Server Info: " + CommonUtils.getServerInfo(BukkitCommon.getServerId()));
         System.out.println("Updating DB");
-        new ServerInfo(BukkitCommon.getServerId()).updateServer(new UpdateServerDataRequest.Data()
+        ServerInfo.updateServer(Bukkit.getServerId(), new UpdateServerDataRequest.Data()
                 .setType(ServerInfo.ServerType.UNKNOWN)
                 .setOnlinePlayers(Bukkit.getOnlinePlayers().size())
                 .setMaxPlayers(Bukkit.getMaxPlayers())
@@ -72,7 +71,7 @@ public class Entry extends JavaPlugin {
                 .setDetails(BukkitCommon.getDetails())
                 .setBootMillis(start));
         System.out.println("Database Server Info: " + CommonUtils.getServerInfo(BukkitCommon.getServerId()));
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> CommonUtils.removeServerInfo(BukkitCommon.getServerId())));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> ServerInfo.removeServer(BukkitCommon.getServerId())));
         Command.registerCommand(new TestCommand());
     }
 

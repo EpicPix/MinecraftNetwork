@@ -5,13 +5,14 @@ import com.mongodb.client.model.changestream.OperationType;
 import ga.epicpix.network.bukkit.commands.TestCommand;
 import ga.epicpix.network.common.*;
 import ga.epicpix.network.common.servers.ServerInfo;
-import ga.epicpix.network.common.websocket.ClientType;
-import ga.epicpix.network.common.websocket.WebSocketConnection;
+import ga.epicpix.network.common.websocket.*;
 import ga.epicpix.network.common.websocket.requests.data.UpdateServerDataRequest;
 import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Team;
+
+import static ga.epicpix.network.common.servers.ServerInfo.ServerSignal;
 
 public class Entry extends JavaPlugin {
 
@@ -23,6 +24,27 @@ public class Entry extends JavaPlugin {
         PLUGIN = this;
         WebSocketConnection.setClientType(ClientType.BUKKIT);
         WebSocketConnection.connect();
+
+        ServerInfo.updateServer(Bukkit.getServerId(), new UpdateServerDataRequest.Data()
+                .setType(ServerInfo.ServerType.UNKNOWN)
+                .setOnlinePlayers(Bukkit.getOnlinePlayers().size())
+                .setMaxPlayers(Bukkit.getMaxPlayers())
+                .setVersion(BukkitCommon.getVersion())
+                .setDetails(BukkitCommon.getDetails())
+                .setBootMillis(start));
+
+        ServerInfo.makeWebSocketServerOwner(Bukkit.getServerId());
+
+        WebSocketConnection.setServerHook((opcode, data, requester) -> {
+            if(opcode==Opcodes.SERVER_SIGNAL) {
+                ServerSignal signal = ServerSignal.getSignal(data.get("signal").getAsString());
+                if(signal==ServerSignal.STOP) {
+                    System.out.println("Signal to stop the server received");
+                }
+            }
+        });
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> ServerInfo.removeServer(BukkitCommon.getServerId())));
         Language.loadLanguages();
         BukkitCommon.setBungeeCord(Settings.getSettingOrDefault("BUNGEE_CORD", false));
 
@@ -60,19 +82,6 @@ public class Entry extends JavaPlugin {
             }
         });
 
-        System.out.println("Server Info: " + BukkitCommon.getThisServer());
-        System.out.println("Database Server Info: " + CommonUtils.getServerInfo(BukkitCommon.getServerId()));
-        System.out.println("Updating DB");
-        ServerInfo.updateServer(Bukkit.getServerId(), new UpdateServerDataRequest.Data()
-                .setType(ServerInfo.ServerType.UNKNOWN)
-                .setOnlinePlayers(Bukkit.getOnlinePlayers().size())
-                .setMaxPlayers(Bukkit.getMaxPlayers())
-                .setVersion(BukkitCommon.getVersion())
-                .setDetails(BukkitCommon.getDetails())
-                .setBootMillis(start));
-        ServerInfo.makeWebSocketServerOwner(Bukkit.getServerId());
-        System.out.println("Database Server Info: " + CommonUtils.getServerInfo(BukkitCommon.getServerId()));
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> ServerInfo.removeServer(BukkitCommon.getServerId())));
         Command.registerCommand(new TestCommand());
     }
 

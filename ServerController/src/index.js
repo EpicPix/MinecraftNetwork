@@ -47,7 +47,7 @@ async function main() {
     const wss = new Server({ port });
 
     wss.on('connection', function (ws) {
-        ws.userData = { authenticated: false };
+        ws.userData = { authenticated: false, server: null };
         ws.respond = function(message, data) {
             data.rid = message.rid;
             ws.send(JSON.stringify(data));

@@ -14,6 +14,15 @@ const StringOpcodes = {
     SERVER_SIGNAL: 0x8000
 }
 
+const ErrorNumbers = {
+    NO_SERVER_FIELD: 0x01,
+    NO_DATA_FIELD: 0x02,
+    NO_SIGNAL_FIELD: 0x03,
+
+    SERVER_NOT_FOUND: 0x20,
+    NO_SERVER_WEBSOCKET: 0x21
+}
+
 
 const OpcodeHandler = {
     handleAuthenticate: function(websocket, json) {
@@ -49,7 +58,7 @@ const OpcodeHandler = {
                     const servers = require('./index').servers;
                     var server = null;
                     for(var serv of servers) {
-                        if(serv.id === json['server']) {
+                        if(serv.public.id === json['server']) {
                             server = serv;
                             break;
                         }
@@ -57,9 +66,10 @@ const OpcodeHandler = {
                     var flags = 0x0000;
                     if(server === null) {
                         flags |= 0x0001;
-                        server = { id: json['server'], type: "UNKNOWN", onlinePlayers: -1, maxPlayers: -1, version: {protocol: -1, name: "???"}, details: {ip: "0.0.0.0", port: 0}, bootMillis: -1 };
+                        server = { public: { id: json['server'], type: "UNKNOWN", onlinePlayers: -1, maxPlayers: -1, version: {protocol: -1, name: "???"}, details: {ip: "0.0.0.0", port: 0}, bootMillis: -1 }, websocket: null };
                         servers.push(server);
                     }
+                    var public = server.public;
                     var data = json['data'];
                     var copy = function(a, b, c, d) {
                         if(typeof b[c] !== 'undefined') {
@@ -67,18 +77,18 @@ const OpcodeHandler = {
                             flags |= d;
                         }
                     }
-                    copy(server, data, 'type', 0x0002);
-                    copy(server, data, 'onlinePlayers', 0x0004);
-                    copy(server, data, 'maxPlayers', 0x0008);
-                    copy(server, data, 'version', 0x0010);
-                    copy(server, data, 'details', 0x0020);
-                    copy(server, data, 'bootMillis', 0x0040);
-                    websocket.respond(json, {ok: true, server, flags});
+                    copy(public, data, 'type', 0x0002);
+                    copy(public, data, 'onlinePlayers', 0x0004);
+                    copy(public, data, 'maxPlayers', 0x0008);
+                    copy(public, data, 'version', 0x0010);
+                    copy(public, data, 'details', 0x0020);
+                    copy(public, data, 'bootMillis', 0x0040);
+                    websocket.respond(json, {ok: true, server: public, flags});
                 }else {
-                    websocket.respond(json, {error: {id: 2, message: "No data field specified"}});
+                    websocket.respond(json, {errno: ErrorNumbers.NO_DATA_FIELD});
                 }
             }else {
-                websocket.respond(json, {error: {id: 1, message: "No server field specified"}});
+                websocket.respond(json, {errno: ErrorNumbers.NO_SERVER_FIELD});
             }
         }
     },
@@ -97,19 +107,71 @@ const OpcodeHandler = {
                 }
                 websocket.respond(json, {ok: true});
             }else {
-                websocket.respond(json, {error: {id: 1, message: "No server field specified"}});
+                websocket.respond(json, {errno: ErrorNumbers.NO_SERVER_FIELD});
             }
         }
     },
     handleMakeWebSocketServerOwner: function(websocket, json) {
-        websocket.respond(json, {error: {id: 3, message: "Not implemented yet!"}});
+        if(websocket.checkAuth()) {
+            if(json['server']) {
+                const servers = require('./index').servers;
+                var server = null;
+                for(var serv of servers) {
+                    if(serv.public.id === json['server']) {
+                        server = serv;
+                        break;
+                    }
+                }
+                if(server!==null) {
+                    if(server.websocket!==null) {
+                        server.websocket.userData.server = null;
+                    }
+                    websocket.userData.server = json['server'];
+                    server.websocket = websocket;
+                    websocket.respond(json, {ok: true});
+                }else {
+                    websocket.respond(json, {errno: ErrorNumbers.SERVER_NOT_FOUND});
+                }
+            }else {
+                websocket.respond(json, {errno: ErrorNumbers.NO_SERVER_FIELD});
+            }
+        }
     },
     handleSendSignal: function(websocket, json) {
-        websocket.respond(json, {error: {id: 3, message: "Not implemented yet!"}});
+        if(websocket.checkAuth()) {
+            if(json['server']) {
+                if(json['signal']) {
+                    const servers = require('./index').servers;
+                    var server = null;
+                    for(var serv of servers) {
+                        if(serv.public.id === json['server']) {
+                            server = serv;
+                            break;
+                        }
+                    }
+                    if(server!==null) {
+                        if(server.websocket!==null) {
+                            server.websocket.send(JSON.stringify({opcode: StringOpcodes.SERVER_SIGNAL, signal: json.signal}));
+                            websocket.respond(json, {ok: true});
+                        }else {
+                            websocket.respond(json, {errno: ErrorNumbers.NO_SERVER_WEBSOCKET});
+                        }
+                    }else {
+                        websocket.respond(json, {errno: ErrorNumbers.SERVER_NOT_FOUND});
+                    }
+                }
+            }else {
+                websocket.respond(json, {errno: ErrorNumbers.NO_SERVER_FIELD});
+            }
+        }
     },
     handleListServers: function(websocket, json) {
         if(websocket.checkAuth()) {
-            websocket.respond(json, {ok: true, servers: require('./index').servers});
+            var safeServers = [];
+            require('./index').servers.forEach((server) => {
+                safeServers.push(server.public);
+            });
+            websocket.respond(json, {ok: true, servers: safeServers});
         }
     }
 }

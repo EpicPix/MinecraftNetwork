@@ -20,17 +20,25 @@ public final class WebSocketConnection implements WebSocket.Listener {
     private static ClientType clientType = ClientType.OTHER;
 
     private static WebSocket webSocket;
-    private static WebSocketConnection connection;
+    static WebSocketConnection connection;
+    static Requester requester;
+
     private static boolean connected = false;
 
-    private static long nextRequestId = 0;
-
-    private static final ArrayList<RequestFuture> futures = new ArrayList<>();
     private static final HashMap<String, ReturnableRunnable> hooks = new HashMap<>();
+    private static ServerHook serverHook = null;
 
     public static void addHook(String hook, ReturnableRunnable run) {
         hooks.remove(hook);
         hooks.put(hook, run);
+    }
+
+    public static void setServerHook(ServerHook hook) {
+        if(serverHook==null) {
+            serverHook = hook;
+        }else {
+            throw new IllegalStateException("Tried to set ServerHook when it's already set");
+        }
     }
 
     public static void setClientType(ClientType clientType) {
@@ -54,6 +62,7 @@ public final class WebSocketConnection implements WebSocket.Listener {
 
     private static void connectWithCredentials(WebSocketCredentials creds) {
         connection = new WebSocketConnection();
+        requester = new Requester(connection);
         try {
             webSocket = HttpClient.newBuilder().build().newWebSocketBuilder().buildAsync(creds.toURI(), connection).join();
             connected = true;
@@ -77,34 +86,11 @@ public final class WebSocketConnection implements WebSocket.Listener {
         }
     }
 
-    public static JsonObject sendRequest(Request req) {
-        if(!Reflection.getCaller().equals(Request.class.getName())) {
-            throw new SecurityException("Use the Request class to call sendRequest");
-        }
-        JsonObject resp = connection.sendRequest(req.getData().toJson(), req.getOpcode());
-        resp.remove("rid");
-        return resp;
-    }
-
     private boolean sendAuthenticateRequest(WebSocketCredentials credentials) {
         return Request.sendRequest(Request.createRequest(Opcodes.AUTHENTICATE, AuthenticateRequest.build(credentials.username(), credentials.password(), getClientType()))).get("success").getAsBoolean();
     }
 
-    private JsonObject sendRequest(JsonObject request, int opcode) {
-        return sendRequestAsync(request, opcode).join();
-    }
-
-    private RequestFuture sendRequestAsync(JsonObject request, int opcode) {
-        nextRequestId++;
-        request.addProperty("opcode", opcode);
-        request.addProperty("rid", nextRequestId);
-        RequestFuture future = new RequestFuture(nextRequestId);
-        futures.add(future);
-        send(request.toString());
-        return future;
-    }
-
-    private void send(String data) {
+    void send(String data) {
         webSocket.sendText(data, true).join();
     }
 
@@ -115,7 +101,7 @@ public final class WebSocketConnection implements WebSocket.Listener {
     public CompletionStage<?> onText(WebSocket ws, CharSequence str, boolean last) {
         JsonObject data = new Gson().fromJson(str.toString(), JsonObject.class);
         if(data.has("rid")) {
-            for(RequestFuture future : futures) {
+            for(RequestFuture future : requester.futures) {
                 if(future.rid()==data.get("rid").getAsLong()) {
                     future.complete(data);
                     break;
@@ -125,7 +111,11 @@ public final class WebSocketConnection implements WebSocket.Listener {
             if(data.has("opcode")) {
                 int opcode = data.get("opcode").getAsInt();
                 if((opcode & 0x8000) == 0x8000) {
-                    //TODO: Implement a handler
+                    if(serverHook!=null) {
+                        serverHook.handle(opcode, data, requester);
+                    }else {
+                        System.err.println("Server Opcode Handler is not set, not handling opcode " + opcode);
+                    }
                 }else {
                     System.err.println("Not a server handle opcode: " + opcode);
                 }
@@ -154,9 +144,9 @@ public final class WebSocketConnection implements WebSocket.Listener {
 
     public CompletionStage<?> onClose(WebSocket ws, int statusCode, String reason) {
         connected = false;
-        futures.forEach(x -> x.cancel(true));
-        futures.clear();
-        nextRequestId = 0;
+        requester.futures.forEach(x -> x.cancel(true));
+        requester.futures.clear();
+        requester.nextRequestId = 0;
         connection = null;
         ws = null;
 

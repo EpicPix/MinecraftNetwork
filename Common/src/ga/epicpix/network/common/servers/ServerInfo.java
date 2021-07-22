@@ -4,9 +4,7 @@ import com.google.gson.JsonObject;
 import ga.epicpix.network.common.CommonUtils;
 import ga.epicpix.network.common.websocket.Opcodes;
 import ga.epicpix.network.common.websocket.requests.Request;
-import ga.epicpix.network.common.websocket.requests.data.ListServersRequest;
-import ga.epicpix.network.common.websocket.requests.data.RemoveServerRequest;
-import ga.epicpix.network.common.websocket.requests.data.UpdateServerDataRequest;
+import ga.epicpix.network.common.websocket.requests.data.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -94,13 +92,11 @@ public class ServerInfo {
     }
 
     public static JsonObject makeWebSocketServerOwner(String server) {
-        //TODO: Implement makeWebSocketServerOwner
-        return null;
+        return Request.sendRequest(Request.createRequest(Opcodes.MAKE_WEB_SOCKET_SERVER_OWNER, MakeWebSocketServerOwnerRequest.build(server)));
     }
 
     public static JsonObject sendSignal(String server, ServerSignal signal) {
-        //TODO: Implement sendSignal
-        return null;
+        return Request.sendRequest(Request.createRequest(Opcodes.SEND_SIGNAL, SendSignalRequest.build(server, signal)));
     }
 
     public static JsonObject requestServerList() {

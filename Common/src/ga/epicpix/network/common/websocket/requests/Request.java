@@ -3,6 +3,7 @@ package ga.epicpix.network.common.websocket.requests;
 import com.google.gson.JsonObject;
 import ga.epicpix.network.common.Reflection;
 import ga.epicpix.network.common.websocket.Opcodes;
+import ga.epicpix.network.common.websocket.Requester;
 import ga.epicpix.network.common.websocket.WebSocketConnection;
 import ga.epicpix.network.common.websocket.requests.data.RequestData;
 
@@ -24,7 +25,7 @@ public final class Request {
     }
 
     public final RequestData getData() {
-        if(!Reflection.getCaller().equals(WebSocketConnection.class.getName())) {
+        if(!Reflection.getCaller().equals(Requester.class.getName())) {
             throw new SecurityException("Cannot get data of this request!");
         }
         return data;
@@ -62,7 +63,7 @@ public final class Request {
     }
 
     public static JsonObject sendRequest(Request request) {
-        return WebSocketConnection.sendRequest(request);
+        return Requester.sendRequest(request);
     }
 
 }

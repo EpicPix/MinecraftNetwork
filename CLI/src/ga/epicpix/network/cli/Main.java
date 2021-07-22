@@ -145,8 +145,6 @@ public class Main {
         });
         WebSocketConnection.connect();
 
-        ServerInfo.updateServer("test", new UpdateServerDataRequest.Data());
-
         Logger.getLogger("org.mongodb.driver").setLevel(Level.SEVERE);
         Logger.getLogger("org.bson").setLevel(Level.SEVERE);
 

@@ -1,9 +1,7 @@
 package ga.epicpix.network.common.servers;
 
 import ga.epicpix.network.common.CommonUtils;
-import ga.epicpix.network.common.TypeClass;
 
-@TypeClass("SERVER_DETAILS")
 public record ServerDetails(String ip, int port) {
 
     public ServerDetails {

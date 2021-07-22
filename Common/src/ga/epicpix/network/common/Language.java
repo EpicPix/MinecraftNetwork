@@ -8,7 +8,6 @@ import java.util.ArrayList;
 
 import static ga.epicpix.network.common.ChatColor.convertColorText;
 
-@TypeClass("LANGUAGE")
 public class Language {
 
     public static final ArrayList<Language> loadedLanguages = new ArrayList<>();

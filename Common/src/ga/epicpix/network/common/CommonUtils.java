@@ -71,6 +71,7 @@ public class CommonUtils {
         return list;
     }
 
+    @Deprecated(forRemoval = true)
     public static Document toDocument(Object obj) {
         if(obj==null) return null;
         var out = Document.parse(new Gson().toJson(obj));
@@ -80,6 +81,7 @@ public class CommonUtils {
         return out;
     }
 
+    @Deprecated(forRemoval = true)
     public static <T> T documentToObject(Document doc, Class<T> clazz) {
         if(doc==null) return null;
         try {
@@ -89,6 +91,7 @@ public class CommonUtils {
         }
     }
 
+    @Deprecated(forRemoval = true)
     public static <T> ArrayList<T> documentsToObjects(ArrayList<Document> documents, Class<T> clazz) {
         var converted = new ArrayList<T>();
         for(var doc : documents) converted.add(documentToObject(doc, clazz));
@@ -126,6 +129,7 @@ public class CommonUtils {
         return clazz==Boolean.class || clazz==Byte.class || clazz==Short.class || clazz==Integer.class || clazz==Long.class || clazz==Character.class || clazz==Float.class || clazz==Double.class;
     }
 
+    @Deprecated(forRemoval = true)
     public static Object convertDocument(Document document) {
         var type = document.get("TYPE");
         if(type==null || type.getClass()!=String.class) return document;
@@ -160,6 +164,7 @@ public class CommonUtils {
         throw new IllegalStateException("No default rank found.");
     }
 
+    @Deprecated(forRemoval = true)
     public static Document set(Document doc) {
         return new Document().append("$set", doc);
     }

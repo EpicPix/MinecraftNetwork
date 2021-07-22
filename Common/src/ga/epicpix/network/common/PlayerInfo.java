@@ -8,7 +8,6 @@ import org.bson.Document;
 
 import java.util.UUID;
 
-@TypeClass("PLAYER_INFO")
 public class PlayerInfo {
 
     public String uuid;

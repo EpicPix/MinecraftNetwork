@@ -25,6 +25,20 @@ public class Entry extends JavaPlugin {
     public void onLoad() {
         PLUGIN = this;
         WebSocketConnection.setClientType(ClientType.BUKKIT);
+
+        WebSocketConnection.setSignalHandler((opcode, data, requester) -> {
+            ServerSignal signal = ServerSignal.getSignal(data.get("signal").getAsString());
+            if (signal == ServerSignal.STOP) {
+                System.out.println("Signal to stop the server received");
+            }
+        });
+
+        WebSocketConnection.setSettingsUpdateHandler((opcode, data, requester) -> {
+            if(data.get("name").getAsString().equals("BUNGEE_CORD")) {
+                BukkitCommon.setBungeeCord(SettingsManager.getSettingOrDefault("BUNGEE_CORD", new ValueType(false)).getAsBoolean());
+            }
+        });
+
         WebSocketConnection.connect();
 
         ServerInfo.updateServer(Bukkit.getServerId(), new UpdateServerDataRequest.Data()
@@ -37,29 +51,9 @@ public class Entry extends JavaPlugin {
 
         ServerInfo.makeWebSocketServerOwner(Bukkit.getServerId());
 
-        WebSocketConnection.setServerHook((opcode, data, requester) -> {
-            if(opcode==Opcodes.SERVER_SIGNAL) {
-                ServerSignal signal = ServerSignal.getSignal(data.get("signal").getAsString());
-                if(signal==ServerSignal.STOP) {
-                    System.out.println("Signal to stop the server received");
-                }
-            }
-        });
-
         Runtime.getRuntime().addShutdownHook(new Thread(() -> ServerInfo.removeServer(BukkitCommon.getServerId())));
         Language.loadLanguages();
         BukkitCommon.setBungeeCord(SettingsManager.getSettingOrDefault("BUNGEE_CORD", new ValueType(false)).getAsBoolean());
-
-        Mongo.registerWatcher(new MongoWatcher("data", "settings") {
-            public void run(ChangeStreamDocument<Document> handle) {
-                if(handle.getOperationType()!=OperationType.DELETE && handle.getOperationType()!=OperationType.DROP) {
-                    Document fullDocument = Mongo.getCollection("data", "settings").find(handle.getDocumentKey()).first();
-                    if(fullDocument.getString("id").equals("BUNGEE_CORD")) {
-                        BukkitCommon.setBungeeCord(fullDocument.getBoolean("value"));
-                    }
-                }
-            }
-        });
 
         Mongo.registerWatcher(new MongoWatcher("data", "ranks") {
             public void run(ChangeStreamDocument<Document> handle) {

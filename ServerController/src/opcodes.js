@@ -16,7 +16,8 @@ const StringOpcodes = {
     GET_SETTING_OR_DEFAULT: 0x0011,
     SET_SETTING: 0x0012,
 
-    SERVER_SIGNAL: 0x8000
+    SERVER_SIGNAL: 0x8000,
+    SETTINGS_UPDATE: 0x8001
 }
 
 const ErrorNumbers = {
@@ -26,9 +27,14 @@ const ErrorNumbers = {
     NO_SETTING_FIELD: 0x04,
 
     SERVER_NOT_FOUND: 0x20,
-    NO_SERVER_WEBSOCKET: 0x21
+    NO_SERVER_WEBSOCKET: 0x21,
+    NO_CAP: 0x22
 }
 
+const Capabilities = {
+    CAPSRVSIG: 0x0001, //SERVER SIGNAL
+    CAPSETTINGUPD: 0x0002 //SETTINGS UPDATE
+}
 
 const OpcodeHandler = {
     handleAuthenticate: function(websocket, json) {
@@ -53,6 +59,7 @@ const OpcodeHandler = {
             }
             websocket.userData.authenticated = success;
             websocket.userData.clientType = json['clientType'];
+            websocket.userData.capabilities = json['capabilities'];
             websocket.respond(json, {success});
             if(!success) websocket.close(4005, 'Authentication failed');
         }
@@ -157,8 +164,12 @@ const OpcodeHandler = {
                     }
                     if(server!==null) {
                         if(server.websocket!==null) {
-                            server.websocket.send(JSON.stringify({opcode: StringOpcodes.SERVER_SIGNAL, signal: json.signal}));
-                            websocket.respond(json, {ok: true});
+                            if(server.websocket.hasCapability(Capabilities.CAPSRVSIG)) {
+                                server.websocket.send(JSON.stringify({opcode: StringOpcodes.SERVER_SIGNAL, signal: json.signal}));
+                                websocket.respond(json, {ok: true});
+                            }else {
+                                websocket.respond(json, {ok: false, errno: ErrorNumbers.NO_CAP});
+                            }
                         }else {
                             websocket.respond(json, {ok: false, errno: ErrorNumbers.NO_SERVER_WEBSOCKET});
                         }
@@ -235,6 +246,11 @@ const OpcodeHandler = {
                     }else {
                         setting = {name: json['setting'], value: json['default']};
                         settings.push(setting);
+                        for(const ws of require('./index').wss.clients) {
+                            if(ws.hasCapability(Capabilities.CAPSETTINGUPD)) {
+                                ws.send(JSON.stringify({opcode: StringOpcodes.SETTINGS_UPDATE, setting: setting}));
+                            }
+                        }
                         websocket.respond(json, {ok: true, setting: setting.value});
                     }
                 }
@@ -260,6 +276,11 @@ const OpcodeHandler = {
                         settings.push(setting);
                     }
                     setting.value = json['value'];
+                    for(const ws of require('./index').wss.clients) {
+                        if(ws.hasCapability(Capabilities.CAPSETTINGUPD)) {
+                            ws.send(JSON.stringify({opcode: StringOpcodes.SETTINGS_UPDATE, name: setting.name, value: setting.value}));
+                        }
+                    }
                     websocket.respond(json, {ok: true});
                 }
             }else {
@@ -302,4 +323,4 @@ for(var opcode of Object.values(StringOpcodes)) {
     }
 }
 
-module.exports = { StringOpcodes, OpcodeHandler, toOpcodeName, toOpcodeFunctionName };
+module.exports = { StringOpcodes, OpcodeHandler, ErrorNumbers, Capabilities, toOpcodeName, toOpcodeFunctionName };

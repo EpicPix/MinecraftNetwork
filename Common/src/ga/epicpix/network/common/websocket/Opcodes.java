@@ -15,5 +15,6 @@ public class Opcodes {
     public static final int SET_SETTING = 0x0012;
 
     public static final int SERVER_SIGNAL = 0x8000;
+    public static final int SETTINGS_UPDATE = 0x8001;
 
 }

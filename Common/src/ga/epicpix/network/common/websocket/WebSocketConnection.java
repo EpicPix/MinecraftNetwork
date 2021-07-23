@@ -9,6 +9,7 @@ import ga.epicpix.network.common.websocket.requests.data.AuthenticateRequest;
 import java.net.http.HttpClient;
 import java.net.http.WebSocket;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
@@ -16,6 +17,7 @@ import java.util.concurrent.CompletionStage;
 public final class WebSocketConnection implements WebSocket.Listener {
 
     private static ClientType clientType = ClientType.OTHER;
+    private static int capabilities = 0;
 
     private static WebSocket webSocket;
     static WebSocketConnection connection;
@@ -24,18 +26,54 @@ public final class WebSocketConnection implements WebSocket.Listener {
     private static boolean connected = false;
 
     private static final HashMap<String, ReturnableRunnable> hooks = new HashMap<>();
-    private static ServerHook serverHook = null;
+
+    private static ServerHook signalHandler = null;
+    private static ServerHook settingsChangedHandler = null;
+
+    private static final ServerHook serverHook = (opcode, data, requester) -> {
+        ArrayList<Capability> caps = new ArrayList<>();
+        for(Capability c : Capability.values()) {
+            if((capabilities&c.getBits())==c.getBits()) {
+                caps.add(c);
+            }
+        }
+        if(opcode == Opcodes.SEND_SIGNAL && caps.contains(Capability.CAPSRVSIG)) {
+            if(signalHandler!=null) signalHandler.handle(opcode, data, requester);
+        }else if(opcode == Opcodes.SETTINGS_UPDATE && caps.contains(Capability.CAPSETTINGUPD)) {
+            if(settingsChangedHandler!=null) settingsChangedHandler.handle(opcode, data, requester);
+        }
+    };
+
+    public static void makeCapable(Capability capability) {
+        if(capability==null) {
+            throw new NullPointerException("Capability is null");
+        }
+        if(connected) {
+            throw new IllegalStateException("Tried to make client capable while already connected");
+        }
+        capabilities |= capability.getBits();
+    }
 
     public static void addHook(String hook, ReturnableRunnable run) {
         hooks.remove(hook);
         hooks.put(hook, run);
     }
 
-    public static void setServerHook(ServerHook hook) {
-        if(serverHook==null) {
-            serverHook = hook;
+    public static void setSignalHandler(ServerHook hook) {
+        if(signalHandler ==null) {
+            makeCapable(Capability.CAPSRVSIG);
+            signalHandler = hook;
         }else {
-            throw new IllegalStateException("Tried to set ServerHook when it's already set");
+            throw new IllegalStateException("Tried to set SignalHandler when it's already set");
+        }
+    }
+
+    public static void setSettingsUpdateHandler(ServerHook hook) {
+        if(settingsChangedHandler ==null) {
+            makeCapable(Capability.CAPSETTINGUPD);
+            settingsChangedHandler = hook;
+        }else {
+            throw new IllegalStateException("Tried to set SettingsChangedHandler when it's already set");
         }
     }
 
@@ -85,7 +123,7 @@ public final class WebSocketConnection implements WebSocket.Listener {
     }
 
     private boolean sendAuthenticateRequest(WebSocketCredentials credentials) {
-        return Request.sendRequest(Request.createRequest(Opcodes.AUTHENTICATE, AuthenticateRequest.build(credentials.username(), credentials.password(), getClientType()))).get("success").getAsBoolean();
+        return Request.sendRequest(Request.createRequest(Opcodes.AUTHENTICATE, AuthenticateRequest.build(credentials.username(), credentials.password(), getClientType(), capabilities))).get("success").getAsBoolean();
     }
 
     void send(String data) {

@@ -21,13 +21,15 @@ function getSecrets() {
     return new Secrets(secretsjson.mongodb);
 }
 
+const port = 8080;
+const wss = new Server({ port });
+
 var logins = [];
 var servers = [];
-var settings = [{name: "test", value: {type: 0, value: "hello"}}];
+var settings = [];
 
-module.exports = { logins, servers, settings };
+module.exports = { logins, servers, settings, wss };
 
-const port = 8080;
 
 async function main() {
 
@@ -36,10 +38,9 @@ async function main() {
     logins.push({username: 'admin', password: 'admin'})
     
 
-    const wss = new Server({ port });
 
     wss.on('connection', function (ws) {
-        ws.userData = { authenticated: false, server: null };
+        ws.userData = { authenticated: false, server: null, capabilities: 0 };
         ws.respond = function(message, data) {
             data.rid = message.rid;
             ws.send(JSON.stringify(data));
@@ -50,6 +51,12 @@ async function main() {
                 return false;
             }
             return true;
+        };
+        ws.hasCapability = function(cap) {
+            if((ws.userData.capabilities & cap) === cap) {
+                return true;
+            }
+            return false;
         };
         ws.on('message', function (message) {
             var json;

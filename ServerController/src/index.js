@@ -1,24 +1,10 @@
 const fs = require('fs');
 
 const { Server } = require('ws');
-const { MongoClient } = require('mongodb');
-const { Secrets } = require('./secrets');
 const { StringOpcodes, OpcodeHandler, toOpcodeFunctionName } = require('./opcodes');
 
 if (!fs.existsSync("secrets.json")) {
     fs.writeFileSync("secrets.json", JSON.stringify({}));
-}
-
-function getSecrets() {
-    const secretsstr = fs.readFileSync("secrets.json", 'utf8');
-    var secretsjson;
-    try {
-        secretsjson = JSON.parse(secretsstr);
-    } catch (error) {
-        console.error("An error occurred while parsing secrets.json");
-        process.exit();
-    }
-    return new Secrets(secretsjson.mongodb);
 }
 
 const port = 8080;
@@ -89,16 +75,6 @@ async function main() {
     });
 
     console.log(`WebSocket Server listening at port ${port}`)
-
-    /*
-
-    var watchStream = Mongo.db('data').watch();
-
-    while(true) {
-        console.log(await watchStream.next());
-    }
-
-    */
 }
 
 Promise.resolve(main());

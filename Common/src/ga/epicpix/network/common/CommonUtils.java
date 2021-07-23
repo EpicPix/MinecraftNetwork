@@ -66,11 +66,7 @@ public class CommonUtils {
     @Deprecated(forRemoval = true)
     public static Document toDocument(Object obj) {
         if(obj==null) return null;
-        var out = Document.parse(new Gson().toJson(obj));
-        if(Types.getType(obj.getClass())!=null) {
-            out.append("TYPE", Types.getType(obj.getClass()));
-        }
-        return out;
+        return Document.parse(new Gson().toJson(obj));
     }
 
     @Deprecated(forRemoval = true)
@@ -88,28 +84,6 @@ public class CommonUtils {
         var converted = new ArrayList<T>();
         for(var doc : documents) converted.add(documentToObject(doc, clazz));
         return converted;
-    }
-
-    @Deprecated(forRemoval = true)
-    public static Object convertDocument(Document document) {
-        var type = document.get("TYPE");
-        if(type==null || type.getClass()!=String.class) return document;
-
-        var clazz = Types.getType((String) type);
-        if(clazz!=null) {
-            return documentToObject(document, clazz);
-        }else {
-            return document;
-        }
-    }
-
-    public static <K, V> K getValueByKey(V value, Map<K, V> map) {
-        for(var entry : map.entrySet()) {
-            if(entry.getValue().equals(value)) {
-                return entry.getKey();
-            }
-        }
-        return null;
     }
 
     public static Language getDefaultLanguage() {

@@ -2,7 +2,6 @@ package ga.epicpix.network.common.websocket;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import ga.epicpix.network.common.Reflection;
 import ga.epicpix.network.common.ReturnableRunnable;
 import ga.epicpix.network.common.websocket.requests.Request;
 import ga.epicpix.network.common.websocket.requests.data.AuthenticateRequest;
@@ -10,7 +9,6 @@ import ga.epicpix.network.common.websocket.requests.data.AuthenticateRequest;
 import java.net.http.HttpClient;
 import java.net.http.WebSocket;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
@@ -148,7 +146,7 @@ public final class WebSocketConnection implements WebSocket.Listener {
         requester.futures.clear();
         requester.nextRequestId = 0;
         connection = null;
-        ws = null;
+        webSocket = null;
 
         if(statusCode!=4005) {
             System.out.println("WebSocket closed: " + statusCode + " for the reason" + reason);

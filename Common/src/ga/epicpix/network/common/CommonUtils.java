@@ -90,12 +90,6 @@ public class CommonUtils {
         return converted;
     }
 
-    public static boolean isPrimitive(Object obj) {
-        var clazz = obj.getClass();
-        if(clazz.isPrimitive()) return true;
-        return clazz==Boolean.class || clazz==Byte.class || clazz==Short.class || clazz==Integer.class || clazz==Long.class || clazz==Character.class || clazz==Float.class || clazz==Double.class;
-    }
-
     @Deprecated(forRemoval = true)
     public static Object convertDocument(Document document) {
         var type = document.get("TYPE");

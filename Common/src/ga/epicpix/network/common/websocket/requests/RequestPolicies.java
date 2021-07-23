@@ -1,6 +1,7 @@
 package ga.epicpix.network.common.websocket.requests;
 
 import ga.epicpix.network.common.servers.ServerInfo;
+import ga.epicpix.network.common.settings.SettingsManager;
 import ga.epicpix.network.common.websocket.Opcodes;
 import ga.epicpix.network.common.websocket.WebSocketConnection;
 
@@ -12,9 +13,11 @@ public final class RequestPolicies {
                 || opcode==Opcodes.REMOVE_SERVER
                 || opcode==Opcodes.MAKE_WEB_SOCKET_SERVER_OWNER
                 || opcode==Opcodes.SEND_SIGNAL
-                || opcode==Opcodes.LIST_SERVERS) && clazz.equals(ServerInfo.class.getName())) {
-            return true;
-        }
+                || opcode==Opcodes.LIST_SERVERS
+                || opcode==Opcodes.GET_SERVER) && clazz.equals(ServerInfo.class.getName())) return true;
+        if((opcode==Opcodes.GET_SETTING
+                || opcode==Opcodes.GET_SETTING_OR_DEFAULT
+                || opcode==Opcodes.SET_SETTING) && clazz.equals(SettingsManager.class.getName())) return true;
         return clazz.equals(WebSocketConnection.class.getName());
     }
 

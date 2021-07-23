@@ -5,6 +5,8 @@ import com.mongodb.client.model.changestream.OperationType;
 import ga.epicpix.network.bukkit.commands.TestCommand;
 import ga.epicpix.network.common.*;
 import ga.epicpix.network.common.servers.ServerInfo;
+import ga.epicpix.network.common.settings.SettingsManager;
+import ga.epicpix.network.common.values.ValueType;
 import ga.epicpix.network.common.websocket.*;
 import ga.epicpix.network.common.websocket.requests.data.UpdateServerDataRequest;
 import org.bson.Document;
@@ -46,7 +48,7 @@ public class Entry extends JavaPlugin {
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> ServerInfo.removeServer(BukkitCommon.getServerId())));
         Language.loadLanguages();
-        BukkitCommon.setBungeeCord(Settings.getSettingOrDefault("BUNGEE_CORD", false));
+        BukkitCommon.setBungeeCord(SettingsManager.getSettingOrDefault("BUNGEE_CORD", new ValueType(false)).getAsBoolean());
 
         Mongo.registerWatcher(new MongoWatcher("data", "settings") {
             public void run(ChangeStreamDocument<Document> handle) {

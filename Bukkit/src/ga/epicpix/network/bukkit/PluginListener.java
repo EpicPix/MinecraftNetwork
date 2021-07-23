@@ -2,6 +2,8 @@ package ga.epicpix.network.bukkit;
 
 import ga.epicpix.network.common.*;
 import ga.epicpix.network.common.servers.ServerInfo;
+import ga.epicpix.network.common.settings.SettingsManager;
+import ga.epicpix.network.common.values.ValueType;
 import ga.epicpix.network.common.websocket.requests.data.UpdateServerDataRequest;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -67,7 +69,7 @@ public class PluginListener implements Listener {
         if(info==null) {
             info = PlayerInfo.updatePlayerInfo(new PlayerInfo().populate(player.getUniqueId(), player.getName(), CommonUtils.getDefaultRank(), CommonUtils.getDefaultLanguage()));
         }
-        boolean showColon = Settings.getSettingOrDefault("SHOW_COLON_CHAT", true);
+        boolean showColon = SettingsManager.getSettingOrDefault("SHOW_COLON_CHAT", new ValueType(true)).getAsBoolean();
         Rank rank = info.getRank();
         e.setCancelled(true);
         ArrayList<TextComponent> components = new ArrayList<>();

@@ -23,26 +23,18 @@ function getSecrets() {
 
 var logins = [];
 var servers = [];
+var settings = [{name: "test", value: {type: 0, value: "hello"}}];
 
-module.exports = { logins, servers };
+module.exports = { logins, servers, settings };
 
 const port = 8080;
 
 async function main() {
 
-    //TODO: Make it so you don't need Mongo at all
-    const Mongo = new MongoClient(getSecrets().getConnectionString());
-    await Mongo.connect();
-
-    console.log('Connected to MongoDB')
-
-    logins.push(...await Mongo.db('data').collection('auth').find().toArray());
-
-    if(logins.length === 0) {
-        console.log('No accounts are created, login using admin account');
-        console.log("Username and Password are 'admin'")
-        logins.push({username: 'admin', password: 'admin'})
-    }
+    console.log('No accounts are created, login using admin account');
+    console.log("Username and Password are 'admin'")
+    logins.push({username: 'admin', password: 'admin'})
+    
 
     const wss = new Server({ port });
 

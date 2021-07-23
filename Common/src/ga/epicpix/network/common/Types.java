@@ -1,7 +1,5 @@
 package ga.epicpix.network.common;
 
-import ga.epicpix.network.common.servers.*;
-
 import java.util.HashMap;
 
 @Deprecated(forRemoval = true)
@@ -13,10 +11,6 @@ public class Types {
         registerType("LANGUAGE", Language.class);
         registerType("PLAYER_INFO", PlayerInfo.class);
         registerType("RANK", Rank.class);
-
-        registerType("SERVER_DETAILS", ServerDetails.class);
-        registerType("SERVER_INFO", ServerInfo.class);
-        registerType("SERVER_VERSION", ServerVersion.class);
     }
 
     public static void registerType(String type, Class<?> clazz) {

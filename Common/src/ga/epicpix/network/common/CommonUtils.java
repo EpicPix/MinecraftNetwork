@@ -1,6 +1,8 @@
 package ga.epicpix.network.common;
 
 import com.google.gson.Gson;
+import ga.epicpix.network.common.settings.SettingsManager;
+import ga.epicpix.network.common.values.ValueType;
 import org.bson.Document;
 
 import java.io.UnsupportedEncodingException;
@@ -50,10 +52,6 @@ public class CommonUtils {
             return addresses.get(0);
         }
         return InetAddress.getLoopbackAddress();
-    }
-
-    public static <T> ArrayList<T> toList(T[] array) {
-        return new ArrayList<>(Arrays.asList(array));
     }
 
     @Deprecated(forRemoval = true)
@@ -121,7 +119,7 @@ public class CommonUtils {
     }
 
     public static Language getDefaultLanguage() {
-        return Language.getLanguageOrDefault(Settings.getSettingOrDefault("DEFAULT_LANGUAGE", "ENGLISH"), DefaultLanguage.ENGLISH);
+        return Language.getLanguageOrDefault(SettingsManager.getSettingOrDefault("DEFAULT_LANGUAGE", new ValueType("ENGLISH")).getAsString(), DefaultLanguage.ENGLISH);
     }
 
     public static Rank getDefaultRank() {

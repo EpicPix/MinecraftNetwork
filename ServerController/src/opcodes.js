@@ -12,6 +12,10 @@ const StringOpcodes = {
     LIST_SERVERS: 0x0005,
     GET_SERVER: 0x0006,
 
+    GET_SETTING: 0x0010,
+    GET_SETTING_OR_DEFAULT: 0x0011,
+    SET_SETTING: 0x0012,
+
     SERVER_SIGNAL: 0x8000
 }
 
@@ -19,6 +23,7 @@ const ErrorNumbers = {
     NO_SERVER_FIELD: 0x01,
     NO_DATA_FIELD: 0x02,
     NO_SIGNAL_FIELD: 0x03,
+    NO_SETTING_FIELD: 0x04,
 
     SERVER_NOT_FOUND: 0x20,
     NO_SERVER_WEBSOCKET: 0x21
@@ -189,6 +194,76 @@ const OpcodeHandler = {
                 websocket.respond(json, {ok: true, server: server.public});
             }else {
                 websocket.respond(json, {ok: false, errno: ErrorNumbers.NO_SERVER_FIELD});
+            }
+        }
+    },
+    handleGetSetting: function(websocket, json) {
+        if(websocket.checkAuth()) {
+            if(json['setting']) {
+                const settings = require('./index').settings;
+                var setting = null;
+                for(var st of settings) {
+                    if(st.name === json['setting']) {
+                        setting = st;
+                        break;
+                    }
+                }
+                if(setting) {
+                    websocket.respond(json, {ok: true, setting: setting.value});
+                }else {
+                    websocket.respond(json, {ok: false});
+                }
+            }else {
+                websocket.respond(json, {ok: false, errno: ErrorNumbers.NO_SETTING_FIELD});
+            }
+        }
+    },
+    handleGetSettingOrDefault: function(websocket, json) {
+        if(websocket.checkAuth()) {
+            if(json['setting']) {
+                if(json['default']) {
+                    const settings = require('./index').settings;
+                    var setting = null;
+                    for(var st of settings) {
+                        if(st.name === json['setting']) {
+                            setting = st;
+                            break;
+                        }
+                    }
+                    if(setting) {
+                        websocket.respond(json, {ok: true, setting: setting.value});
+                    }else {
+                        setting = {name: json['setting'], value: json['default']};
+                        settings.push(setting);
+                        websocket.respond(json, {ok: true, setting: setting.value});
+                    }
+                }
+            }else {
+                websocket.respond(json, {ok: false, errno: ErrorNumbers.NO_SETTING_FIELD});
+            }
+        }
+    },
+    handleSetSetting: function(websocket, json) {
+        if(websocket.checkAuth()) {
+            if(json['setting']) {
+                if(json['value']) {
+                    const settings = require('./index').settings;
+                    var setting = null;
+                    for(var st of settings) {
+                        if(st.name === json['setting']) {
+                            setting = st;
+                            break;
+                        }
+                    }
+                    if(!setting) {
+                        setting = {name: json['setting']};
+                        settings.push(setting);
+                    }
+                    setting.value = json['value'];
+                    websocket.respond(json, {ok: true});
+                }
+            }else {
+                websocket.respond(json, {ok: false, errno: ErrorNumbers.NO_SETTING_FIELD});
             }
         }
     }

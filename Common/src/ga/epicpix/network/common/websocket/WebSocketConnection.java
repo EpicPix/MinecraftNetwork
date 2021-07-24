@@ -29,6 +29,7 @@ public final class WebSocketConnection implements WebSocket.Listener {
 
     private static ServerHook signalHandler = null;
     private static ServerHook settingsChangedHandler = null;
+    private static ServerHook rankChangedHandler = null;
 
     private static final ServerHook serverHook = (opcode, data, requester) -> {
         ArrayList<Capability> caps = new ArrayList<>();
@@ -41,6 +42,8 @@ public final class WebSocketConnection implements WebSocket.Listener {
             if(signalHandler!=null) signalHandler.handle(opcode, data, requester);
         }else if(opcode == Opcodes.SETTINGS_UPDATE && caps.contains(Capability.CAPSETTINGUPD)) {
             if(settingsChangedHandler!=null) settingsChangedHandler.handle(opcode, data, requester);
+        }else if(opcode == Opcodes.RANK_UPDATE && caps.contains(Capability.CAPRANKUPD)) {
+            if(rankChangedHandler!=null) rankChangedHandler.handle(opcode, data, requester);
         }
     };
 
@@ -74,6 +77,15 @@ public final class WebSocketConnection implements WebSocket.Listener {
             settingsChangedHandler = hook;
         }else {
             throw new IllegalStateException("Tried to set SettingsChangedHandler when it's already set");
+        }
+    }
+
+    public static void setRankUpdateHandler(ServerHook hook) {
+        if(rankChangedHandler ==null) {
+            makeCapable(Capability.CAPRANKUPD);
+            rankChangedHandler = hook;
+        }else {
+            throw new IllegalStateException("Tried to set RankChangedHandler when it's already set");
         }
     }
 

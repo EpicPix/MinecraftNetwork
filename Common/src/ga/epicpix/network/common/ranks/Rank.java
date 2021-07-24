@@ -17,7 +17,7 @@ public class Rank {
     String nameColor;
     String chatColor;
 
-    static Rank rankFromJsonObject(JsonObject obj) {
+    public static Rank rankFromJsonObject(JsonObject obj) {
         return new Gson().fromJson(obj, Rank.class);
     }
 

@@ -1,17 +1,15 @@
 package ga.epicpix.network.bukkit;
 
-import com.mongodb.client.model.changestream.ChangeStreamDocument;
-import com.mongodb.client.model.changestream.OperationType;
 import ga.epicpix.network.bukkit.commands.TestCommand;
-import ga.epicpix.network.common.*;
+import ga.epicpix.network.common.ChatColor;
+import ga.epicpix.network.common.CommonUtils;
 import ga.epicpix.network.common.ranks.Rank;
-import ga.epicpix.network.common.ranks.RankManager;
 import ga.epicpix.network.common.servers.ServerInfo;
 import ga.epicpix.network.common.settings.SettingsManager;
 import ga.epicpix.network.common.values.ValueType;
-import ga.epicpix.network.common.websocket.*;
+import ga.epicpix.network.common.websocket.ClientType;
+import ga.epicpix.network.common.websocket.WebSocketConnection;
 import ga.epicpix.network.common.websocket.requests.data.UpdateServerDataRequest;
-import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Team;
@@ -41,6 +39,24 @@ public class Entry extends JavaPlugin {
             }
         });
 
+        WebSocketConnection.setRankUpdateHandler((opcode, data, requester) -> {
+            Rank rank = Rank.rankFromJsonObject(data.getAsJsonObject("rank"));
+            Team team = null;
+            for(Team iteam : PluginListener.teams) {
+                if(iteam.getName().contains(rank.getId())) {
+                    team = iteam;
+                    break;
+                }
+            }
+            if(team!=null) {
+                Team iteam = team;
+                Bukkit.getScheduler().runTask(PLUGIN, () -> {
+                    iteam.setPrefix(CommonUtils.componentsToString(rank.getPrefix()) + (rank.getPrefix().length==0?"":" ") + ChatColor.convertColorText("/" + rank.getNameColor() + "/"));
+                    iteam.setSuffix((rank.getSuffix().length==0?"":ChatColor.convertColorText("/white/ ")) + CommonUtils.componentsToString(rank.getSuffix()));
+                });
+            }
+        });
+
         WebSocketConnection.connect();
 
         ServerInfo.updateServer(Bukkit.getServerId(), new UpdateServerDataRequest.Data()
@@ -55,29 +71,6 @@ public class Entry extends JavaPlugin {
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> ServerInfo.removeServer(BukkitCommon.getServerId())));
         BukkitCommon.setBungeeCord(SettingsManager.getSettingOrDefault("BUNGEE_CORD", new ValueType(false)).getAsBoolean());
-
-        Mongo.registerWatcher(new MongoWatcher("data", "ranks") {
-            public void run(ChangeStreamDocument<Document> handle) {
-                if(handle.getOperationType()!=OperationType.DELETE && handle.getOperationType()!=OperationType.DROP) {
-                    Document fullDocument = Mongo.getCollection("data", "ranks").find(handle.getDocumentKey()).first();
-                    Rank rank = RankManager.getRank(fullDocument.getString("id"));
-                    Team team = null;
-                    for(Team iteam : PluginListener.teams) {
-                        if(iteam.getName().contains(rank.getId())) {
-                            team = iteam;
-                            break;
-                        }
-                    }
-                    if(team!=null) {
-                        Team iteam = team;
-                        Bukkit.getScheduler().runTask(PLUGIN, () -> {
-                            iteam.setPrefix(CommonUtils.componentsToString(rank.getPrefix()) + (rank.getPrefix().length==0?"":" ") + ChatColor.convertColorText("/" + rank.getNameColor() + "/"));
-                            iteam.setSuffix((rank.getSuffix().length==0?"":ChatColor.convertColorText("/white/ ")) + CommonUtils.componentsToString(rank.getSuffix()));
-                        });
-                    }
-                }
-            }
-        });
 
         Command.registerCommand(new TestCommand());
     }

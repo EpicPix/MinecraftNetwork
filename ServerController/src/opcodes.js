@@ -31,7 +31,8 @@ const StringOpcodes = {
     //From Server 0x8000-0xffff
 
     SERVER_SIGNAL: 0x8000,
-    SETTINGS_UPDATE: 0x8001
+    SETTINGS_UPDATE: 0x8001,
+    RANK_UPDATE: 0x8002
 }
 
 const ErrorNumbers = {
@@ -49,7 +50,8 @@ const ErrorNumbers = {
 
 const Capabilities = {
     CAPSRVSIG: 0x0001, //SERVER SIGNAL
-    CAPSETTINGUPD: 0x0002 //SETTINGS UPDATE
+    CAPSETTINGUPD: 0x0002, //SETTINGS UPDATE
+    CAPRANKUPD: 0x0004 //RANK UPDATE
 }
 
 Object.freeze(StringOpcodes);

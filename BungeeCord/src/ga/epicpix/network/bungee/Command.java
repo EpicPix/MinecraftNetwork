@@ -5,6 +5,7 @@ import ga.epicpix.network.bungee.commands.BungeeCommandPlayer;
 import ga.epicpix.network.common.ChatColor;
 import ga.epicpix.network.common.CommonUtils;
 import ga.epicpix.network.common.PlayerInfo;
+import ga.epicpix.network.common.ranks.RankManager;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -20,12 +21,12 @@ public abstract class Command {
                 if(sender instanceof ProxiedPlayer player) {
                     info = PlayerInfo.getPlayerInfo(player.getUniqueId());
                     if(info==null) {
-                        info = PlayerInfo.updatePlayerInfo(new PlayerInfo().populate(player.getUniqueId(), player.getName(), CommonUtils.getDefaultRank()));
+                        info = PlayerInfo.updatePlayerInfo(new PlayerInfo().populate(player.getUniqueId(), player.getName(), RankManager.getDefaultRank()));
                     }
                     String req = cmd.getRequiredPermission();
                     if(req!=null) {
                         boolean has = false;
-                        for(String permission : info.getRank().permissions) {
+                        for(String permission : info.getRank().getPermissions()) {
                             if(permission.equals(req)) {
                                 has = true;
                                 break;

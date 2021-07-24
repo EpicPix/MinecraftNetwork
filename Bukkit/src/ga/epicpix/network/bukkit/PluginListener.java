@@ -1,6 +1,8 @@
 package ga.epicpix.network.bukkit;
 
 import ga.epicpix.network.common.*;
+import ga.epicpix.network.common.ranks.Rank;
+import ga.epicpix.network.common.ranks.RankManager;
 import ga.epicpix.network.common.servers.ServerInfo;
 import ga.epicpix.network.common.settings.SettingsManager;
 import ga.epicpix.network.common.values.ValueType;
@@ -31,14 +33,14 @@ public class PluginListener implements Listener {
         Player player = e.getPlayer();
         PlayerInfo info = PlayerInfo.getPlayerInfo(player.getUniqueId());
         if(info==null) {
-            info = new PlayerInfo().populate(player.getUniqueId(), player.getName(), CommonUtils.getDefaultRank());
+            info = new PlayerInfo().populate(player.getUniqueId(), player.getName(), RankManager.getDefaultRank());
         }
         if(!SpigotConfig.bungee) {
             info.lastLogin = System.currentTimeMillis();
             PlayerInfo.updatePlayerInfo(info);
         }
         Rank rank = info.getRank();
-        String name = CommonUtils.makeStringLengthPrepend(Integer.toString(rank.priority), 4, "0") + rank.id;
+        String name = CommonUtils.makeStringLengthPrepend(Integer.toString(rank.getPriority()), 4, "0") + rank.getId();
         Team team = null;
         for(Team iteam : teams) {
             if(name.equals(iteam.getName())) {
@@ -50,8 +52,8 @@ public class PluginListener implements Listener {
             team = publicScoreboard.registerNewTeam(name);
             teams.add(team);
         }
-        team.setPrefix(CommonUtils.componentsToString(rank.prefix) + (rank.prefix.length==0?"":" ") + ChatColor.convertColorText("/" + rank.nameColor + "/"));
-        team.setSuffix((rank.suffix.length==0?"":ChatColor.convertColorText("/white/ ")) + CommonUtils.componentsToString(rank.suffix));
+        team.setPrefix(CommonUtils.componentsToString(rank.getPrefix()) + (rank.getPrefix().length==0?"":" ") + ChatColor.convertColorText("/" + rank.getNameColor() + "/"));
+        team.setSuffix((rank.getSuffix().length==0?"":ChatColor.convertColorText("/white/ ")) + CommonUtils.componentsToString(rank.getSuffix()));
         team.removeEntry(player.getName());
         team.addEntry(player.getName());
         player.setScoreboard(publicScoreboard);
@@ -67,19 +69,19 @@ public class PluginListener implements Listener {
         Player player = e.getPlayer();
         PlayerInfo info = PlayerInfo.getPlayerInfo(player.getUniqueId());
         if(info==null) {
-            info = PlayerInfo.updatePlayerInfo(new PlayerInfo().populate(player.getUniqueId(), player.getName(), CommonUtils.getDefaultRank()));
+            info = PlayerInfo.updatePlayerInfo(new PlayerInfo().populate(player.getUniqueId(), player.getName(), RankManager.getDefaultRank()));
         }
         boolean showColon = SettingsManager.getSettingOrDefault("SHOW_COLON_CHAT", new ValueType(true)).getAsBoolean();
         Rank rank = info.getRank();
         e.setCancelled(true);
         ArrayList<TextComponent> components = new ArrayList<>();
-        for(ChatComponent c : rank.prefix) components.add(BukkitCommon.toTextComponent(c));
-        if(rank.prefix.length!=0) components.add(BukkitCommon.toTextComponent(new ChatComponent().setText(" ")));
-        components.add(BukkitCommon.toTextComponent(new ChatComponent().setText(e.getPlayer().getName()).setColor(rank.nameColor)));
-        if(rank.suffix.length!=0) components.add(BukkitCommon.toTextComponent(new ChatComponent().setText(" ")));
-        for(ChatComponent c : rank.suffix) components.add(BukkitCommon.toTextComponent(c));
+        for(ChatComponent c : rank.getPrefix()) components.add(BukkitCommon.toTextComponent(c));
+        if(rank.getPrefix().length!=0) components.add(BukkitCommon.toTextComponent(new ChatComponent().setText(" ")));
+        components.add(BukkitCommon.toTextComponent(new ChatComponent().setText(e.getPlayer().getName()).setColor(rank.getNameColor())));
+        if(rank.getSuffix().length!=0) components.add(BukkitCommon.toTextComponent(new ChatComponent().setText(" ")));
+        for(ChatComponent c : rank.getSuffix()) components.add(BukkitCommon.toTextComponent(c));
         if(showColon) components.add(BukkitCommon.toTextComponent(new ChatComponent().setText(": ").setColor("white")));
-        components.add(BukkitCommon.toTextComponent(new ChatComponent().setText(e.getMessage()).setColor(rank.chatColor)));
+        components.add(BukkitCommon.toTextComponent(new ChatComponent().setText(e.getMessage()).setColor(rank.getChatColor())));
         TextComponent[] acomponents = components.toArray(new TextComponent[0]);
         for(Player p : e.getRecipients()) {
             p.spigot().sendMessage(acomponents);

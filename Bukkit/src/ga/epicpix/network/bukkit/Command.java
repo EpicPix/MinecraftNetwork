@@ -5,6 +5,7 @@ import ga.epicpix.network.bukkit.commands.BukkitCommandPlayer;
 import ga.epicpix.network.common.ChatColor;
 import ga.epicpix.network.common.CommonUtils;
 import ga.epicpix.network.common.PlayerInfo;
+import ga.epicpix.network.common.ranks.RankManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -22,12 +23,12 @@ public abstract class Command {
                 if(sender instanceof Player player) {
                     info = PlayerInfo.getPlayerInfo(player.getUniqueId());
                     if(info==null) {
-                        info = PlayerInfo.updatePlayerInfo(new PlayerInfo().populate(player.getUniqueId(), player.getName(), CommonUtils.getDefaultRank()));
+                        info = PlayerInfo.updatePlayerInfo(new PlayerInfo().populate(player.getUniqueId(), player.getName(), RankManager.getDefaultRank()));
                     }
                     String req = cmd.getRequiredPermission();
                     if(req!=null) {
                         boolean has = false;
-                        for(String permission : info.getRank().permissions) {
+                        for(String permission : info.getRank().getPermissions()) {
                             if(permission.equals(req)) {
                                 has = true;
                                 break;

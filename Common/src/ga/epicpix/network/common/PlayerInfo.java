@@ -1,9 +1,8 @@
 package ga.epicpix.network.common;
 
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Updates;
-import org.bson.AbstractBsonWriter;
+import ga.epicpix.network.common.ranks.Rank;
+import ga.epicpix.network.common.ranks.RankManager;
 import org.bson.Document;
 
 import java.util.UUID;
@@ -21,13 +20,13 @@ public class PlayerInfo {
     }
 
     public Rank getRank() {
-        return Rank.getRankByName(rank);
+        return RankManager.getRank(rank);
     }
 
     public PlayerInfo populate(UUID uuid, String username, Rank rank) {
         this.uuid = uuid.toString();
         this.username = username;
-        this.rank = rank.id;
+        this.rank = rank.getId();
         if(firstLogin==-1) {
             firstLogin = System.currentTimeMillis();
         }

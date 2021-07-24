@@ -1,8 +1,6 @@
 package ga.epicpix.network.common;
 
 import com.google.gson.Gson;
-import ga.epicpix.network.common.settings.SettingsManager;
-import ga.epicpix.network.common.values.ValueType;
 import org.bson.Document;
 
 import java.io.UnsupportedEncodingException;
@@ -84,15 +82,6 @@ public class CommonUtils {
         var converted = new ArrayList<T>();
         for(var doc : documents) converted.add(documentToObject(doc, clazz));
         return converted;
-    }
-
-    public static Rank getDefaultRank() {
-        for(Rank r : Rank.getRanks()) {
-            if(r.def) {
-                return r;
-            }
-        }
-        throw new IllegalStateException("No default rank found.");
     }
 
     @Deprecated(forRemoval = true)

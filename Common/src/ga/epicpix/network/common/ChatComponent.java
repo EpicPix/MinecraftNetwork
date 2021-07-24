@@ -1,5 +1,8 @@
 package ga.epicpix.network.common;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
 public class ChatComponent {
 
     public String text;
@@ -44,4 +47,9 @@ public class ChatComponent {
         this.underlined = underlined;
         return this;
     }
+
+    public static ChatComponent getFromJsonObject(JsonObject obj) {
+        return new Gson().fromJson(obj, ChatComponent.class);
+    }
+
 }

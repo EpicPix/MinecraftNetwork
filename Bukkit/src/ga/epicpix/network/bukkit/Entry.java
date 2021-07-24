@@ -4,6 +4,8 @@ import com.mongodb.client.model.changestream.ChangeStreamDocument;
 import com.mongodb.client.model.changestream.OperationType;
 import ga.epicpix.network.bukkit.commands.TestCommand;
 import ga.epicpix.network.common.*;
+import ga.epicpix.network.common.ranks.Rank;
+import ga.epicpix.network.common.ranks.RankManager;
 import ga.epicpix.network.common.servers.ServerInfo;
 import ga.epicpix.network.common.settings.SettingsManager;
 import ga.epicpix.network.common.values.ValueType;
@@ -58,10 +60,10 @@ public class Entry extends JavaPlugin {
             public void run(ChangeStreamDocument<Document> handle) {
                 if(handle.getOperationType()!=OperationType.DELETE && handle.getOperationType()!=OperationType.DROP) {
                     Document fullDocument = Mongo.getCollection("data", "ranks").find(handle.getDocumentKey()).first();
-                    Rank rank = Rank.getRankByName(fullDocument.getString("id"));
+                    Rank rank = RankManager.getRank(fullDocument.getString("id"));
                     Team team = null;
                     for(Team iteam : PluginListener.teams) {
-                        if(iteam.getName().contains(rank.id)) {
+                        if(iteam.getName().contains(rank.getId())) {
                             team = iteam;
                             break;
                         }
@@ -69,8 +71,8 @@ public class Entry extends JavaPlugin {
                     if(team!=null) {
                         Team iteam = team;
                         Bukkit.getScheduler().runTask(PLUGIN, () -> {
-                            iteam.setPrefix(CommonUtils.componentsToString(rank.prefix) + (rank.prefix.length==0?"":" ") + ChatColor.convertColorText("/" + rank.nameColor + "/"));
-                            iteam.setSuffix((rank.suffix.length==0?"":ChatColor.convertColorText("/white/ ")) + CommonUtils.componentsToString(rank.suffix));
+                            iteam.setPrefix(CommonUtils.componentsToString(rank.getPrefix()) + (rank.getPrefix().length==0?"":" ") + ChatColor.convertColorText("/" + rank.getNameColor() + "/"));
+                            iteam.setSuffix((rank.getSuffix().length==0?"":ChatColor.convertColorText("/white/ ")) + CommonUtils.componentsToString(rank.getSuffix()));
                         });
                     }
                 }

@@ -87,11 +87,10 @@ public class BukkitCommon {
         Object server = Reflection.getValueOfField(Bukkit.getServer().getClass(), "console", Bukkit.getServer());
         Reflection.setValueOfField(server.getClass(), "onlineMode", server, !bungee);
         System.out.println("BungeeCord mode set to: " + (bungee?"on":"off"));
-        String bungeeCordUpdate = CommonUtils.getDefaultLanguage().getTranslation("kick.update.bungeecord");
         if(Entry.PLUGIN.isEnabled()) {
             Bukkit.getScheduler().runTask(Entry.PLUGIN, () -> {
                 for (Player player : Bukkit.getOnlinePlayers()) {
-                    player.kickPlayer(bungeeCordUpdate);
+                    player.kickPlayer("An update occurred");
                 }
             });
         }

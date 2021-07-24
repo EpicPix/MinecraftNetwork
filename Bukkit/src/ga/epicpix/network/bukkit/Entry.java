@@ -52,7 +52,6 @@ public class Entry extends JavaPlugin {
         ServerInfo.makeWebSocketServerOwner(Bukkit.getServerId());
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> ServerInfo.removeServer(BukkitCommon.getServerId())));
-        Language.loadLanguages();
         BukkitCommon.setBungeeCord(SettingsManager.getSettingOrDefault("BUNGEE_CORD", new ValueType(false)).getAsBoolean());
 
         Mongo.registerWatcher(new MongoWatcher("data", "ranks") {

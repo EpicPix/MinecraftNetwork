@@ -26,11 +26,11 @@ public class ServerCommand extends Command {
                     if(getArguments().length>=1) {
                         ServerInfo serverInfo = ServerInfo.getServerInfo(getArguments()[0]);
                         if(serverInfo==null) {
-                            sendTranslated("error.server.unknown");
+                            sendMessage("/red/Unknown server!");
                         }else {
                             net.md_5.bungee.api.config.ServerInfo currentServer = getBungeePlayer().getServer().getInfo();
                             if(serverInfo.id.equals(currentServer.getName()) || new InetSocketAddress(serverInfo.details.ip(), serverInfo.details.port()).equals(currentServer.getSocketAddress())) {
-                                sendTranslated("error.server.already_connected");
+                                sendMessage("/red/Already connected to this server!");
                             }else {
                                 getBungeePlayer().connect(ServerConnectRequest.builder()
                                         .retry(false)
@@ -39,9 +39,9 @@ public class ServerCommand extends Command {
                                         .target(ProxyServer.getInstance().constructServerInfo(serverInfo.id, new InetSocketAddress(serverInfo.details.ip(), serverInfo.details.port()), "", false))
                                         .callback((result, throwable) -> {
                                             if (result == ServerConnectRequest.Result.FAIL) {
-                                                sendTranslated("error.server.connect");
+                                                sendMessage("/red/Could not connect to this server!");
                                             } else if (result == ServerConnectRequest.Result.ALREADY_CONNECTING) {
-                                                sendTranslated("error.server.connecting");
+                                                sendMessage("/red/Already trying to connect to this server!");
                                             }
                                         })
                                         .build());
@@ -51,7 +51,7 @@ public class ServerCommand extends Command {
                         sendUsage();
                     }
                 }else {
-                    sendTranslated("error.command.only_player");
+                    sendMessage("/red/This command can only be run by players!");
                 }
             }
         };

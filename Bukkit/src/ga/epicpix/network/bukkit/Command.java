@@ -2,8 +2,8 @@ package ga.epicpix.network.bukkit;
 
 import ga.epicpix.network.bukkit.commands.BukkitCommandConsole;
 import ga.epicpix.network.bukkit.commands.BukkitCommandPlayer;
+import ga.epicpix.network.common.ChatColor;
 import ga.epicpix.network.common.CommonUtils;
-import ga.epicpix.network.common.Language;
 import ga.epicpix.network.common.PlayerInfo;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -22,7 +22,7 @@ public abstract class Command {
                 if(sender instanceof Player player) {
                     info = PlayerInfo.getPlayerInfo(player.getUniqueId());
                     if(info==null) {
-                        info = PlayerInfo.updatePlayerInfo(new PlayerInfo().populate(player.getUniqueId(), player.getName(), CommonUtils.getDefaultRank(), CommonUtils.getDefaultLanguage()));
+                        info = PlayerInfo.updatePlayerInfo(new PlayerInfo().populate(player.getUniqueId(), player.getName(), CommonUtils.getDefaultRank()));
                     }
                     String req = cmd.getRequiredPermission();
                     if(req!=null) {
@@ -34,7 +34,7 @@ public abstract class Command {
                             }
                         }
                         if(!has) {
-                            sender.sendMessage(Language.getTranslation("error.no_permissions", info.language));
+                            sender.sendMessage(ChatColor.convertColorText("/red/You don't have enough permissions!"));
                             return false;
                         }
                     }

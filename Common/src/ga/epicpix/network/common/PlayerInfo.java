@@ -13,7 +13,6 @@ public class PlayerInfo {
     public String uuid;
     public String username;
     public String rank;
-    public String language;
     public long firstLogin = -1;
     public long lastLogin = -1;
 
@@ -25,15 +24,10 @@ public class PlayerInfo {
         return Rank.getRankByName(rank);
     }
 
-    public Language getLanguage() {
-        return Language.getLanguage(language);
-    }
-
-    public PlayerInfo populate(UUID uuid, String username, Rank rank, Language language) {
+    public PlayerInfo populate(UUID uuid, String username, Rank rank) {
         this.uuid = uuid.toString();
         this.username = username;
         this.rank = rank.id;
-        this.language = language.id;
         if(firstLogin==-1) {
             firstLogin = System.currentTimeMillis();
         }

@@ -31,7 +31,7 @@ public class PluginListener implements Listener {
         Player player = e.getPlayer();
         PlayerInfo info = PlayerInfo.getPlayerInfo(player.getUniqueId());
         if(info==null) {
-            info = new PlayerInfo().populate(player.getUniqueId(), player.getName(), CommonUtils.getDefaultRank(), CommonUtils.getDefaultLanguage());
+            info = new PlayerInfo().populate(player.getUniqueId(), player.getName(), CommonUtils.getDefaultRank());
         }
         if(!SpigotConfig.bungee) {
             info.lastLogin = System.currentTimeMillis();
@@ -67,7 +67,7 @@ public class PluginListener implements Listener {
         Player player = e.getPlayer();
         PlayerInfo info = PlayerInfo.getPlayerInfo(player.getUniqueId());
         if(info==null) {
-            info = PlayerInfo.updatePlayerInfo(new PlayerInfo().populate(player.getUniqueId(), player.getName(), CommonUtils.getDefaultRank(), CommonUtils.getDefaultLanguage()));
+            info = PlayerInfo.updatePlayerInfo(new PlayerInfo().populate(player.getUniqueId(), player.getName(), CommonUtils.getDefaultRank()));
         }
         boolean showColon = SettingsManager.getSettingOrDefault("SHOW_COLON_CHAT", new ValueType(true)).getAsBoolean();
         Rank rank = info.getRank();

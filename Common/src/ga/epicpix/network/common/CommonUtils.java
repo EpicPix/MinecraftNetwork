@@ -86,10 +86,6 @@ public class CommonUtils {
         return converted;
     }
 
-    public static Language getDefaultLanguage() {
-        return Language.getLanguageOrDefault(SettingsManager.getSettingOrDefault("DEFAULT_LANGUAGE", new ValueType("ENGLISH")).getAsString(), DefaultLanguage.ENGLISH);
-    }
-
     public static Rank getDefaultRank() {
         for(Rank r : Rank.getRanks()) {
             if(r.def) {

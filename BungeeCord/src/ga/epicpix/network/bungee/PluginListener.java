@@ -14,7 +14,7 @@ public class PluginListener implements Listener {
         ProxiedPlayer player = e.getPlayer();
         PlayerInfo info = PlayerInfo.getPlayerInfo(player.getUniqueId());
         if(info==null) {
-            info = new PlayerInfo().populate(player.getUniqueId(), player.getName(), CommonUtils.getDefaultRank(), CommonUtils.getDefaultLanguage());
+            info = new PlayerInfo().populate(player.getUniqueId(), player.getName(), CommonUtils.getDefaultRank());
         }
         info.lastLogin = System.currentTimeMillis();
         PlayerInfo.updatePlayerInfo(info);

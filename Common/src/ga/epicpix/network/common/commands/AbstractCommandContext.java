@@ -1,7 +1,6 @@
 package ga.epicpix.network.common.commands;
 
 import ga.epicpix.network.common.CommonUtils;
-import ga.epicpix.network.common.Language;
 import ga.epicpix.network.common.PlayerInfo;
 
 public abstract class AbstractCommandContext<Sender, Player extends Sender> {
@@ -39,16 +38,8 @@ public abstract class AbstractCommandContext<Sender, Player extends Sender> {
         return (Player) sender;
     }
 
-    public final void sendUsage() {
-        sendTranslated("command.usage." + commandName);
-    }
-
-    public final void sendTranslated(String message) {
-        if(isPlayer()) {
-            sendMessage(Language.getTranslation(message, getPlayerInfo().language));
-        }else {
-            sendMessage(CommonUtils.getDefaultLanguage().getTranslation(message));
-        }
+    public void sendUsage() {
+        sendMessage("No usage defined");
     }
 
     public final PlayerInfo getPlayerInfo() {

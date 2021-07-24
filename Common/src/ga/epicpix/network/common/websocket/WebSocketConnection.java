@@ -37,7 +37,7 @@ public final class WebSocketConnection implements WebSocket.Listener {
                 caps.add(c);
             }
         }
-        if(opcode == Opcodes.SEND_SIGNAL && caps.contains(Capability.CAPSRVSIG)) {
+        if(opcode == Opcodes.SERVER_SIGNAL && caps.contains(Capability.CAPSRVSIG)) {
             if(signalHandler!=null) signalHandler.handle(opcode, data, requester);
         }else if(opcode == Opcodes.SETTINGS_UPDATE && caps.contains(Capability.CAPSETTINGUPD)) {
             if(settingsChangedHandler!=null) settingsChangedHandler.handle(opcode, data, requester);

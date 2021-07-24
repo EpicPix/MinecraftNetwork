@@ -3,10 +3,6 @@ const fs = require('fs');
 const { Server } = require('ws');
 const { StringOpcodes, OpcodeHandler, toOpcodeFunctionName } = require('./opcodes');
 
-if (!fs.existsSync("secrets.json")) {
-    fs.writeFileSync("secrets.json", JSON.stringify({}));
-}
-
 const port = 8080;
 const wss = new Server({ port });
 
@@ -15,7 +11,6 @@ var servers = [];
 var settings = [];
 
 module.exports = { logins, servers, settings, wss };
-
 
 async function main() {
 

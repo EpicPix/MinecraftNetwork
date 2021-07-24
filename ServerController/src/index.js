@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 const { Server } = require('ws');
-const { StringOpcodes, OpcodeHandler, toOpcodeFunctionName } = require('./opcodes');
+const { StringOpcodes, toOpcodeId } = require('./opcodes');
 
 const port = 8080;
 const wss = new Server({ port });
@@ -59,10 +59,10 @@ async function main() {
                 return;
             }
 
-            var operationFunction = toOpcodeFunctionName(operationCode);
+            var operationId = toOpcodeId(operationCode);
 
-            if (operationFunction !== null) {
-                OpcodeHandler[operationFunction](ws, json);
+            if (operationId !== null) {
+                require(`./opcodes/${operationId}`)(ws, json);
             } else {
                 ws.close(4001, "Unknown opcode.");
             }

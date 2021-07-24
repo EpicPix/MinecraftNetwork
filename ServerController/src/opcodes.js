@@ -4,7 +4,10 @@
 //any other server packet should have a Request ID so that the server can respond to the client without a Packet ID
 
 const StringOpcodes = {
+    //Main 0x0000
     AUTHENTICATE: 0x0000,
+
+    //Servers 0x0001-0x000f
     UPDATE_SERVER_DATA: 0x0001,
     REMOVE_SERVER: 0x0002,
     MAKE_WEB_SOCKET_SERVER_OWNER: 0x0003,
@@ -12,9 +15,20 @@ const StringOpcodes = {
     LIST_SERVERS: 0x0005,
     GET_SERVER: 0x0006,
 
+    //Settings 0x0010-0x001f
     GET_SETTING: 0x0010,
     GET_SETTING_OR_DEFAULT: 0x0011,
     SET_SETTING: 0x0012,
+
+    //Ranks 0x0020-0x002f
+    GET_RANK: 0x0020,
+    GET_RANKS: 0x0021,
+    GET_DEAFULT_RANK: 0x0022,
+
+    //Languages? 0x0030-0x003f
+    //Players? 0x0040-0x004f
+
+    //From Server 0x8000-0xffff
 
     SERVER_SIGNAL: 0x8000,
     SETTINGS_UPDATE: 0x8001

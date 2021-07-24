@@ -36,6 +36,19 @@ public final class ValueType {
         return -1;
     }
 
+    public static String convertValueTypeToString(ValueType type) {
+        int t = type.getType();
+        if(t==0) return "string";
+        else if(t==1) return "boolean";
+        else if(t==2) return "byte";
+        else if(t==3) return "short";
+        else if(t==4) return "int";
+        else if(t==5) return "long";
+        else if(t==6) return "float";
+        else if(t==7) return "double";
+        return "unknown";
+    }
+
     public static ValueType getValueTypeFromJson(JsonObject obj) {
         int type = obj.get("type").getAsInt();
         Object o = null;

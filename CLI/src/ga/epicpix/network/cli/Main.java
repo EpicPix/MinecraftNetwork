@@ -3,20 +3,22 @@ package ga.epicpix.network.cli;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.sun.jdi.Value;
 import ga.epicpix.network.common.ChatColor;
 import ga.epicpix.network.common.servers.ServerInfo;
+import ga.epicpix.network.common.settings.SettingsManager;
+import ga.epicpix.network.common.values.ValueType;
 import ga.epicpix.network.common.websocket.ClientType;
 import ga.epicpix.network.common.websocket.WebSocketConnection;
 
 import java.io.Console;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import static ga.epicpix.network.common.CommonUtils.replaceAt;
-import static ga.epicpix.network.common.CommonUtils.replaceCharactersSpecial;
+import static ga.epicpix.network.common.CommonUtils.*;
 
 public class Main {
 
@@ -114,8 +116,8 @@ public class Main {
 
             Console console = System.console();
             // console will be probably null if it's run inside a IDE
-            String username = "";
-            String password = "";
+            String username;
+            String password;
             if(console==null) {
                 if(!warningShown) {
                     System.out.println("/yellow/Warning! /red/The password will be visible");
@@ -140,9 +142,6 @@ public class Main {
         });
         WebSocketConnection.connect();
 
-        Logger.getLogger("org.mongodb.driver").setLevel(Level.SEVERE);
-        Logger.getLogger("org.bson").setLevel(Level.SEVERE);
-
         System.out.println("Network Manager CLI");
         System.out.println("Type \"help\" for help");
 
@@ -166,8 +165,12 @@ public class Main {
                 System.out.println("ansi - Enables/Disables ANSI Codes");
                 System.out.println("exit - Exits this manager");
                 System.out.println("help - Show help");
+                System.out.println("settings - List settings");
                 System.out.println("server <id> stop - Stop a server");
                 System.out.println("servers - List servers");
+            }else if(cmdline.equals("settings")) {
+                HashMap<String, ValueType> resp = SettingsManager.getSettings();
+                showSettingsListing(resp);
             }else if(cmdline.equals("server")) {
                 if(getParam(cmd, 1) != null) {
                     ServerInfo server = ServerInfo.getServerInfo(getParam(cmd, 1));
@@ -221,6 +224,59 @@ public class Main {
         }else {
             return (neg?"-":"") + sec + "s";
         }
+    }
+
+    public static void showSettingsListing(HashMap<String, ValueType> settings) {
+        int name = 4;
+        for(String setting : settings.keySet()) if(name < setting.length()) name = setting.length();
+
+        int type = 4;
+        for(ValueType vtype : settings.values()) if(type < ValueType.convertValueTypeToString(vtype).length()) type = ValueType.convertValueTypeToString(vtype).length();
+
+        int value = 5;
+        for(ValueType vtype : settings.values()) if(value < vtype.toString().length()) value = vtype.toString().length();
+
+        name += 2;
+        type += 2;
+        value += 2;
+
+        String rep = "║" + " ".repeat(name) + "|" + " ".repeat(type) + "|" + " ".repeat(value) + "║";
+
+        if(settings.size()==0) {
+            int amt = "No settings found".length()+20;
+            System.out.println("/red/╔" + "═".repeat(amt) + "╗");
+            String x = "║" + " ".repeat(amt) + "║";
+            System.out.println("/red/" + replaceAt(x, amt/2-8, "No settings found."));
+            System.out.println("/red/╚" + "═".repeat(amt) + "╝");
+            return;
+        }
+
+        rep = replaceAt(rep, 1+(name-1)/2-1, "NAME");
+        rep = replaceAt(rep, 1+name+1+(type-1)/2-1, "TYPE");
+        rep = replaceAt(rep, 1+name+1+type+1+(value-1)/2-2, "VALUE");
+
+        System.out.println("/green/" + replaceCharactersSpecial("╔" + "═".repeat(rep.length()-2) + "╗", rep, '|', '╤'));
+        System.out.println("/green/" + rep.replace('|', '│'));
+        System.out.println("/green/" + replaceCharactersSpecial("╟" + "─".repeat(rep.length()-2) + "╢", rep, '|', '┼'));
+
+        for(Entry<String, ValueType> setting : settings.entrySet()) {
+            String settingOut = ansi("/green/║" + " ".repeat(name + (ansi ? AQUA.length() + GREEN.length() : 0))
+                    + "│" + " ".repeat(type + (ansi ? AQUA.length() + GREEN.length() : 0))
+                    + "│" + " ".repeat(value + (ansi ? AQUA.length() + GREEN.length() : 0)) + "║", true);
+
+            int x = 2 + (ansi ? GREEN.length() : 0);
+            settingOut = replaceAt(settingOut, x, ansi("/aqua/" + setting.getKey() + "/green/", false));
+            x += 1 + name + (ansi ? AQUA.length() + GREEN.length() : 0);
+            settingOut = replaceAt(settingOut, x, ansi("/aqua/" + ValueType.convertValueTypeToString(setting.getValue()) + "/green/", false));
+            x += 1 + type + (ansi ? AQUA.length() + GREEN.length() : 0);
+            settingOut = replaceAt(settingOut, x, ansi("/aqua/" + setting.getValue().toString() + "/green/", false));
+
+            System.out.println(settingOut);
+
+        }
+
+        System.out.println("/green/" + replaceCharactersSpecial("╚" + "═".repeat( rep.length()-2) + "╝", rep, '|', '╧'));
+
     }
 
     public static void showServerListing(ArrayList<ServerInfo> servers) {

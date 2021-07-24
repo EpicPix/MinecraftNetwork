@@ -14,6 +14,7 @@ public class Opcodes {
     public static final int GET_SETTING = 0x0010;
     public static final int GET_SETTING_OR_DEFAULT = 0x0011;
     public static final int SET_SETTING = 0x0012;
+    public static final int GET_SETTINGS = 0x0013;
 
     public static final int GET_RANK = 0x0020;
     public static final int GET_RANKS = 0x0021;

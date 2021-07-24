@@ -17,7 +17,8 @@ public final class RequestPolicies {
                 || opcode==Opcodes.GET_SERVER) && clazz.equals(ServerInfo.class.getName())) return true;
         if((opcode==Opcodes.GET_SETTING
                 || opcode==Opcodes.GET_SETTING_OR_DEFAULT
-                || opcode==Opcodes.SET_SETTING) && clazz.equals(SettingsManager.class.getName())) return true;
+                || opcode==Opcodes.SET_SETTING
+                || opcode==Opcodes.GET_SETTINGS) && clazz.equals(SettingsManager.class.getName())) return true;
         return clazz.equals(WebSocketConnection.class.getName());
     }
 

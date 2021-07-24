@@ -19,6 +19,7 @@ const StringOpcodes = {
     GET_SETTING: 0x0010,
     GET_SETTING_OR_DEFAULT: 0x0011,
     SET_SETTING: 0x0012,
+    GET_SETTINGS: 0x0013,
 
     //Ranks 0x0020-0x002f
     GET_RANK: 0x0020,

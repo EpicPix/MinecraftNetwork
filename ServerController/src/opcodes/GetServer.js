@@ -11,7 +11,11 @@ module.exports = function(websocket, json) {
                     break;
                 }
             }
-            websocket.respond(json, {ok: true, server: server.public});
+            if(server) {
+                websocket.respond(json, {ok: true, server: server.public});
+            }else {
+                websocket.respond(json, {ok: false, errno: ErrorNumbers.SERVER_NOT_FOUND});
+            }
         }else {
             websocket.respond(json, {ok: false, errno: ErrorNumbers.NO_SERVER_FIELD});
         }

@@ -9,8 +9,9 @@ const wss = new Server({ port });
 var logins = [];
 var servers = [];
 var settings = [];
+var ranks = [];
 
-module.exports = { logins, servers, settings, wss };
+module.exports = { logins, servers, settings, ranks, wss };
 
 async function main() {
 

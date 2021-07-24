@@ -39,10 +39,12 @@ const ErrorNumbers = {
     NO_DATA_FIELD: 0x02,
     NO_SIGNAL_FIELD: 0x03,
     NO_SETTING_FIELD: 0x04,
+    NO_RANK_FIELD: 0x05,
 
     SERVER_NOT_FOUND: 0x20,
     NO_SERVER_WEBSOCKET: 0x21,
-    NO_CAP: 0x22
+    NO_CAP: 0x22,
+    RANK_NOT_FOUND: 0x23
 }
 
 const Capabilities = {

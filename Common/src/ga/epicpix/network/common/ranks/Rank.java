@@ -2,7 +2,6 @@ package ga.epicpix.network.common.ranks;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.annotations.SerializedName;
 import ga.epicpix.network.common.ChatComponent;
 import ga.epicpix.network.common.CommonUtils;
 
@@ -10,7 +9,6 @@ import java.util.Arrays;
 
 public class Rank {
 
-    @SerializedName("default") boolean isDefault;
     String id;
     int priority;
     ChatComponent[] prefix;
@@ -21,10 +19,6 @@ public class Rank {
 
     static Rank rankFromJsonObject(JsonObject obj) {
         return new Gson().fromJson(obj, Rank.class);
-    }
-
-    public boolean isDefault() {
-        return isDefault;
     }
 
     public String getId() {
@@ -56,6 +50,6 @@ public class Rank {
     }
 
     public String toString() {
-        return "Rank{default=" + isDefault + ", id=" + CommonUtils.toString(id) + ", priority=" + priority + ", prefix=" + Arrays.toString(prefix) + ", suffix=" + Arrays.toString(suffix) + ", chatColor=" + chatColor + "}";
+        return "Rank{id=" + CommonUtils.toString(id) + ", priority=" + priority + ", prefix=" + Arrays.toString(prefix) + ", suffix=" + Arrays.toString(suffix) + ", chatColor=" + chatColor + "}";
     }
 }

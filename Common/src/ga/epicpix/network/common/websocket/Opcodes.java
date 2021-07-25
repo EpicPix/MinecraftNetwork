@@ -20,11 +20,10 @@ public class Opcodes {
     public static final int GET_RANKS = 0x0021;
     public static final int GET_DEFAULT_RANK = 0x0022;
 
-    public static final int CREATE_PLAYER = 0x0030;
-    public static final int GET_PLAYER = 0x0031;
-    public static final int UPDATE_PLAYER = 0x0032;
-    public static final int UPDATE_PLAYER_OR_CREATE = 0x0033;
-    public static final int GET_PLAYER_OR_CREATE = 0x0034;
+    public static final int GET_PLAYER = 0x0030;
+    public static final int UPDATE_PLAYER = 0x0031;
+    public static final int UPDATE_PLAYER_OR_CREATE = 0x0032;
+    public static final int GET_PLAYER_OR_CREATE = 0x0033;
 
     public static final int SERVER_SIGNAL = 0x8000;
     public static final int SETTINGS_UPDATE = 0x8001;

@@ -18,7 +18,7 @@ public class GetPlayerOrCreateRequest extends RequestData {
     }
 
     public static GetPlayerOrCreateRequest build(UUID uuid, String username) {
-        if(!RequestPolicies.isAllowed(Opcodes.GET_PLAYER, Reflection.getCaller())) {
+        if(!RequestPolicies.isAllowed(Opcodes.GET_PLAYER_OR_CREATE, Reflection.getCaller())) {
             throw new SecurityException("Cannot build this request data!");
         }
         if(uuid == null && username == null) {
@@ -28,7 +28,7 @@ public class GetPlayerOrCreateRequest extends RequestData {
     }
 
     public int getOpcode() {
-        return Opcodes.GET_PLAYER;
+        return Opcodes.GET_PLAYER_OR_CREATE;
     }
 
     public JsonObject toJson() {

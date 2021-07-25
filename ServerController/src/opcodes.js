@@ -27,6 +27,10 @@ const StringOpcodes = {
     GET_DEFAULT_RANK: 0x0022,
 
     //Players? 0x0030-0x003f
+    GET_PLAYER: 0x0030,
+    UPDATE_PLAYER: 0x0031,
+    UPDATE_PLAYER_OR_CREATE: 0x0032,
+    GET_PLAYER_OR_CREATE: 0x0033,
 
     //From Server 0x8000-0xffff
 

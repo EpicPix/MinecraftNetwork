@@ -19,10 +19,7 @@ public abstract class Command {
             public void execute(CommandSender sender, String[] args) {
                 PlayerInfo info = null;
                 if(sender instanceof ProxiedPlayer player) {
-                    info = PlayerManager.getPlayer(player.getUniqueId());
-                    if(info==null) {
-                        info = PlayerManager.createPlayer(player.getUniqueId(), player.getName());
-                    }
+                    info = PlayerManager.getPlayerOrCreate(player.getUniqueId(), player.getName());
                     String req = cmd.getRequiredPermission();
                     if(req!=null) {
                         boolean has = false;

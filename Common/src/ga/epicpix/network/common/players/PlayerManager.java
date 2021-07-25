@@ -26,14 +26,6 @@ public class PlayerManager {
         return new Gson().fromJson(obj.getAsJsonObject("player"), PlayerInfo.class);
     }
 
-    public static PlayerInfo createPlayer(UUID uuid, String username) {
-        JsonObject obj = Request.sendRequest(Request.createRequest(Opcodes.CREATE_PLAYER, CreatePlayerRequest.build(uuid, username)));
-        if(!obj.get("ok").getAsBoolean()) {
-            return null;
-        }
-        return new Gson().fromJson(obj.getAsJsonObject("player"), PlayerInfo.class);
-    }
-
     public static PlayerInfo updatePlayer(UUID uuid, UpdatePlayerRequest.Data data) {
         return updatePlayer(uuid, null, data);
     }

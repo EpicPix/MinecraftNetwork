@@ -11,8 +11,8 @@ var servers = [];
 var settings = [];
 var ranks = [];
 var players = [];
-//0000-ffff will have it's own entry in players
-for(var p = 0; p<16*16*16*16; p++) {
+//00-ff will have it's own entry in players
+for(var p = 0; p<16*16; p++) {
     players.push([]);
 }
 
@@ -43,7 +43,7 @@ function updatePlayer(player, data) {
 
 function getPlayerOrCreate(player) {
     var uuid = player.uuid;
-    var prefixindex = parseInt(uuid.slice(0, 4), 16);
+    var prefixindex = parseInt(uuid.slice(0, 2), 16);
     var pplayers = players[prefixindex];
     var p1 = getPlayerByUUID(uuid);
     if(p1) {
@@ -59,7 +59,7 @@ function getPlayerOrCreate(player) {
 }
 
 function getPlayerByUUID(uuid) {
-    var prefixindex = parseInt(uuid.slice(0, 4), 16);
+    var prefixindex = parseInt(uuid.slice(0, 2), 16);
     var pplayers = players[prefixindex];
     if(pplayers.length==0) {
         return null;
@@ -87,12 +87,123 @@ function getPlayerByUsername(username) {
 
 module.exports = { logins, servers, settings, ranks, getPlayerByUUID, getPlayerByUsername, getPlayerOrCreate, getDefaultRank, updatePlayer, players, wss };
 
+var t = false;
+
+process.once('exit', exit);
+process.once('SIGINT', exit);
+process.once('SIGTERM', exit);
+
+function exit() {
+    if(!t) {
+        save();
+        console.log('\nSaved.\n');
+    }
+    t = true;
+    process.exit(0);
+}
+
+if(!fs.existsSync('files')) {
+    fs.mkdirSync('files');
+}
+
+const path = require('path');
+const mainFolder = path.resolve(__dirname, '..');
+const filesFolder = path.resolve(mainFolder, 'files');
+const currentFolder = path.resolve(filesFolder, 'current');
+const backupFolder = path.resolve(filesFolder, 'backup');
+const backupPath = function(date) {
+    return path.resolve(backupFolder, `backup-${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()} ${date.getHours().toString().padStart(2, '0')}.${date.getMinutes().toString().padStart(2, '0')}`);
+}
+
+const currentAuthFile = path.resolve(currentFolder, 'auth.json');
+const currentSettingsFile = path.resolve(currentFolder, 'settings.json');
+const currentRanksFile = path.resolve(currentFolder, 'ranks.json');
+const currentPlayersFolder = path.resolve(currentFolder, 'players');
+
+function makeSureExists(file, dir) {
+    fs.mkdirSync(path.resolve(file, '..'), {recursive: true});
+    if(!fs.existsSync(file)) {
+        if(dir) {
+            fs.mkdirSync(file);
+        }else {
+            fs.writeFileSync(file, '[]');
+        }
+        return true;
+    }
+    return false;
+}
+
+function loadPlayers() {
+    makeSureExists(currentPlayersFolder, true);
+    for(var i = 0; i<256; i++) {
+        var res = path.resolve(currentPlayersFolder, `${i.toString(16).padStart(2, '0')}.json`);
+        if(fs.existsSync(res)) {
+            players.push(...JSON.parse(fs.readFileSync(res)));
+        }
+    }
+}
+
+function load() {
+    makeSureExists(currentAuthFile);
+    makeSureExists(currentSettingsFile);
+    makeSureExists(currentRanksFile);
+    logins = JSON.parse(fs.readFileSync(currentAuthFile));
+    settings = JSON.parse(fs.readFileSync(currentSettingsFile));
+    ranks = JSON.parse(fs.readFileSync(currentRanksFile));
+    loadPlayers();
+}
+
+function savePlayers() {
+    makeSureExists(currentPlayersFolder, true);
+    for(var i = 0; i<256; i++) {
+        if(players[i].length!==0) {
+            var res = path.resolve(currentPlayersFolder, `${i.toString(16).padStart(2, '0')}.json`);
+            if(fs.existsSync(res)) {
+                fs.writeFileSync(res, JSON.stringify(player[i]));
+            }
+        }
+    }
+}
+
+function save() {
+    makeSureExists(currentAuthFile);
+    makeSureExists(currentSettingsFile);
+    makeSureExists(currentRanksFile);
+    fs.writeFileSync(currentAuthFile, JSON.stringify(logins));
+    fs.writeFileSync(currentSettingsFile, JSON.stringify(settings));
+    fs.writeFileSync(currentRanksFile, JSON.stringify(ranks));
+    savePlayers();
+}
+  
+const targz = require('targz');
+
+function backup() {
+    makeSureExists(backupFolder, true);
+    var date = new Date();
+    console.log(`[${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}] Starting backup`);
+    targz.compress({
+        src: currentFolder,
+        dest: `${backupPath(date)}.tar.gz`
+    }, function(err){
+        if(err) {
+            console.log(err);
+        } else {
+            date = new Date();
+            console.log(`[${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}] Finished backup`);
+        }
+    });
+}
+
 async function main() {
 
-    console.log('No accounts are created, login using admin account');
-    console.log("Username and Password are 'admin'")
-    logins.push({username: 'admin', password: 'admin'})
-    
+    load();
+    getDefaultRank();
+
+    if(logins.length===0) {
+        console.log('No accounts are created, an account will be auto generated');
+        console.log("Username and Password are 'admin'");
+        logins.push({username: 'admin', password: 'admin'});
+    }
 
 
     wss.on('connection', function (ws) {
@@ -145,6 +256,15 @@ async function main() {
     });
 
     console.log(`WebSocket Server listening at port ${port}`)
+
+    setInterval(() => {
+        save();
+    }, 1000*15);
+
+    setInterval(() => {
+        save();
+        backup();
+    }, 1000*60*60); //backup every 1 hour
 }
 
 Promise.resolve(main());

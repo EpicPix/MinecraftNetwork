@@ -1,5 +1,6 @@
 package ga.epicpix.network.common.websocket.requests;
 
+import ga.epicpix.network.common.players.PlayerManager;
 import ga.epicpix.network.common.ranks.Rank;
 import ga.epicpix.network.common.servers.ServerInfo;
 import ga.epicpix.network.common.settings.SettingsManager;
@@ -23,6 +24,11 @@ public final class RequestPolicies {
         if((opcode==Opcodes.GET_RANK
                 || opcode==Opcodes.GET_RANKS
                 || opcode==Opcodes.GET_DEFAULT_RANK) && clazz.equals(Rank.class.getName())) return true;
+        if((opcode==Opcodes.CREATE_PLAYER
+                || opcode==Opcodes.GET_PLAYER
+                || opcode==Opcodes.UPDATE_PLAYER
+                || opcode==Opcodes.UPDATE_PLAYER_OR_CREATE
+                || opcode==Opcodes.GET_PLAYER_OR_CREATE) && clazz.equals(PlayerManager.class.getName())) return true;
         return clazz.equals(WebSocketConnection.class.getName());
     }
 

@@ -1,11 +1,14 @@
 package ga.epicpix.network.bukkit;
 
 import ga.epicpix.network.common.*;
+import ga.epicpix.network.common.players.PlayerInfo;
+import ga.epicpix.network.common.players.PlayerManager;
 import ga.epicpix.network.common.ranks.Rank;
 import ga.epicpix.network.common.ranks.RankManager;
 import ga.epicpix.network.common.servers.ServerInfo;
 import ga.epicpix.network.common.settings.SettingsManager;
 import ga.epicpix.network.common.values.ValueType;
+import ga.epicpix.network.common.websocket.requests.data.UpdatePlayerRequest;
 import ga.epicpix.network.common.websocket.requests.data.UpdateServerDataRequest;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -31,13 +34,9 @@ public class PluginListener implements Listener {
         ServerInfo.updateServer(BukkitCommon.getServerId(), new UpdateServerDataRequest.Data().setOnlinePlayers(Bukkit.getOnlinePlayers().size()));
 
         Player player = e.getPlayer();
-        PlayerInfo info = PlayerInfo.getPlayerInfo(player.getUniqueId());
-        if(info==null) {
-            info = new PlayerInfo().populate(player.getUniqueId(), player.getName(), RankManager.getDefaultRank());
-        }
+        PlayerInfo info = PlayerManager.getPlayerOrCreate(player.getUniqueId(), player.getName());
         if(!SpigotConfig.bungee) {
-            info.lastLogin = System.currentTimeMillis();
-            PlayerInfo.updatePlayerInfo(info);
+            PlayerManager.updatePlayer(player.getUniqueId(), player.getName(), new UpdatePlayerRequest.Data().setLastLogin(System.currentTimeMillis()));
         }
         Rank rank = info.getRank();
         String name = CommonUtils.makeStringLengthPrepend(Integer.toString(rank.getPriority()), 4, "0") + rank.getId();
@@ -67,10 +66,7 @@ public class PluginListener implements Listener {
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent e) {
         Player player = e.getPlayer();
-        PlayerInfo info = PlayerInfo.getPlayerInfo(player.getUniqueId());
-        if(info==null) {
-            info = PlayerInfo.updatePlayerInfo(new PlayerInfo().populate(player.getUniqueId(), player.getName(), RankManager.getDefaultRank()));
-        }
+        PlayerInfo info = PlayerManager.getPlayerOrCreate(player.getUniqueId(), player.getName());
         boolean showColon = SettingsManager.getSettingOrDefault("SHOW_COLON_CHAT", new ValueType(true)).getAsBoolean();
         Rank rank = info.getRank();
         e.setCancelled(true);

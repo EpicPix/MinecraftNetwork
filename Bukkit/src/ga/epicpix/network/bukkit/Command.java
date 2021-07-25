@@ -3,8 +3,8 @@ package ga.epicpix.network.bukkit;
 import ga.epicpix.network.bukkit.commands.BukkitCommandConsole;
 import ga.epicpix.network.bukkit.commands.BukkitCommandPlayer;
 import ga.epicpix.network.common.ChatColor;
-import ga.epicpix.network.common.CommonUtils;
-import ga.epicpix.network.common.PlayerInfo;
+import ga.epicpix.network.common.players.PlayerInfo;
+import ga.epicpix.network.common.players.PlayerManager;
 import ga.epicpix.network.common.ranks.RankManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -21,9 +21,9 @@ public abstract class Command {
             public boolean execute(CommandSender sender, String usedCommandName, String[] args) {
                 PlayerInfo info = null;
                 if(sender instanceof Player player) {
-                    info = PlayerInfo.getPlayerInfo(player.getUniqueId());
+                    info = PlayerManager.getPlayer(player.getUniqueId());
                     if(info==null) {
-                        info = PlayerInfo.updatePlayerInfo(new PlayerInfo().populate(player.getUniqueId(), player.getName(), RankManager.getDefaultRank()));
+                        info = PlayerManager.createPlayer(player.getUniqueId(), player.getName());
                     }
                     String req = cmd.getRequiredPermission();
                     if(req!=null) {

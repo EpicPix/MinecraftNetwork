@@ -1,7 +1,6 @@
 package ga.epicpix.network.common.commands;
 
-import ga.epicpix.network.common.CommonUtils;
-import ga.epicpix.network.common.PlayerInfo;
+import ga.epicpix.network.common.players.PlayerInfo;
 
 public abstract class AbstractCommandContext<Sender, Player extends Sender> {
 

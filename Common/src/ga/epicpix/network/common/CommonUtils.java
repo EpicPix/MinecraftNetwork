@@ -1,12 +1,10 @@
 package ga.epicpix.network.common;
 
-import com.google.gson.Gson;
-import org.bson.Document;
-
 import java.io.UnsupportedEncodingException;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
 
 public class CommonUtils {
 
@@ -50,43 +48,6 @@ public class CommonUtils {
             return addresses.get(0);
         }
         return InetAddress.getLoopbackAddress();
-    }
-
-    @Deprecated(forRemoval = true)
-    public static <T> ArrayList<T> iteratorToList(Iterator<T> iterator) {
-        var list = new ArrayList<T>();
-        while(iterator.hasNext()) {
-            list.add(iterator.next());
-        }
-        return list;
-    }
-
-    @Deprecated(forRemoval = true)
-    public static Document toDocument(Object obj) {
-        if(obj==null) return null;
-        return Document.parse(new Gson().toJson(obj));
-    }
-
-    @Deprecated(forRemoval = true)
-    public static <T> T documentToObject(Document doc, Class<T> clazz) {
-        if(doc==null) return null;
-        try {
-            return new Gson().fromJson(doc.toJson(), clazz);
-        }catch(Exception e) {
-            return null;
-        }
-    }
-
-    @Deprecated(forRemoval = true)
-    public static <T> ArrayList<T> documentsToObjects(ArrayList<Document> documents, Class<T> clazz) {
-        var converted = new ArrayList<T>();
-        for(var doc : documents) converted.add(documentToObject(doc, clazz));
-        return converted;
-    }
-
-    @Deprecated(forRemoval = true)
-    public static Document set(Document doc) {
-        return new Document().append("$set", doc);
     }
 
     public static String makeStringLengthPrepend(String string, int length, String c) {

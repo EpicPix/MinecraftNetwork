@@ -3,8 +3,8 @@ package ga.epicpix.network.bungee;
 import ga.epicpix.network.bungee.commands.BungeeCommandConsole;
 import ga.epicpix.network.bungee.commands.BungeeCommandPlayer;
 import ga.epicpix.network.common.ChatColor;
-import ga.epicpix.network.common.CommonUtils;
-import ga.epicpix.network.common.PlayerInfo;
+import ga.epicpix.network.common.players.PlayerInfo;
+import ga.epicpix.network.common.players.PlayerManager;
 import ga.epicpix.network.common.ranks.RankManager;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -19,9 +19,9 @@ public abstract class Command {
             public void execute(CommandSender sender, String[] args) {
                 PlayerInfo info = null;
                 if(sender instanceof ProxiedPlayer player) {
-                    info = PlayerInfo.getPlayerInfo(player.getUniqueId());
+                    info = PlayerManager.getPlayer(player.getUniqueId());
                     if(info==null) {
-                        info = PlayerInfo.updatePlayerInfo(new PlayerInfo().populate(player.getUniqueId(), player.getName(), RankManager.getDefaultRank()));
+                        info = PlayerManager.createPlayer(player.getUniqueId(), player.getName());
                     }
                     String req = cmd.getRequiredPermission();
                     if(req!=null) {

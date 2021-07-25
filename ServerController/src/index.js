@@ -10,8 +10,82 @@ var logins = [];
 var servers = [];
 var settings = [];
 var ranks = [];
+var players = [];
+//0000-ffff will have it's own entry in players
+for(var p = 0; p<16*16*16*16; p++) {
+    players.push([]);
+}
 
-module.exports = { logins, servers, settings, ranks, wss };
+function getDefaultRank() {
+    if(ranks.length==0) {
+        ranks.push({id: "default", priority: 0, prefix: [], suffix: [], permissions: [], nameColor: "white", chatColor: "white"});
+    }
+    var lowestRank = null;
+    for(var rank of ranks) {
+        if(!lowestRank || rank.priority<lowestRank.priority) {
+            lowestRank = rank;
+        }
+    }
+    return lowestRank;
+}
+
+function updatePlayer(player, data) {
+    var copy = function(a, b, c) {
+        if(typeof b[c] !== 'undefined') {
+            a[c] = b[c];
+        }
+    }
+    copy(player, data, 'username');
+    copy(player, data, 'rank');
+    copy(player, data, 'firstLogin');
+    copy(player, data, 'lastLogin');
+}
+
+function getPlayerOrCreate(player) {
+    var uuid = player.uuid;
+    var prefixindex = parseInt(uuid.slice(0, 4), 16);
+    var pplayers = players[prefixindex];
+    var p1 = getPlayerByUUID(uuid);
+    if(p1) {
+        return p1;
+    }
+    var p2 = getPlayerByUsername(player.username);
+    if(p2) {
+        return p2;
+    }
+    
+    pplayers.push(player);
+    return player;
+}
+
+function getPlayerByUUID(uuid) {
+    var prefixindex = parseInt(uuid.slice(0, 4), 16);
+    var pplayers = players[prefixindex];
+    if(pplayers.length==0) {
+        return null;
+    }
+    //probably also inefficient
+    for(var player of pplayers) {
+        if(player.uuid==uuid) {
+            return player;
+        }
+    }
+    return null;
+}
+
+//more inefficient because it has to go thru each player, this will probably have indexing
+function getPlayerByUsername(username) {
+    for(var pplayers of players) {
+        for(var player of pplayers) {
+            if(player.username===username) {
+                return player;
+            }
+        }
+    }
+    return null;
+}
+
+module.exports = { logins, servers, settings, ranks, getPlayerByUUID, getPlayerByUsername, getPlayerOrCreate, getDefaultRank, updatePlayer, players, wss };
 
 async function main() {
 

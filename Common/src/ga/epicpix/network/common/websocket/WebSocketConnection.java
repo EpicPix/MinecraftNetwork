@@ -160,7 +160,7 @@ public final class WebSocketConnection implements WebSocket.Listener {
                 int opcode = data.get("opcode").getAsInt();
                 if((opcode & 0x8000) == 0x8000) {
                     if(serverHook!=null) {
-                        serverHook.handle(opcode, data, requester);
+                        new Thread(() -> serverHook.handle(opcode, data, requester)).start();
                     }else {
                         System.err.println("Server Opcode Handler is not set, not handling opcode " + opcode);
                     }

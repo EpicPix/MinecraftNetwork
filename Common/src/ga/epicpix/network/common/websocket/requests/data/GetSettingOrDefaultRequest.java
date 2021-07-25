@@ -16,11 +16,11 @@ public class GetSettingOrDefaultRequest extends RequestData {
         this.def = def;
     }
 
-    public static GetSettingOrDefaultRequest build(String server, ValueType def) {
+    public static GetSettingOrDefaultRequest build(String setting, ValueType def) {
         if(!RequestPolicies.isAllowed(Opcodes.GET_SETTING_OR_DEFAULT, Reflection.getCaller())) {
             throw new SecurityException("Cannot build this request data!");
         }
-        return new GetSettingOrDefaultRequest(server, def);
+        return new GetSettingOrDefaultRequest(setting, def);
     }
 
     public int getOpcode() {

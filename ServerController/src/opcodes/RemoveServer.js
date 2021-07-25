@@ -5,7 +5,7 @@ module.exports = function(websocket, json) {
         if(json['server']) {
             const servers = require('../index').servers;
             for(var serv of servers) {
-                if(serv.id === json['server']) {
+                if(serv.public.id === json['server']) {
                     const index = servers.indexOf(serv);
                     if (index > -1) {
                         servers.splice(index, 1);

@@ -1,5 +1,6 @@
 package ga.epicpix.network.bukkit;
 
+import com.google.gson.JsonObject;
 import ga.epicpix.network.bukkit.commands.TestCommand;
 import ga.epicpix.network.common.ChatColor;
 import ga.epicpix.network.common.CommonUtils;
@@ -34,8 +35,11 @@ public class Entry extends JavaPlugin {
         });
 
         WebSocketConnection.setSettingsUpdateHandler((opcode, data, requester) -> {
-            if(data.get("name").getAsString().equals("BUNGEE_CORD")) {
-                BukkitCommon.setBungeeCord(SettingsManager.getSettingOrDefault("BUNGEE_CORD", new ValueType(false)).getAsBoolean());
+            if(isEnabled()) {
+                JsonObject setting = data.getAsJsonObject("setting");
+                if (setting.get("name").getAsString().equals("BUNGEE_CORD")) {
+                    BukkitCommon.setBungeeCord(ValueType.getValueTypeFromJson(setting.getAsJsonObject("value")).getAsBoolean());
+                }
             }
         });
 

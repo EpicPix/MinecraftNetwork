@@ -24,6 +24,8 @@ module.exports = function(websocket, json) {
                     }
                     websocket.respond(json, {ok: true, setting: setting.value});
                 }
+            }else {
+                websocket.respond(json, {ok: false, errno: ErrorNumbers.NO_DEFAULT_FIELD});
             }
         }else {
             websocket.respond(json, {ok: false, errno: ErrorNumbers.NO_SETTING_FIELD});

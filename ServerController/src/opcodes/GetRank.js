@@ -3,7 +3,7 @@ const { ErrorNumbers } = require('../opcodes');
 module.exports = function(websocket, json) {
     if(websocket.checkAuth()) {
         if(json['rank']) {
-            const ranks = require('../index').ranks;
+            var ranks = require('../index').ranks;
             var gotrank = null;
             for(var rank of ranks) {
                 if(rank.id===json['rank']) {

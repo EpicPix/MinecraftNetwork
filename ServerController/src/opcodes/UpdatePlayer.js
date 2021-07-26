@@ -10,7 +10,7 @@ module.exports = function(websocket, json) {
         if(json['uuid']) {
             var p1 = require('../index').getPlayerByUUID(json['uuid']);
             if(p1) {
-                player = pl;
+                player = p1;
             }else {
                 if(json['username']) {
                     player = require('../index').getPlayerByUsername(json['username']);

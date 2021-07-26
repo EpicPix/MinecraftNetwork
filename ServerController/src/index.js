@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 const { Server } = require('ws');
-const { StringOpcodes, toOpcodeId } = require('./opcodes');
+const { StringOpcodes, toOpcodeId, ErrorNumbers } = require('./opcodes');
 
 const port = 8080;
 const wss = new Server({ port });
@@ -138,7 +138,7 @@ function loadPlayers() {
     for(var i = 0; i<256; i++) {
         var res = path.resolve(currentPlayersFolder, `${i.toString(16).padStart(2, '0')}.json`);
         if(fs.existsSync(res)) {
-            players.push(...JSON.parse(fs.readFileSync(res)));
+            players[i].push(...JSON.parse(fs.readFileSync(res)));
         }
     }
 }
@@ -147,9 +147,9 @@ function load() {
     makeSureExists(currentAuthFile);
     makeSureExists(currentSettingsFile);
     makeSureExists(currentRanksFile);
-    logins = JSON.parse(fs.readFileSync(currentAuthFile));
-    settings = JSON.parse(fs.readFileSync(currentSettingsFile));
-    ranks = JSON.parse(fs.readFileSync(currentRanksFile));
+    logins.push(...JSON.parse(fs.readFileSync(currentAuthFile)));
+    settings.push(...JSON.parse(fs.readFileSync(currentSettingsFile)));
+    ranks.push(...JSON.parse(fs.readFileSync(currentRanksFile)));
     loadPlayers();
 }
 
@@ -158,9 +158,7 @@ function savePlayers() {
     for(var i = 0; i<256; i++) {
         if(players[i].length!==0) {
             var res = path.resolve(currentPlayersFolder, `${i.toString(16).padStart(2, '0')}.json`);
-            if(fs.existsSync(res)) {
-                fs.writeFileSync(res, JSON.stringify(player[i]));
-            }
+            fs.writeFileSync(res, JSON.stringify(players[i]));
         }
     }
 }
@@ -248,7 +246,12 @@ async function main() {
             var operationId = toOpcodeId(operationCode);
 
             if (operationId !== null) {
-                require(`./opcodes/${operationId}`)(ws, json);
+                try {
+                    require(`./opcodes/${operationId}`)(ws, json);
+                }catch(error) {
+                    console.log(error);
+                    ws.respond(json, {ok: false, errno: ErrorNumbers.INTERNAL_ERROR});
+                }
             } else {
                 ws.close(4001, "Unknown opcode.");
             }
@@ -259,7 +262,7 @@ async function main() {
 
     setInterval(() => {
         save();
-    }, 1000*15);
+    }, 1000*60*2);
 
     setInterval(() => {
         save();

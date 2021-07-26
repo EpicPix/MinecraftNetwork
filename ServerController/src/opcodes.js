@@ -55,7 +55,9 @@ const ErrorNumbers = {
     NO_CAP: 0x22,
     RANK_NOT_FOUND: 0x23,
     PLAYER_ALREADY_EXISTS: 0x24,
-    PLAYER_NOT_FOUND: 0x25
+    PLAYER_NOT_FOUND: 0x25,
+
+    INTERNAL_ERROR: 0xffff
 }
 
 const Capabilities = {

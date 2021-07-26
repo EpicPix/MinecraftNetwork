@@ -86,11 +86,11 @@ public class ChatComponent {
 
             if(reupdate) {
                 generated.append(ChatColor.convertColorText("/" + color + "/"));
-                if(bold) generated.append(ChatColor.convertColorText("/bold/"));
-                if(strikethrough) generated.append(ChatColor.convertColorText("/strikethrough/"));
-                if(italic) generated.append(ChatColor.convertColorText("/italic/"));
-                if(obfuscated) generated.append(ChatColor.convertColorText("/obfuscated/"));
-                if(underlined) generated.append(ChatColor.convertColorText("/underlined/"));
+                if(bold==Boolean.TRUE) generated.append(ChatColor.convertColorText("/bold/"));
+                if(strikethrough==Boolean.TRUE) generated.append(ChatColor.convertColorText("/strikethrough/"));
+                if(italic==Boolean.TRUE) generated.append(ChatColor.convertColorText("/italic/"));
+                if(obfuscated==Boolean.TRUE) generated.append(ChatColor.convertColorText("/obfuscated/"));
+                if(underlined==Boolean.TRUE) generated.append(ChatColor.convertColorText("/underlined/"));
             }
             generated.append(component.text);
         }

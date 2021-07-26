@@ -4,9 +4,10 @@ import ga.epicpix.network.common.*;
 import ga.epicpix.network.common.players.PlayerInfo;
 import ga.epicpix.network.common.players.PlayerManager;
 import ga.epicpix.network.common.ranks.Rank;
-import ga.epicpix.network.common.ranks.RankManager;
 import ga.epicpix.network.common.servers.ServerInfo;
 import ga.epicpix.network.common.settings.SettingsManager;
+import ga.epicpix.network.common.text.ChatColor;
+import ga.epicpix.network.common.text.ChatComponent;
 import ga.epicpix.network.common.values.ValueType;
 import ga.epicpix.network.common.websocket.requests.data.UpdatePlayerRequest;
 import ga.epicpix.network.common.websocket.requests.data.UpdateServerDataRequest;
@@ -51,8 +52,8 @@ public class PluginListener implements Listener {
             team = publicScoreboard.registerNewTeam(name);
             teams.add(team);
         }
-        team.setPrefix(CommonUtils.componentsToString(rank.getPrefix()) + (rank.getPrefix().length==0?"":" ") + ChatColor.convertColorText("/" + rank.getNameColor() + "/"));
-        team.setSuffix((rank.getSuffix().length==0?"":ChatColor.convertColorText("/white/ ")) + CommonUtils.componentsToString(rank.getSuffix()));
+        team.setPrefix(ChatComponent.componentsToString(rank.getPrefix()) + (rank.getPrefix().length==0?"":" ") + ChatColor.convertColorText("/" + rank.getNameColor() + "/"));
+        team.setSuffix((rank.getSuffix().length==0?"":ChatColor.convertColorText("/white/ ")) + ChatComponent.componentsToString(rank.getSuffix()));
         team.removeEntry(player.getName());
         team.addEntry(player.getName());
         player.setScoreboard(publicScoreboard);

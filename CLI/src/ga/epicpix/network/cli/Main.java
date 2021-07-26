@@ -3,7 +3,7 @@ package ga.epicpix.network.cli;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import ga.epicpix.network.common.ChatColor;
+import ga.epicpix.network.common.text.ChatColor;
 import ga.epicpix.network.common.servers.ServerInfo;
 import ga.epicpix.network.common.settings.SettingsManager;
 import ga.epicpix.network.common.values.ValueType;

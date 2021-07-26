@@ -2,7 +2,7 @@ package ga.epicpix.network.common.ranks;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import ga.epicpix.network.common.ChatComponent;
+import ga.epicpix.network.common.text.ChatComponent;
 import ga.epicpix.network.common.CommonUtils;
 
 import java.util.Arrays;

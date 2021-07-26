@@ -2,10 +2,9 @@ package ga.epicpix.network.bukkit;
 
 import ga.epicpix.network.bukkit.commands.BukkitCommandConsole;
 import ga.epicpix.network.bukkit.commands.BukkitCommandPlayer;
-import ga.epicpix.network.common.ChatColor;
+import ga.epicpix.network.common.text.ChatColor;
 import ga.epicpix.network.common.players.PlayerInfo;
 import ga.epicpix.network.common.players.PlayerManager;
-import ga.epicpix.network.common.ranks.RankManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;

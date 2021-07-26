@@ -1,4 +1,4 @@
-package ga.epicpix.network.common;
+package ga.epicpix.network.common.text;
 
 public class ChatColor {
 
@@ -32,6 +32,17 @@ public class ChatColor {
                 ;
     }
 
-    
+    public static String removeColorCodes(String str) {
+        StringBuilder generated = new StringBuilder();
+        for(int i = 0; i<str.length(); i++) {
+            char c = str.charAt(i);
+            if(c==ChatColor.COLOR_CHAR) {
+                i++;
+            }else {
+                generated.append(str);
+            }
+        }
+        return generated.toString();
+    }
 
 }

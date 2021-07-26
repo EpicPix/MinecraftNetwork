@@ -8,13 +8,6 @@ import java.util.Enumeration;
 
 public class CommonUtils {
 
-    public static String urlEncode(String str) {
-        try {
-            return URLEncoder.encode(str, StandardCharsets.UTF_8.toString());
-        } catch (UnsupportedEncodingException e) {}
-        return str;
-    }
-
     public static String toString(String string) {
         return string==null?"null":("'" + string + "'");
     }
@@ -56,65 +49,6 @@ public class CommonUtils {
             builder.insert(0, c);
         }
         return builder.toString();
-    }
-
-    public static String componentsToString(ChatComponent[] components) {
-        Boolean bold = null, strikethrough = null, italic = null, obfuscated = null, underlined = null;
-        String color = "white";
-
-        StringBuilder generated = new StringBuilder();
-        for(ChatComponent component : components) {
-            boolean reupdate = false;
-            if(component.bold!=null && component.bold!=bold) {
-                bold = component.bold;
-                reupdate = true;
-            }
-            if(component.strikethrough!=null && component.strikethrough!=strikethrough) {
-                strikethrough = component.strikethrough;
-                reupdate = true;
-            }
-            if(component.italic!=null && component.italic!=italic) {
-                italic = component.italic;
-                reupdate = true;
-            }
-            if(component.obfuscated!=null && component.obfuscated!=obfuscated) {
-                obfuscated = component.obfuscated;
-                reupdate = true;
-            }
-            if(component.underlined!=null && component.underlined!=underlined) {
-                underlined = component.underlined;
-                reupdate = true;
-            }
-            if(component.color!=null && !component.color.equals(color)) {
-                color = component.color;
-                reupdate = true;
-            }
-
-            if(reupdate) {
-                generated.append(ChatColor.convertColorText("/" + color + "/"));
-                if(bold) generated.append(ChatColor.convertColorText("/bold/"));
-                if(strikethrough) generated.append(ChatColor.convertColorText("/strikethrough/"));
-                if(italic) generated.append(ChatColor.convertColorText("/italic/"));
-                if(obfuscated) generated.append(ChatColor.convertColorText("/obfuscated/"));
-                if(underlined) generated.append(ChatColor.convertColorText("/underlined/"));
-            }
-            generated.append(component.text);
-        }
-
-        return generated.toString();
-    }
-
-    public static String removeColorCodes(String str) {
-        StringBuilder generated = new StringBuilder();
-        for(int i = 0; i<str.length(); i++) {
-            char c = str.charAt(i);
-            if(c==ChatColor.COLOR_CHAR) {
-                i++;
-            }else {
-                generated.append(str);
-            }
-        }
-        return generated.toString();
     }
 
     public static String replaceAt(String str, int at, String to) {

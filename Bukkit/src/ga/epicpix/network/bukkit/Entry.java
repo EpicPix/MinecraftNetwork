@@ -2,11 +2,11 @@ package ga.epicpix.network.bukkit;
 
 import com.google.gson.JsonObject;
 import ga.epicpix.network.bukkit.commands.TestCommand;
-import ga.epicpix.network.common.ChatColor;
-import ga.epicpix.network.common.CommonUtils;
+import ga.epicpix.network.common.text.ChatColor;
 import ga.epicpix.network.common.ranks.Rank;
 import ga.epicpix.network.common.servers.ServerInfo;
 import ga.epicpix.network.common.settings.SettingsManager;
+import ga.epicpix.network.common.text.ChatComponent;
 import ga.epicpix.network.common.values.ValueType;
 import ga.epicpix.network.common.websocket.ClientType;
 import ga.epicpix.network.common.websocket.WebSocketConnection;
@@ -55,8 +55,8 @@ public class Entry extends JavaPlugin {
             if(team!=null) {
                 Team iteam = team;
                 Bukkit.getScheduler().runTask(PLUGIN, () -> {
-                    iteam.setPrefix(CommonUtils.componentsToString(rank.getPrefix()) + (rank.getPrefix().length==0?"":" ") + ChatColor.convertColorText("/" + rank.getNameColor() + "/"));
-                    iteam.setSuffix((rank.getSuffix().length==0?"":ChatColor.convertColorText("/white/ ")) + CommonUtils.componentsToString(rank.getSuffix()));
+                    iteam.setPrefix(ChatComponent.componentsToString(rank.getPrefix()) + (rank.getPrefix().length==0?"":" ") + ChatColor.convertColorText("/" + rank.getNameColor() + "/"));
+                    iteam.setSuffix((rank.getSuffix().length==0?"":ChatColor.convertColorText("/white/ ")) + ChatComponent.componentsToString(rank.getSuffix()));
                 });
             }
         });

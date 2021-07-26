@@ -2,10 +2,9 @@ package ga.epicpix.network.bungee;
 
 import ga.epicpix.network.bungee.commands.BungeeCommandConsole;
 import ga.epicpix.network.bungee.commands.BungeeCommandPlayer;
-import ga.epicpix.network.common.ChatColor;
+import ga.epicpix.network.common.text.ChatColor;
 import ga.epicpix.network.common.players.PlayerInfo;
 import ga.epicpix.network.common.players.PlayerManager;
-import ga.epicpix.network.common.ranks.RankManager;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

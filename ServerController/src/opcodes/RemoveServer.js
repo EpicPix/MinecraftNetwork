@@ -13,6 +13,7 @@ module.exports = function(websocket, json) {
                     break;
                 }
             }
+            require('../index').sendWebhook('Server Manager', 'Server Removed', `The server \`${json['server']}\` got removed`, 0xE02222);
             websocket.respond(json, {ok: true});
         }else {
             websocket.respond(json, {ok: false, errno: ErrorNumbers.NO_SERVER_FIELD});

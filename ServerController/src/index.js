@@ -85,8 +85,6 @@ function getPlayerByUsername(username) {
     return null;
 }
 
-module.exports = { logins, servers, settings, ranks, getPlayerByUUID, getPlayerByUsername, getPlayerOrCreate, getDefaultRank, updatePlayer, players, wss };
-
 var t = false;
 
 process.once('exit', exit);
@@ -120,18 +118,50 @@ const currentSettingsFile = path.resolve(currentFolder, 'settings.json');
 const currentRanksFile = path.resolve(currentFolder, 'ranks.json');
 const currentPlayersFolder = path.resolve(currentFolder, 'players');
 
-function makeSureExists(file, dir) {
+function makeSureExists(file, dir, content) {
+    if(!content) content = '[]';
     fs.mkdirSync(path.resolve(file, '..'), {recursive: true});
     if(!fs.existsSync(file)) {
         if(dir) {
             fs.mkdirSync(file);
         }else {
-            fs.writeFileSync(file, '[]');
+            fs.writeFileSync(file, content);
         }
         return true;
     }
     return false;
 }
+
+makeSureExists('secrets.json', false, '{}');
+var secrets = JSON.parse(fs.readFileSync('secrets.json'));
+var webhook = secrets['webhook']; //Discord webhook, can be null
+
+const https = require('https');
+
+function sendWebhook(name, title, description, color) {
+    if(webhook!=null) {
+        var data = JSON.stringify({username: name, embeds: [{title, description, color}]});
+        var req = https.request({
+            hostname: "discord.com",
+            port: 443,
+            path: webhook.substring("https://discord.com".length, webhook.length),
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': data.length
+            }
+        }, (res) => {
+            if(res.statusCode!==204) {
+                console.log("An error occurred while sending webhook: " + res.statusCode + " " + res.statusMessage);
+            }
+        });
+        
+        req.write(data)
+        req.end()
+    }
+}
+
+module.exports = { webhook, sendWebhook, logins, servers, settings, ranks, getPlayerByUUID, getPlayerByUsername, getPlayerOrCreate, getDefaultRank, updatePlayer, players, wss };
 
 function loadPlayers() {
     makeSureExists(currentPlayersFolder, true);

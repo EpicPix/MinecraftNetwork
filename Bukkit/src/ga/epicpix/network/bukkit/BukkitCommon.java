@@ -78,6 +78,9 @@ public class BukkitCommon {
     }
 
     public static void setBungeeCord(boolean bungee) {
+        if(SpigotConfig.bungee==bungee) {
+            return;
+        }
         SpigotConfig.bungee = bungee;
         try {
             Object online = Reflection.getValueOfField(Bukkit.getServer().getClass(), "online", Bukkit.getServer());

@@ -23,6 +23,8 @@ public class Entry extends JavaPlugin {
 
     public static final long start = System.currentTimeMillis();
 
+    private static Thread shutdownHook;
+
     public void onLoad() {
         PLUGIN = this;
         WebSocketConnection.setClientType(ClientType.BUKKIT);
@@ -73,15 +75,20 @@ public class Entry extends JavaPlugin {
 
         ServerInfo.makeWebSocketServerOwner(Bukkit.getServerId());
 
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> ServerInfo.removeServer(BukkitCommon.getServerId())));
+        Runtime.getRuntime().addShutdownHook(shutdownHook = new Thread(() -> ServerInfo.removeServer(BukkitCommon.getServerId())));
         BukkitCommon.setBungeeCord(SettingsManager.getSettingOrDefault("BUNGEE_CORD", new ValueType(false)).getAsBoolean());
 
-        Command.registerCommand(new TestCommand());
+        // Command.registerCommand(new TestCommand());
     }
 
     public void onEnable() {
         PluginListener.publicScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
         Bukkit.getServer().getPluginManager().registerEvents(new PluginListener(), this);
+    }
+
+    public void onDisable() {
+        shutdownHook.start();
+        Runtime.getRuntime().removeShutdownHook(shutdownHook);
     }
 
 }

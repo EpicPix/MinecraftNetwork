@@ -119,7 +119,7 @@ const currentRanksFile = path.resolve(currentFolder, 'ranks.json');
 const currentPlayersFolder = path.resolve(currentFolder, 'players');
 
 function makeSureExists(file, dir, content) {
-    if(!content) content = '[]';
+    if(!content && content!=='') content = '[]';
     fs.mkdirSync(path.resolve(file, '..'), {recursive: true});
     if(!fs.existsSync(file)) {
         if(dir) {
@@ -132,8 +132,9 @@ function makeSureExists(file, dir, content) {
     return false;
 }
 
-makeSureExists('secrets.json', false, '{}');
-var secrets = JSON.parse(fs.readFileSync('secrets.json'));
+makeSureExists('secrets.properties', false, '');
+var secrets = require('./PropertyReader').readFile('secrets.properties')
+
 var webhook = secrets['webhook']; //Discord webhook, can be null
 
 const https = require('https');

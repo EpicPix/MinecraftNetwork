@@ -14,7 +14,8 @@ function readFile(file) {
         var things = lines[i].split('=');
         var name = things[0];
         var data = things.slice(1).join('=');
-        if(!isNaN(data)) {
+        
+        if(!isNaN(parseInt(data))) {
             output[name] = parseInt(data);
         }else if(data==='true' || data==='false') {
             output[name] = data==='true';

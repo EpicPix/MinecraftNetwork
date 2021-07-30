@@ -3,6 +3,7 @@ package ga.epicpix.network.bungee.commands;
 import ga.epicpix.network.bungee.Command;
 import ga.epicpix.network.bungee.CommandContext;
 import ga.epicpix.network.common.servers.ServerInfo;
+import ga.epicpix.network.common.servers.ServerManager;
 import ga.epicpix.network.common.websocket.Errorable;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.ServerConnectRequest;
@@ -25,7 +26,7 @@ public class ServerCommand extends Command {
             public void run() {
                 if(isPlayer()) {
                     if(getArguments().length>=1) {
-                        Errorable<ServerInfo> rserverInfo = ServerInfo.getServerInfo(getArguments()[0]);
+                        Errorable<ServerInfo> rserverInfo = ServerManager.getServerInfo(getArguments()[0]);
                         if(rserverInfo.hasFailed()) {
                             sendMessage("/red/Unknown server!");
                         }else {

@@ -2,6 +2,7 @@ package ga.epicpix.network.bukkit;
 
 import com.google.gson.JsonObject;
 import ga.epicpix.network.common.Reflection;
+import ga.epicpix.network.common.servers.ServerManager;
 import ga.epicpix.network.common.text.ChatColor;
 import ga.epicpix.network.common.ranks.Rank;
 import ga.epicpix.network.common.servers.ServerInfo;
@@ -72,7 +73,7 @@ public class Entry extends JavaPlugin {
 
         WebSocketConnection.connect();
 
-        ServerInfo.updateServer(Bukkit.getServerId(), new UpdateServerDataRequest.Data()
+        ServerManager.updateServer(Bukkit.getServerId(), new UpdateServerDataRequest.Data()
                 .setType(ServerInfo.ServerType.UNKNOWN)
                 .setOnlinePlayers(Bukkit.getOnlinePlayers().size())
                 .setMaxPlayers(Bukkit.getMaxPlayers())
@@ -80,9 +81,9 @@ public class Entry extends JavaPlugin {
                 .setDetails(BukkitCommon.getDetails())
                 .setBootMillis(start));
 
-        ServerInfo.makeWebSocketServerOwner(Bukkit.getServerId());
+        ServerManager.makeWebSocketServerOwner(Bukkit.getServerId());
 
-        Runtime.getRuntime().addShutdownHook(shutdownHook = new Thread(() -> ServerInfo.removeServer(BukkitCommon.getServerId())));
+        Runtime.getRuntime().addShutdownHook(shutdownHook = new Thread(() -> ServerManager.removeServer(BukkitCommon.getServerId())));
         BukkitCommon.setBungeeCord(SettingsManager.getSettingOrDefault("BUNGEE_CORD", new ValueType(false)).getAsBoolean());
 
     }

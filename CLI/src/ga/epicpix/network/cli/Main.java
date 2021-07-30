@@ -3,6 +3,7 @@ package ga.epicpix.network.cli;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import ga.epicpix.network.common.servers.ServerManager;
 import ga.epicpix.network.common.text.ChatColor;
 import ga.epicpix.network.common.servers.ServerInfo;
 import ga.epicpix.network.common.settings.SettingsManager;
@@ -173,13 +174,13 @@ public class Main {
                 showSettingsListing(resp);
             }else if(cmdline.equals("server")) {
                 if(getParam(cmd, 1) != null) {
-                    Errorable<ServerInfo> reqserver = ServerInfo.getServerInfo(getParam(cmd, 1));
+                    Errorable<ServerInfo> reqserver = ServerManager.getServerInfo(getParam(cmd, 1));
                     if(reqserver.hasFailed()) {
                         System.out.println("/red/Unknown server! Use \"servers\" to list servers");
                     }else {
                         ServerInfo server = reqserver.getValue();
                         if(getParam(cmd, 2) != null && getParam(cmd, 2).equals("stop")) {
-                            if(ServerInfo.sendSignal(server.id, ServerInfo.ServerSignal.STOP).get("ok").getAsBoolean()) {
+                            if(!ServerManager.sendSignal(server.id, ServerInfo.ServerSignal.STOP).hasFailed()) {
                                 System.out.println("/green/Signal sent");
                             }else {
                                 System.out.println("/red/Could not send signal");
@@ -192,16 +193,11 @@ public class Main {
                     System.out.println("/red/Wrong usage! Use \"help\" for help");
                 }
             }else if(cmdline.equals("servers")) {
-                JsonObject resp = ServerInfo.requestServerList();
-                if(resp.get("ok").getAsBoolean()) {
-                    ArrayList<ServerInfo> infos = new ArrayList<>();
-                    JsonArray arr = resp.getAsJsonArray("servers");
-                    for(JsonElement e : arr) {
-                        infos.add(ServerInfo.fromJson((JsonObject) e));
-                    }
-                    showServerListing(infos);
-                }else {
+                Errorable<ArrayList<ServerInfo>> resp = ServerManager.requestServerList();
+                if(resp.hasFailed()) {
                     System.out.println("/red/Could not request server list!");
+                }else {
+                    showServerListing(resp.getValue());
                 }
             }else {
                 System.out.println("/red/Unknown command. Type \"help\" for help");

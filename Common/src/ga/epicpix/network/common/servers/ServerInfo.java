@@ -69,49 +69,6 @@ public class ServerInfo {
     public ServerDetails details;
     public long start;
 
-    public static JsonObject updateServer(String server, UpdateServerDataRequest.Data data) {
-        if(server==null) {
-            throw new NullPointerException("Server is null");
-        }
-        if(server.isEmpty()) {
-            throw new IllegalArgumentException("Server name is empty");
-        }
-        if(data==null) {
-            throw new NullPointerException("Data is null");
-        }
-        return Request.sendRequest(Request.createRequest(Opcodes.UPDATE_SERVER_DATA, UpdateServerDataRequest.build(server, data)));
-    }
-
-    public static JsonObject removeServer(String server) {
-        if(server==null) {
-            throw new NullPointerException("Server is null");
-        }
-        if(server.isEmpty()) {
-            throw new IllegalArgumentException("Server name is empty");
-        }
-        return Request.sendRequest(Request.createRequest(Opcodes.REMOVE_SERVER, RemoveServerRequest.build(server)));
-    }
-
-    public static JsonObject makeWebSocketServerOwner(String server) {
-        return Request.sendRequest(Request.createRequest(Opcodes.MAKE_WEB_SOCKET_SERVER_OWNER, MakeWebSocketServerOwnerRequest.build(server)));
-    }
-
-    public static JsonObject sendSignal(String server, ServerSignal signal) {
-        return Request.sendRequest(Request.createRequest(Opcodes.SEND_SIGNAL, SendSignalRequest.build(server, signal)));
-    }
-
-    public static JsonObject requestServerList() {
-        return Request.sendRequest(Request.createRequest(Opcodes.LIST_SERVERS, ListServersRequest.build()));
-    }
-
-    public static Errorable<ServerInfo> getServerInfo(String server) {
-        JsonObject data = Request.sendRequest(Request.createRequest(Opcodes.GET_SERVER, GetServerRequest.build(server)));
-        if(!data.get("ok").getAsBoolean()) {
-            return new Errorable<>(data.get("errno").getAsInt());
-        }
-        return new Errorable<>(fromJson(data.getAsJsonObject("server")));
-    }
-
     public ServerInfo(String id) {
         this.id = id;
     }

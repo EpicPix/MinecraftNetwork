@@ -5,6 +5,7 @@ import ga.epicpix.network.common.players.PlayerInfo;
 import ga.epicpix.network.common.players.PlayerManager;
 import ga.epicpix.network.common.ranks.Rank;
 import ga.epicpix.network.common.servers.ServerInfo;
+import ga.epicpix.network.common.servers.ServerManager;
 import ga.epicpix.network.common.settings.SettingsManager;
 import ga.epicpix.network.common.text.ChatColor;
 import ga.epicpix.network.common.text.ChatComponent;
@@ -32,7 +33,7 @@ public class PluginListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
-        ServerInfo.updateServer(BukkitCommon.getServerId(), new UpdateServerDataRequest.Data().setOnlinePlayers(Bukkit.getOnlinePlayers().size()));
+        ServerManager.updateServer(BukkitCommon.getServerId(), new UpdateServerDataRequest.Data().setOnlinePlayers(Bukkit.getOnlinePlayers().size()));
 
         Player player = e.getPlayer();
         PlayerInfo info = PlayerManager.getPlayerOrCreate(player.getUniqueId(), player.getName()).getValue();
@@ -61,7 +62,7 @@ public class PluginListener implements Listener {
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e) {
-        ServerInfo.updateServer(BukkitCommon.getServerId(), new UpdateServerDataRequest.Data().setOnlinePlayers(Bukkit.getOnlinePlayers().size()));
+        ServerManager.updateServer(BukkitCommon.getServerId(), new UpdateServerDataRequest.Data().setOnlinePlayers(Bukkit.getOnlinePlayers().size()));
     }
 
     @EventHandler

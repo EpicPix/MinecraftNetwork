@@ -1,6 +1,7 @@
 package ga.epicpix.network.bukkit;
 
 import com.google.gson.JsonObject;
+import ga.epicpix.network.common.Reflection;
 import ga.epicpix.network.common.text.ChatColor;
 import ga.epicpix.network.common.ranks.Rank;
 import ga.epicpix.network.common.servers.ServerInfo;
@@ -13,6 +14,8 @@ import ga.epicpix.network.common.websocket.requests.data.UpdateServerDataRequest
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Team;
+import org.spigotmc.SpigotConfig;
+import org.spigotmc.SpigotWorldConfig;
 
 import static ga.epicpix.network.common.servers.ServerInfo.ServerSignal;
 
@@ -28,6 +31,7 @@ public class Entry extends JavaPlugin {
 
         BukkitCommon.setAllowNether(false);
         BukkitCommon.setAllowEnd(false);
+        SpigotConfig.config.set("world-settings.default.verbose", false);
 
         PLUGIN = this;
         WebSocketConnection.setClientType(ClientType.BUKKIT);

@@ -4,7 +4,6 @@ const { Server } = require('ws');
 const { StringOpcodes, toOpcodeId, ErrorNumbers } = require('./opcodes');
 
 const port = 8080;
-const wss = new Server({ port });
 
 var logins = [];
 var servers = [];
@@ -162,8 +161,6 @@ function sendWebhook(name, title, description, color) {
     }
 }
 
-module.exports = { webhook, sendWebhook, logins, servers, settings, ranks, getPlayerByUUID, getPlayerByUsername, getPlayerOrCreate, getDefaultRank, updatePlayer, players, wss };
-
 function loadPlayers() {
     makeSureExists(currentPlayersFolder, true);
     for(var i = 0; i<256; i++) {
@@ -222,6 +219,11 @@ function backup() {
         }
     });
 }
+
+const wss = new Server({ noServer: true, path: "/wss" });
+const express = require('express');
+const app = express();
+module.exports = { webhook, sendWebhook, logins, servers, settings, ranks, getPlayerByUUID, getPlayerByUsername, getPlayerOrCreate, getDefaultRank, updatePlayer, players, wss };
 
 async function main() {
 
@@ -289,7 +291,13 @@ async function main() {
         });
     });
 
-    console.log(`WebSocket Server listening at port ${port}`)
+    const server = app.listen(port);
+    server.on('upgrade', (request, socket, head) => {
+        wss.handleUpgrade(request, socket, head, (websocket) => {
+            wss.emit("connection", websocket, request);
+        });
+    });
+    console.log(`HTTP Server listening at port ${port}`)
 
     setInterval(() => {
         save();

@@ -2,7 +2,6 @@ package ga.epicpix.network.common.websocket;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import ga.epicpix.network.common.ReturnableRunnable;
 import ga.epicpix.network.common.websocket.requests.Request;
 import ga.epicpix.network.common.websocket.requests.data.AuthenticateRequest;
 
@@ -13,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
+import java.util.function.Supplier;
 
 public final class WebSocketConnection implements WebSocket.Listener {
 
@@ -25,7 +25,7 @@ public final class WebSocketConnection implements WebSocket.Listener {
 
     private static boolean connected = false;
 
-    private static final HashMap<String, ReturnableRunnable> hooks = new HashMap<>();
+    private static final HashMap<String, Supplier<Object>> hooks = new HashMap<>();
 
     private static ServerHook signalHandler = null;
     private static ServerHook settingsChangedHandler = null;
@@ -57,7 +57,7 @@ public final class WebSocketConnection implements WebSocket.Listener {
         capabilities |= capability.getBits();
     }
 
-    public static void addHook(String hook, ReturnableRunnable run) {
+    public static void addHook(String hook, Supplier<Object> run) {
         hooks.remove(hook);
         hooks.put(hook, run);
     }
@@ -116,7 +116,7 @@ public final class WebSocketConnection implements WebSocket.Listener {
             connected = true;
             if(!connection.sendAuthenticateRequest(creds)) {
                 if(hooks.containsKey("type_auth")) {
-                    var objauth = hooks.get("type_auth").run();
+                    var objauth = hooks.get("type_auth").get();
                     if(objauth instanceof String[] auth) {
                         if(auth.length<2) {
                             System.err.println("The auth array is not 2 elements");

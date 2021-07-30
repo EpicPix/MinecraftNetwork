@@ -8,6 +8,7 @@ import ga.epicpix.network.common.servers.ServerInfo;
 import ga.epicpix.network.common.settings.SettingsManager;
 import ga.epicpix.network.common.values.ValueType;
 import ga.epicpix.network.common.websocket.ClientType;
+import ga.epicpix.network.common.websocket.Errorable;
 import ga.epicpix.network.common.websocket.WebSocketConnection;
 
 import java.io.Console;
@@ -172,10 +173,11 @@ public class Main {
                 showSettingsListing(resp);
             }else if(cmdline.equals("server")) {
                 if(getParam(cmd, 1) != null) {
-                    ServerInfo server = ServerInfo.getServerInfo(getParam(cmd, 1));
-                    if(server==null) {
+                    Errorable<ServerInfo> reqserver = ServerInfo.getServerInfo(getParam(cmd, 1));
+                    if(reqserver.hasFailed()) {
                         System.out.println("/red/Unknown server! Use \"servers\" to list servers");
                     }else {
+                        ServerInfo server = reqserver.getValue();
                         if(getParam(cmd, 2) != null && getParam(cmd, 2).equals("stop")) {
                             if(ServerInfo.sendSignal(server.id, ServerInfo.ServerSignal.STOP).get("ok").getAsBoolean()) {
                                 System.out.println("/green/Signal sent");

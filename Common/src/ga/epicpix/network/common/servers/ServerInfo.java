@@ -2,6 +2,7 @@ package ga.epicpix.network.common.servers;
 
 import com.google.gson.JsonObject;
 import ga.epicpix.network.common.CommonUtils;
+import ga.epicpix.network.common.websocket.Errorable;
 import ga.epicpix.network.common.websocket.Opcodes;
 import ga.epicpix.network.common.websocket.requests.Request;
 import ga.epicpix.network.common.websocket.requests.data.*;
@@ -103,12 +104,12 @@ public class ServerInfo {
         return Request.sendRequest(Request.createRequest(Opcodes.LIST_SERVERS, ListServersRequest.build()));
     }
 
-    public static ServerInfo getServerInfo(String server) {
+    public static Errorable<ServerInfo> getServerInfo(String server) {
         JsonObject data = Request.sendRequest(Request.createRequest(Opcodes.GET_SERVER, GetServerRequest.build(server)));
         if(!data.get("ok").getAsBoolean()) {
-            return null;
+            return new Errorable<>(data.get("errno").getAsInt());
         }
-        return fromJson(data.getAsJsonObject("server"));
+        return new Errorable<>(fromJson(data.getAsJsonObject("server")));
     }
 
     public ServerInfo(String id) {

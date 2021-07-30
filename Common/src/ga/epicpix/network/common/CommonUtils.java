@@ -1,8 +1,6 @@
 package ga.epicpix.network.common;
 
-import java.io.UnsupportedEncodingException;
 import java.net.*;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 

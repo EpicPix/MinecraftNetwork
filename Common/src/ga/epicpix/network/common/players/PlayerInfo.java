@@ -22,7 +22,7 @@ public class PlayerInfo {
     }
 
     public Rank getRank() {
-        return RankManager.getRank(rank);
+        return RankManager.getRank(rank).getValue();
     }
 
     public long getFirstLogin() {

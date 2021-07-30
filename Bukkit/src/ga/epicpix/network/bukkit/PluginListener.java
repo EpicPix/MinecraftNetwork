@@ -35,7 +35,7 @@ public class PluginListener implements Listener {
         ServerInfo.updateServer(BukkitCommon.getServerId(), new UpdateServerDataRequest.Data().setOnlinePlayers(Bukkit.getOnlinePlayers().size()));
 
         Player player = e.getPlayer();
-        PlayerInfo info = PlayerManager.getPlayerOrCreate(player.getUniqueId(), player.getName());
+        PlayerInfo info = PlayerManager.getPlayerOrCreate(player.getUniqueId(), player.getName()).getValue();
         if(!SpigotConfig.bungee) {
             PlayerManager.updatePlayer(player.getUniqueId(), player.getName(), new UpdatePlayerRequest.Data().setLastLogin(System.currentTimeMillis()));
         }
@@ -67,7 +67,7 @@ public class PluginListener implements Listener {
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent e) {
         Player player = e.getPlayer();
-        PlayerInfo info = PlayerManager.getPlayerOrCreate(player.getUniqueId(), player.getName());
+        PlayerInfo info = PlayerManager.getPlayerOrCreate(player.getUniqueId(), player.getName()).getValue();
         boolean showColon = SettingsManager.getSettingOrDefault("SHOW_COLON_CHAT", new ValueType(true)).getAsBoolean();
         Rank rank = info.getRank();
         e.setCancelled(true);

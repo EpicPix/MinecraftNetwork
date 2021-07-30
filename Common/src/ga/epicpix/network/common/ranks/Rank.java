@@ -9,13 +9,13 @@ import java.util.Arrays;
 
 public class Rank {
 
-    String id;
-    int priority;
-    ChatComponent[] prefix;
-    ChatComponent[] suffix;
-    String[] permissions;
-    String nameColor;
-    String chatColor;
+    private String id;
+    private int priority;
+    private ChatComponent[] prefix;
+    private ChatComponent[] suffix;
+    private String[] permissions;
+    private String nameColor;
+    private String chatColor;
 
     public static Rank rankFromJsonObject(JsonObject obj) {
         return new Gson().fromJson(obj, Rank.class);
@@ -49,7 +49,4 @@ public class Rank {
         return chatColor;
     }
 
-    public String toString() {
-        return "Rank{id=" + CommonUtils.toString(id) + ", priority=" + priority + ", prefix=" + Arrays.toString(prefix) + ", suffix=" + Arrays.toString(suffix) + ", chatColor=" + chatColor + "}";
-    }
 }

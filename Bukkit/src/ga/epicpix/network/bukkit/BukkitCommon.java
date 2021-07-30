@@ -17,13 +17,18 @@ import java.util.Map;
 
 public class BukkitCommon {
 
-    public static String getServerId() {
+    public static Object getPropertyManager() {
         Object MinecraftServer = Reflection.getValueOfField(Bukkit.getServer().getClass(), "console", Bukkit.getServer());
         if(MinecraftServer==null) throw new NullPointerException("Could not get a MinecraftServer instance.");
         Object PropertyManager = Reflection.callMethod(MinecraftServer.getClass(), "getPropertyManager", MinecraftServer);
         //1.14+ fix
         if(PropertyManager==null) PropertyManager = Reflection.callMethod(MinecraftServer.getClass(), "getDedicatedServerProperties", MinecraftServer);
         if(PropertyManager==null) throw new NullPointerException("Could not get a PropertyManager instance.");
+        return PropertyManager;
+    }
+
+    public static String getServerId() {
+        Object PropertyManager = getPropertyManager();
         return (String) Reflection.callMethod(PropertyManager.getClass(), "getString", PropertyManager, "server-id", null);
     }
 
@@ -96,6 +101,20 @@ public class BukkitCommon {
                 }
             });
         }
+    }
+
+    public static void setPropertiesValue(String key, Object value) {
+        Object PropertyManager = getPropertyManager();
+        Reflection.callMethodByClasses(PropertyManager.getClass(), "setProperty", PropertyManager, new Class[] {String.class, Object.class}, key, value);
+    }
+
+    public static void setAllowNether(boolean allow) {
+        setPropertiesValue("allow-nether", allow);
+    }
+
+    public static void setAllowEnd(boolean allow) {
+        Object configuration = Reflection.getValueOfField(Bukkit.getServer().getClass(), "configuration", Bukkit.getServer());
+        Reflection.callMethodByClasses(configuration.getClass(), "set", configuration, new Class[] {String.class, Object.class}, "settings.allow-end", allow);
     }
 
 }

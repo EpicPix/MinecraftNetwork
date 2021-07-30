@@ -1,7 +1,6 @@
 package ga.epicpix.network.bukkit;
 
 import com.google.gson.JsonObject;
-import ga.epicpix.network.bukkit.commands.TestCommand;
 import ga.epicpix.network.common.text.ChatColor;
 import ga.epicpix.network.common.ranks.Rank;
 import ga.epicpix.network.common.servers.ServerInfo;
@@ -26,6 +25,10 @@ public class Entry extends JavaPlugin {
     private static Thread shutdownHook;
 
     public void onLoad() {
+
+        BukkitCommon.setAllowNether(false);
+        BukkitCommon.setAllowEnd(false);
+
         PLUGIN = this;
         WebSocketConnection.setClientType(ClientType.BUKKIT);
 
@@ -78,7 +81,6 @@ public class Entry extends JavaPlugin {
         Runtime.getRuntime().addShutdownHook(shutdownHook = new Thread(() -> ServerInfo.removeServer(BukkitCommon.getServerId())));
         BukkitCommon.setBungeeCord(SettingsManager.getSettingOrDefault("BUNGEE_CORD", new ValueType(false)).getAsBoolean());
 
-        // Command.registerCommand(new TestCommand());
     }
 
     public void onEnable() {

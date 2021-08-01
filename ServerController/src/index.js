@@ -313,7 +313,7 @@ async function main() {
     setInterval(() => {
         save();
         backup();
-    }, 1000*60*5); //backup every 1 hour
+    }, 1000*60*30); //backup every 30 minutes
 }
 
 Promise.resolve(main());

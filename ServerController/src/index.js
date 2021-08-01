@@ -207,22 +207,21 @@ function save() {
     savePlayers();
 }
   
-const targz = require('targz');
+const tar = require('tar');
 
 function backup() {
     makeSureExists(backupFolder, true);
     var date = new Date();
     console.log(`[${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}] Starting backup`);
-    targz.compress({
-        src: currentFolder,
-        dest: `${backupPath(date)}.tar.gz`
-    }, function(err){
-        if(err) {
-            console.log(err);
-        } else {
-            date = new Date();
-            console.log(`[${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}] Finished backup`);
-        }
+    tar.c(
+        {
+            gzip: true,
+            file: `${backupPath(date)}.tar.gz`,
+            cwd: currentFolder
+        },
+        fs.readdirSync(currentFolder)
+    ).then(_ => {
+        console.log(`[${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}] Finished backup`);
     });
 }
 
@@ -235,6 +234,7 @@ async function main() {
 
     load();
     getDefaultRank();
+    backup();
 
     if(logins.length===0) {
         console.log('No accounts are created, an account will be auto generated');
@@ -312,7 +312,7 @@ async function main() {
     setInterval(() => {
         save();
         backup();
-    }, 1000*60*60); //backup every 1 hour
+    }, 1000*60*5); //backup every 1 hour
 }
 
 Promise.resolve(main());

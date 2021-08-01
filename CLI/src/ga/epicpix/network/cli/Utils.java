@@ -37,24 +37,6 @@ public class Utils {
         return def;
     }
 
-    public static int getLongestFromField(int def, String field, Collection<?> objs) {
-        for(Object obj : objs) {
-            Object fl = Reflection.getValueOfField(obj.getClass(), field, obj);
-            if(fl==null) fl = "";
-            if(def < fl.toString().length()) def = fl.toString().length();
-        }
-        return def;
-    }
-
-    public static int getLongestFromMethod(int def, Class<?> mClass, String mMethod, Collection<?> objs) {
-        for(Object obj : objs) {
-            Object fl = Reflection.callMethod(mClass, mMethod, null, obj);
-            if(fl==null) fl = "";
-            if(def < fl.toString().length()) def = fl.toString().length();
-        }
-        return def;
-    }
-
     public static <T> int getLongestFromCompute(int def, Compute<T> compute, Collection<? extends T> objs) {
         for(T obj : objs) {
             Object ret = compute.compute(obj);

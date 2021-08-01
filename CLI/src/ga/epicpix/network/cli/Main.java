@@ -228,8 +228,8 @@ public class Main {
 
     public static void showSettingsListing(HashMap<String, ValueType> settings) {
         int name = getLongest(4, settings.keySet()) + 2;
-        int type = getLongestFromMethod(4, ValueType.class, "convertValueTypeToString", settings.values()) + 2;
-        int value = getLongestFromField(5, "value", settings.values()) + 2;
+        int type = getLongestFromCompute(4, ValueType::convertValueTypeToString, settings.values()) + 2;
+        int value = getLongestFromCompute(5, ValueType::toString, settings.values()) + 2;
 
 
         if(settings.size()==0) {
@@ -272,8 +272,8 @@ public class Main {
     public static void showServerListing(ArrayList<ServerInfo> servers) {
 
         final long time = System.currentTimeMillis();
-        int id = getLongestFromField(2, "id", servers) + 2;
-        int type = getLongestFromField(4, "type", servers) + 2;
+        int id = getLongestFromCompute(2, (serv) -> serv.id, servers) + 2;
+        int type = getLongestFromCompute(4, (serv) -> serv.type, servers) + 2;
         int players = getLongestFromCompute(7, (serv) -> serv.onlinePlayers + "/" + serv.maxPlayers, servers) + 2;
         int version = getLongestFromCompute(7, (serv) -> serv.version.name(), servers) + 2;
         int ip = getLongestFromCompute(2, (serv) -> serv.details.ip() + ":" + serv.details.port(), servers) + 2;

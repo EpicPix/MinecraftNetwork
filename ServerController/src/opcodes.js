@@ -26,6 +26,8 @@ const StringOpcodes = {
     GET_RANKS: 0x0021,
     GET_DEFAULT_RANK: 0x0022,
     UPDATE_RANK: 0x0023,
+    CREATE_RANK: 0x0024,
+    DELETE_RANK: 0x0025,
 
     //Players? 0x0030-0x003f
     GET_PLAYER: 0x0030,
@@ -57,6 +59,8 @@ const ErrorNumbers = {
     RANK_NOT_FOUND: 0x23,
     PLAYER_ALREADY_EXISTS: 0x24,
     PLAYER_NOT_FOUND: 0x25,
+
+    RANK_ALREADY_EXISTS: 0x40,
 
     INTERNAL_ERROR: 0xffff
 }

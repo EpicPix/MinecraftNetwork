@@ -5,10 +5,7 @@ import com.google.gson.JsonObject;
 import ga.epicpix.network.common.websocket.Errorable;
 import ga.epicpix.network.common.websocket.Opcodes;
 import ga.epicpix.network.common.websocket.requests.Request;
-import ga.epicpix.network.common.websocket.requests.data.GetDefaultRankRequest;
-import ga.epicpix.network.common.websocket.requests.data.GetRankRequest;
-import ga.epicpix.network.common.websocket.requests.data.GetRanksRequest;
-import ga.epicpix.network.common.websocket.requests.data.UpdateRankRequest;
+import ga.epicpix.network.common.websocket.requests.data.*;
 
 import java.util.ArrayList;
 
@@ -48,6 +45,22 @@ public class RankManager {
             return new Errorable<>(obj.get("errno").getAsInt());
         }
         return new Errorable<>(Rank.rankFromJsonObject(obj.getAsJsonObject("rank")));
+    }
+
+    public static Errorable<Rank> createRank(String rank, UpdateRankRequest.Data data) {
+        JsonObject obj = Request.sendRequest(Request.createRequest(Opcodes.CREATE_RANK, CreateRankRequest.build(rank, data)));
+        if(!obj.get("ok").getAsBoolean()) {
+            return new Errorable<>(obj.get("errno").getAsInt());
+        }
+        return new Errorable<>(Rank.rankFromJsonObject(obj.getAsJsonObject("rank")));
+    }
+
+    public static Errorable<Boolean> deleteRank(String rank) {
+        JsonObject obj = Request.sendRequest(Request.createRequest(Opcodes.DELETE_RANK, DeleteRankRequest.build(rank)));
+        if(!obj.get("ok").getAsBoolean()) {
+            return new Errorable<>(obj.get("errno").getAsInt());
+        }
+        return new Errorable<>(true);
     }
 
 }

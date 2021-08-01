@@ -24,7 +24,9 @@ public final class RequestPolicies {
         if((opcode==Opcodes.GET_RANK
                 || opcode==Opcodes.GET_RANKS
                 || opcode==Opcodes.GET_DEFAULT_RANK
-                || opcode==Opcodes.UPDATE_RANK) && clazz.equals(RankManager.class.getName())) return true;
+                || opcode==Opcodes.UPDATE_RANK
+                || opcode==Opcodes.CREATE_RANK
+                || opcode==Opcodes.DELETE_RANK) && clazz.equals(RankManager.class.getName())) return true;
         if((opcode==Opcodes.GET_PLAYER
                 || opcode==Opcodes.UPDATE_PLAYER
                 || opcode==Opcodes.UPDATE_PLAYER_OR_CREATE

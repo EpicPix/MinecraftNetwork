@@ -12,30 +12,30 @@ module.exports = function(websocket, json) {
                         break;
                     }
                 }
-                if(rank === null) {
-                    websocket.respond(json, {ok: false, errno: ErrorNumbers.RANK_NOT_FOUND});
+                if(rank !== null) {
+                    websocket.respond(json, {ok: false, errno: ErrorNumbers.RANK_ALREADY_EXISTS});
                     return;
                 }
-                var flags = 0x0000;
+                rank = {priority: 10, prefix: [], suffix: [], permissions: [], nameColor: "white", chatColor: "white"};
+                ranks.push(rank);
                 var data = json['data'];
-                var copy = function(a, b, c, d) {
+                var copy = function(a, b, c) {
                     if(typeof b[c] !== 'undefined') {
                         a[c] = b[c];
-                        flags |= d;
                     }
                 }
-                copy(rank, data, 'priority', 0x0001);
-                copy(rank, data, 'prefix', 0x0002);
-                copy(rank, data, 'suffix', 0x0004);
-                copy(rank, data, 'permissions', 0x008);
-                copy(rank, data, 'nameColor', 0x0010);
-                copy(rank, data, 'chatColor', 0x0020);
+                copy(rank, data, 'priority');
+                copy(rank, data, 'prefix');
+                copy(rank, data, 'suffix');
+                copy(rank, data, 'permissions');
+                copy(rank, data, 'nameColor');
+                copy(rank, data, 'chatColor');
                 for(const ws of require('../index').wss.clients) {
                     if(ws.hasCapability(Capabilities.CAPRANKUPD)) {
                         ws.send(JSON.stringify({opcode: StringOpcodes.RANK_UPDATE, rank}));
                     }
                 }
-                websocket.respond(json, {ok: true, rank, flags});
+                websocket.respond(json, {ok: true, rank});
             }else {
                 websocket.respond(json, {ok: false, errno: ErrorNumbers.NO_DATA_FIELD});
             }

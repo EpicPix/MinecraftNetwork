@@ -3,6 +3,12 @@ const fs = require('fs');
 const { Server } = require('ws');
 const { StringOpcodes, toOpcodeId, ErrorNumbers } = require('./opcodes');
 
+Array.prototype.removeElement = function(value) { 
+    return this.filter(function(ele){ 
+        return ele != value; 
+    });
+}
+
 const port = 8080;
 
 var logins = [];

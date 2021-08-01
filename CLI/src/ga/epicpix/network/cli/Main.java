@@ -1,8 +1,5 @@
 package ga.epicpix.network.cli;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import ga.epicpix.network.common.servers.ServerManager;
 import ga.epicpix.network.common.text.ChatColor;
 import ga.epicpix.network.common.servers.ServerInfo;
@@ -19,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Scanner;
 
+import static ga.epicpix.network.cli.Utils.*;
 import static ga.epicpix.network.common.CommonUtils.*;
 
 public class Main {
@@ -166,6 +164,7 @@ public class Main {
                 System.out.println("ansi - Enables/Disables ANSI Codes");
                 System.out.println("exit - Exits this manager");
                 System.out.println("help - Show help");
+                //TODO: System.out.println("ranks - List ranks");
                 System.out.println("settings - List settings");
                 System.out.println("server <id> stop - Stop a server");
                 System.out.println("servers - List servers");
@@ -228,20 +227,10 @@ public class Main {
     }
 
     public static void showSettingsListing(HashMap<String, ValueType> settings) {
-        int name = 4;
-        for(String setting : settings.keySet()) if(name < setting.length()) name = setting.length();
+        int name = getLongest(4, settings.keySet()) + 2;
+        int type = getLongestFromMethod(4, ValueType.class, "convertValueTypeToString", settings.values()) + 2;
+        int value = getLongestFromField(5, "value", settings.values()) + 2;
 
-        int type = 4;
-        for(ValueType vtype : settings.values()) if(type < ValueType.convertValueTypeToString(vtype).length()) type = ValueType.convertValueTypeToString(vtype).length();
-
-        int value = 5;
-        for(ValueType vtype : settings.values()) if(value < vtype.toString().length()) value = vtype.toString().length();
-
-        name += 2;
-        type += 2;
-        value += 2;
-
-        String rep = "║" + " ".repeat(name) + "|" + " ".repeat(type) + "|" + " ".repeat(value) + "║";
 
         if(settings.size()==0) {
             int amt = "No settings found".length()+20;
@@ -252,9 +241,9 @@ public class Main {
             return;
         }
 
-        rep = replaceAt(rep, 1+(name-1)/2-1, "NAME");
-        rep = replaceAt(rep, 1+name+1+(type-1)/2-1, "TYPE");
-        rep = replaceAt(rep, 1+name+1+type+1+(value-1)/2-2, "VALUE");
+        String rep = "║" + " ".repeat(name) + "|" + " ".repeat(type) + "|" + " ".repeat(value) + "║";
+
+        rep = setStrings(rep, new StringInfo(name, "NAME"), new StringInfo(type, "TYPE"), new StringInfo(value, "VALUE"));
 
         System.out.println("/green/" + replaceCharactersSpecial("╔" + "═".repeat(rep.length()-2) + "╗", rep, '|', '╤'));
         System.out.println("/green/" + rep.replace('|', '│'));
@@ -283,31 +272,12 @@ public class Main {
     public static void showServerListing(ArrayList<ServerInfo> servers) {
 
         final long time = System.currentTimeMillis();
-
-        int id = 2;
-        for(ServerInfo server : servers) if(id < server.id.length()) id = server.id.length();
-
-        int type = 4;
-        for(ServerInfo server : servers) if(type < server.type.length()) type = server.type.length();
-
-        int players = 7;
-        for(ServerInfo server : servers) if(players < (server.onlinePlayers + "/" + server.maxPlayers).length()) players = (server.onlinePlayers + "/" + server.maxPlayers).length();
-
-        int version = 7;
-        for(ServerInfo server : servers) if(version < server.version.name().length()) version = server.version.name().length();
-
-        int ip = 2;
-        for(ServerInfo server : servers) if(ip < (server.details.ip() + ":" + server.details.port()).length()) ip = (server.details.ip() + ":" + server.details.port()).length();
-
-        int uptime = 6;
-        for(ServerInfo server : servers) if(uptime < convertTime(time-server.start).length()) uptime = convertTime(time-server.start).length();
-
-        id += 2;
-        type += 2;
-        players += 2;
-        version += 2;
-        ip += 2;
-        uptime += 2;
+        int id = getLongestFromField(2, "id", servers) + 2;
+        int type = getLongestFromField(4, "type", servers) + 2;
+        int players = getLongestFromCompute(7, (serv) -> serv.onlinePlayers + "/" + serv.maxPlayers, servers) + 2;
+        int version = getLongestFromCompute(7, (serv) -> serv.version.name(), servers) + 2;
+        int ip = getLongestFromCompute(2, (serv) -> serv.details.ip() + ":" + serv.details.port(), servers) + 2;
+        int uptime = getLongestFromCompute(6, (serv) -> convertTime(time-serv.start), servers) + 2;
 
         String rep = "║" + " ".repeat(id) + "|" + " ".repeat(type) + "|" + " ".repeat(players) + "|" + " ".repeat(version) + "|" + " ".repeat(ip) + "|" + " ".repeat(uptime) + "║";
 
@@ -319,13 +289,7 @@ public class Main {
             System.out.println("/red/╚" + "═".repeat(amt) + "╝");
             return;
         }
-
-        rep = replaceAt(rep, 1+(id-1)/2, "ID");
-        rep = replaceAt(rep, 1+id+1+(type-1)/2-1, "TYPE");
-        rep = replaceAt(rep, 1+id+1+type+1+(players-1)/2-3, "PLAYERS");
-        rep = replaceAt(rep, 1+id+1+type+1+players+1+(version-1)/2-3, "VERSION");
-        rep = replaceAt(rep, 1+id+1+type+1+players+1+version+1+(ip-1)/2, "IP");
-        rep = replaceAt(rep, 1+id+1+type+1+players+1+version+1+ip+1+(uptime-1)/2-2, "UPTIME");
+        rep = setStrings(rep, new StringInfo(id, "ID"), new StringInfo(type, "TYPE"), new StringInfo(players, "PLAYERS"), new StringInfo(version, "VERSION"), new StringInfo(ip, "IP"), new StringInfo(uptime, "UPTIME"));
 
         System.out.println("/green/" + replaceCharactersSpecial("╔" + "═".repeat(rep.length()-2) + "╗", rep, '|', '╤'));
         System.out.println("/green/" + rep.replace('|', '│'));
@@ -357,10 +321,6 @@ public class Main {
 
         System.out.println("/green/" + replaceCharactersSpecial("╚" + "═".repeat( rep.length()-2) + "╝", rep, '|', '╧'));
 
-    }
-
-    public static String getParam(String[] args, int arg) {
-        return args.length > arg ? args[arg] : null;
     }
 
 }

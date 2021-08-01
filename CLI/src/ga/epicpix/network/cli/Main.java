@@ -227,7 +227,7 @@ public class Main {
     }
 
     public static void showSettingsListing(HashMap<String, ValueType> settings) {
-        int name = getLongest(4, settings.keySet()) + 2;
+        int name = getLongestFromCompute(4, str -> str, settings.keySet()) + 2;
         int type = getLongestFromCompute(4, ValueType::convertValueTypeToString, settings.values()) + 2;
         int value = getLongestFromCompute(5, ValueType::toString, settings.values()) + 2;
 

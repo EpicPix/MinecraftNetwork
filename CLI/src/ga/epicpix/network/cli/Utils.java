@@ -32,11 +32,6 @@ public class Utils {
         return repl;
     }
 
-    public static int getLongest(int def, Collection<String> strings) {
-        for(String str : strings) if(def < str.length()) def = str.length();
-        return def;
-    }
-
     public static <T> int getLongestFromCompute(int def, Compute<T> compute, Collection<? extends T> objs) {
         for(T obj : objs) {
             Object ret = compute.compute(obj);

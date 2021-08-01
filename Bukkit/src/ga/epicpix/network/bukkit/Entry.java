@@ -1,6 +1,8 @@
 package ga.epicpix.network.bukkit;
 
 import com.google.gson.JsonObject;
+import ga.epicpix.network.bukkit.commands.BukkitCommandPlayer;
+import ga.epicpix.network.bukkit.commands.TestCommand;
 import ga.epicpix.network.common.Reflection;
 import ga.epicpix.network.common.servers.ServerManager;
 import ga.epicpix.network.common.text.ChatColor;
@@ -14,10 +16,14 @@ import ga.epicpix.network.common.websocket.Errorable;
 import ga.epicpix.network.common.websocket.WebSocketConnection;
 import ga.epicpix.network.common.websocket.requests.data.UpdateServerDataRequest;
 import org.bukkit.Bukkit;
+import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Team;
 import org.spigotmc.SpigotConfig;
 import org.spigotmc.SpigotWorldConfig;
+
+import java.util.Map;
 
 import static ga.epicpix.network.common.servers.ServerInfo.ServerSignal;
 
@@ -69,6 +75,12 @@ public class Entry extends JavaPlugin {
                     iteam.setPrefix(ChatComponent.componentsToString(rank.getPrefix()) + (rank.getPrefix().length==0?"":" ") + ChatColor.convertColorText("/" + rank.getNameColor() + "/"));
                     iteam.setSuffix((rank.getSuffix().length==0?"":ChatColor.convertColorText("/white/ ")) + ChatComponent.componentsToString(rank.getSuffix()));
                 });
+                for(String p : iteam.getEntries()) {
+                    Player player = Bukkit.getPlayer(p);
+                    if(player!=null) {
+                        player.recalculatePermissions();
+                    }
+                }
             }
         });
 
@@ -91,11 +103,16 @@ public class Entry extends JavaPlugin {
         }else {
             BukkitCommon.setBungeeCord(val.getValue().getAsBoolean());
         }
+        Command.registerCommand(new TestCommand());
     }
 
     public void onEnable() {
         PluginListener.publicScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
         Bukkit.getServer().getPluginManager().registerEvents(new PluginListener(), this);
+        Bukkit.getScheduler().runTask(this, () -> {
+            BukkitCommon.removeDefaultPermissions();
+            BukkitCommon.removeCommandAliases();
+        });
     }
 
     public void onDisable() {

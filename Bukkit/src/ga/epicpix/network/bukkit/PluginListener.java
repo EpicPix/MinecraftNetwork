@@ -1,10 +1,10 @@
 package ga.epicpix.network.bukkit;
 
-import ga.epicpix.network.common.*;
+import ga.epicpix.network.common.CommonUtils;
+import ga.epicpix.network.common.Reflection;
 import ga.epicpix.network.common.players.PlayerInfo;
 import ga.epicpix.network.common.players.PlayerManager;
 import ga.epicpix.network.common.ranks.Rank;
-import ga.epicpix.network.common.servers.ServerInfo;
 import ga.epicpix.network.common.servers.ServerManager;
 import ga.epicpix.network.common.settings.SettingsManager;
 import ga.epicpix.network.common.text.ChatColor;
@@ -19,15 +19,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerChatTabCompleteEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.permissions.PermissibleBase;
+import org.bukkit.permissions.PermissionAttachment;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.spigotmc.SpigotConfig;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.*;
 
 public class PluginListener implements Listener {
 
@@ -61,6 +63,19 @@ public class PluginListener implements Listener {
         team.removeEntry(player.getName());
         team.addEntry(player.getName());
         player.setScoreboard(publicScoreboard);
+        PermissibleBase base = (PermissibleBase) Reflection.getValueOfField(player.getClass(), "perm", player);
+        PermissionAttachment attachment = new PermissionAttachment(Entry.PLUGIN, player) {
+            public Map<String, Boolean> getPermissions() {
+                base.clearPermissions();
+                Map<String, PermissionAttachmentInfo> permissions = (Map<String, PermissionAttachmentInfo>) Reflection.getValueOfField(base.getClass(), "permissions", base);
+                for(String perm : rank.getPermissions()) {
+                    permissions.put(perm, new PermissionAttachmentInfo(player, perm, this, true));
+                }
+                return new HashMap<>();
+            }
+        };
+        ((List<PermissionAttachment>) Reflection.getValueOfField(base.getClass(), "attachments", base)).add(attachment);
+        player.recalculatePermissions();
     }
 
     @EventHandler

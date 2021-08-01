@@ -11,9 +11,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permissible;
+import org.bukkit.permissions.Permission;
 import org.spigotmc.SpigotConfig;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class BukkitCommon {
 
@@ -117,4 +122,25 @@ public class BukkitCommon {
         Reflection.callMethodByClasses(configuration.getClass(), "set", configuration, new Class[] {String.class, Object.class}, "settings.allow-end", allow);
     }
 
+    public static void removeDefaultPermissions() {
+        Object SimplePluginManager = Bukkit.getServer().getPluginManager();
+        Map<Boolean, Set<Permission>> defaultPerms = (Map<Boolean, Set<Permission>>) Reflection.getValueOfField(SimplePluginManager.getClass(), "defaultPerms", SimplePluginManager);
+        defaultPerms.get(false).clear();
+        defaultPerms.get(true).clear();
+
+        Map<String, Permission> permissions = (Map<String, Permission>) Reflection.getValueOfField(SimplePluginManager.getClass(), "permissions", SimplePluginManager);
+        permissions.clear();
+
+        Map<String, Map<Permissible, Boolean>> permSubs = (Map<String, Map<Permissible, Boolean>>) Reflection.getValueOfField(SimplePluginManager.getClass(), "permSubs", SimplePluginManager);
+        permSubs.clear();
+    }
+
+    public static void removeCommandAliases() {
+        ArrayList<String> remove = new ArrayList<>();
+        Map<String, Command> map = getCommandMap();
+        map.keySet().forEach((a) -> {
+            if(a.contains(":")) remove.add(a);
+        });
+        remove.forEach(map::remove);
+    }
 }

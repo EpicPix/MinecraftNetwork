@@ -26,6 +26,8 @@ import org.bukkit.scoreboard.Team;
 import org.spigotmc.SpigotConfig;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class PluginListener implements Listener {
 
@@ -77,18 +79,26 @@ public class PluginListener implements Listener {
         }
         Rank rank = info.getRank();
         e.setCancelled(true);
+        ArrayList<ChatComponent> ccomponents = new ArrayList<>();
+        Collections.addAll(ccomponents, rank.getPrefix());
+        if(rank.getPrefix().length!=0) ccomponents.add(new ChatComponent().setText(" "));
+
+        ccomponents.add(new ChatComponent().setText(e.getPlayer().getName()).setColor(rank.getNameColor()));
+
+        if(rank.getSuffix().length!=0) ccomponents.add(new ChatComponent().setText(" "));
+        ccomponents.addAll(Arrays.asList(rank.getSuffix()));
+
+        if(showColon) ccomponents.add(new ChatComponent().setText(": ").setColor("white"));
+        ccomponents.add(new ChatComponent().setText(e.getMessage()).setColor(rank.getChatColor()));
+
+
         ArrayList<TextComponent> components = new ArrayList<>();
-        for(ChatComponent c : rank.getPrefix()) components.add(BukkitCommon.toTextComponent(c));
-        if(rank.getPrefix().length!=0) components.add(BukkitCommon.toTextComponent(new ChatComponent().setText(" ")));
-        components.add(BukkitCommon.toTextComponent(new ChatComponent().setText(e.getPlayer().getName()).setColor(rank.getNameColor())));
-        if(rank.getSuffix().length!=0) components.add(BukkitCommon.toTextComponent(new ChatComponent().setText(" ")));
-        for(ChatComponent c : rank.getSuffix()) components.add(BukkitCommon.toTextComponent(c));
-        if(showColon) components.add(BukkitCommon.toTextComponent(new ChatComponent().setText(": ").setColor("white")));
-        components.add(BukkitCommon.toTextComponent(new ChatComponent().setText(e.getMessage()).setColor(rank.getChatColor())));
+        ccomponents.forEach((c) -> components.add(BukkitCommon.toTextComponent(c)));
         TextComponent[] acomponents = components.toArray(new TextComponent[0]);
         for(Player p : e.getRecipients()) {
             p.spigot().sendMessage(acomponents);
         }
+        System.out.println(ChatColor.removeColorCodes(ChatColor.convertColorText(ChatComponent.componentsToString(ccomponents.toArray(new ChatComponent[0])))));
     }
 
 }

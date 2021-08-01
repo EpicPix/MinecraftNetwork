@@ -39,7 +39,7 @@ public class ChatColor {
             if(c==ChatColor.COLOR_CHAR) {
                 i++;
             }else {
-                generated.append(str);
+                generated.append(c);
             }
         }
         return generated.toString();

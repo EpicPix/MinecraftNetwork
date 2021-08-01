@@ -145,7 +145,7 @@ var webhook = secrets['webhook']; //Discord webhook, can be null
 const https = require('https');
 
 function sendWebhook(name, title, description, color) {
-    if(webhook!=null) {
+    if(webhook!==null && webhook!=='') {
         var data = JSON.stringify({username: name, embeds: [{title, description, color}]});
         var req = https.request({
             hostname: "discord.com",

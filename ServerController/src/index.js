@@ -221,6 +221,7 @@ function backup() {
         },
         fs.readdirSync(currentFolder)
     ).then(_ => {
+        date = new Date();
         console.log(`[${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}] Finished backup`);
     });
 }

@@ -64,14 +64,14 @@ public class UpdateRankRequest extends RequestData {
     }
 
     public static UpdateRankRequest build(String serverName, Data data) {
-        if(!RequestPolicies.isAllowed(Opcodes.uPDATE_RANK, Reflection.getCaller())) {
+        if(!RequestPolicies.isAllowed(Opcodes.UPDATE_RANK, Reflection.getCaller())) {
             throw new SecurityException("Cannot build this request data!");
         }
         return new UpdateRankRequest(serverName, data);
     }
 
     public int getOpcode() {
-        return Opcodes.uPDATE_RANK;
+        return Opcodes.UPDATE_RANK;
     }
 
     public JsonObject toJson() {

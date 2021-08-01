@@ -19,7 +19,7 @@ public class Opcodes {
     public static final int GET_RANK = 0x0020;
     public static final int GET_RANKS = 0x0021;
     public static final int GET_DEFAULT_RANK = 0x0022;
-    public static final int uPDATE_RANK = 0x0023;
+    public static final int UPDATE_RANK = 0x0023;
 
     public static final int GET_PLAYER = 0x0030;
     public static final int UPDATE_PLAYER = 0x0031;

@@ -1,9 +1,7 @@
 package ga.epicpix.network.common.websocket.requests;
 
 import ga.epicpix.network.common.players.PlayerManager;
-import ga.epicpix.network.common.ranks.Rank;
 import ga.epicpix.network.common.ranks.RankManager;
-import ga.epicpix.network.common.servers.ServerInfo;
 import ga.epicpix.network.common.servers.ServerManager;
 import ga.epicpix.network.common.settings.SettingsManager;
 import ga.epicpix.network.common.websocket.Opcodes;
@@ -25,7 +23,8 @@ public final class RequestPolicies {
                 || opcode==Opcodes.GET_SETTINGS) && clazz.equals(SettingsManager.class.getName())) return true;
         if((opcode==Opcodes.GET_RANK
                 || opcode==Opcodes.GET_RANKS
-                || opcode==Opcodes.GET_DEFAULT_RANK) && clazz.equals(RankManager.class.getName())) return true;
+                || opcode==Opcodes.GET_DEFAULT_RANK
+                || opcode==Opcodes.uPDATE_RANK) && clazz.equals(RankManager.class.getName())) return true;
         if((opcode==Opcodes.GET_PLAYER
                 || opcode==Opcodes.UPDATE_PLAYER
                 || opcode==Opcodes.UPDATE_PLAYER_OR_CREATE

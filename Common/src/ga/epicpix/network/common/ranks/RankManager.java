@@ -8,6 +8,7 @@ import ga.epicpix.network.common.websocket.requests.Request;
 import ga.epicpix.network.common.websocket.requests.data.GetDefaultRankRequest;
 import ga.epicpix.network.common.websocket.requests.data.GetRankRequest;
 import ga.epicpix.network.common.websocket.requests.data.GetRanksRequest;
+import ga.epicpix.network.common.websocket.requests.data.UpdateRankRequest;
 
 import java.util.ArrayList;
 
@@ -35,6 +36,14 @@ public class RankManager {
 
     public static Errorable<Rank> getDefaultRank() {
         JsonObject obj = Request.sendRequest(Request.createRequest(Opcodes.GET_DEFAULT_RANK, GetDefaultRankRequest.build()));
+        if(!obj.get("ok").getAsBoolean()) {
+            return new Errorable<>(obj.get("errno").getAsInt());
+        }
+        return new Errorable<>(Rank.rankFromJsonObject(obj.getAsJsonObject("rank")));
+    }
+
+    public static Errorable<Rank> updateRank(String rank, UpdateRankRequest.Data update) {
+        JsonObject obj = Request.sendRequest(Request.createRequest(Opcodes.RANK_UPDATE, UpdateRankRequest.build(rank, update)));
         if(!obj.get("ok").getAsBoolean()) {
             return new Errorable<>(obj.get("errno").getAsInt());
         }

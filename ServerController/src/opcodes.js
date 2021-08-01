@@ -25,6 +25,7 @@ const StringOpcodes = {
     GET_RANK: 0x0020,
     GET_RANKS: 0x0021,
     GET_DEFAULT_RANK: 0x0022,
+    UPDATE_RANK: 0x0023,
 
     //Players? 0x0030-0x003f
     GET_PLAYER: 0x0030,

@@ -1,9 +1,12 @@
 package ga.epicpix.network.cli;
 
+import ga.epicpix.network.common.ranks.Rank;
+import ga.epicpix.network.common.ranks.RankManager;
 import ga.epicpix.network.common.servers.ServerManager;
 import ga.epicpix.network.common.text.ChatColor;
 import ga.epicpix.network.common.servers.ServerInfo;
 import ga.epicpix.network.common.settings.SettingsManager;
+import ga.epicpix.network.common.text.ChatComponent;
 import ga.epicpix.network.common.values.ValueType;
 import ga.epicpix.network.common.websocket.ClientType;
 import ga.epicpix.network.common.websocket.Errorable;
@@ -164,10 +167,17 @@ public class Main {
                 System.out.println("ansi - Enables/Disables ANSI Codes");
                 System.out.println("exit - Exits this manager");
                 System.out.println("help - Show help");
-                //TODO: System.out.println("ranks - List ranks");
+                System.out.println("ranks - List ranks");
                 System.out.println("settings - List settings");
                 System.out.println("server <id> stop - Stop a server");
                 System.out.println("servers - List servers");
+            }else if(cmdline.equals("ranks")) {
+                Errorable<ArrayList<Rank>> rresp = RankManager.getRanks();
+                if(rresp.hasFailed()) {
+                    System.out.println("/red/Could not request the rank list!");
+                }else {
+                    showRanksListing(rresp.getValue());
+                }
             }else if(cmdline.equals("settings")) {
                 Errorable<HashMap<String, ValueType>> rresp = SettingsManager.getSettings();
                 if(rresp.hasFailed()) {
@@ -215,31 +225,69 @@ public class Main {
         long min = (timems/60000)%60;
         long hr = (timems/3600000)%24;
         long d = timems/86400000;
-        if(d!=0) {
-            return (neg?"-":"") + d + "d " + hr + "h " + min + "m " + sec + "s";
-        }else if(hr!=0) {
-            return (neg?"-":"") + hr + "h " + min + "m " + sec + "s";
-        }else if(min!=0) {
-            return (neg?"-":"") + min + "m " + sec + "s";
-        }else {
-            return (neg?"-":"") + sec + "s";
+        if(d!=0) return (neg?"-":"") + d + "d " + hr + "h " + min + "m " + sec + "s";
+        else if(hr!=0) return (neg?"-":"") + hr + "h " + min + "m " + sec + "s";
+        else if(min!=0) return (neg?"-":"") + min + "m " + sec + "s";
+        else return (neg?"-":"") + sec + "s";
+    }
+
+    public static String showChatRankExample(Rank rank) {
+        StringBuilder builder = new StringBuilder();
+        String prefix = ChatColor.convertColorText(ChatComponent.componentsToString(rank.getPrefix()));
+        if(prefix.length()!=0) builder.append(prefix).append(" ");
+        builder.append("%username%");
+        String suffix = ChatColor.convertColorText(ChatComponent.componentsToString(rank.getSuffix()));
+        if(suffix.length()!=0) builder.append(" ").append(suffix);
+        return builder.toString().replace(ChatColor.COLOR_CHAR, '&');
+    }
+
+    public static void showRanksListing(ArrayList<Rank> ranks) {
+        if(ranks.size()==0) {
+            showNothingFound("No ranks found.");
+            return;
         }
+
+        int id = getLongestFromCompute(2, Rank::getId, ranks) + 2;
+        int priority = getLongestFromCompute(8, Rank::getPriority, ranks) + 2;
+        int chat = getLongestFromCompute(4, Main::showChatRankExample, ranks) + 2;
+
+        String rep = "║" + " ".repeat(id) + "|" + " ".repeat(priority) + "|" + " ".repeat(chat) + "║";
+
+        rep = setStrings(rep, new StringInfo(id, "ID"), new StringInfo(priority, "PRIORITY"), new StringInfo(chat, "CHAT"));
+
+        System.out.println("/green/" + replaceCharactersSpecial("╔" + "═".repeat(rep.length()-2) + "╗", rep, '|', '╤'));
+        System.out.println("/green/" + rep.replace('|', '│'));
+        System.out.println("/green/" + replaceCharactersSpecial("╟" + "─".repeat(rep.length()-2) + "╢", rep, '|', '┼'));
+
+        for(Rank rank : ranks) {
+            String settingOut = ansi("/green/║" + " ".repeat(id + (ansi ? AQUA.length() + GREEN.length() : 0))
+                    + "│" + " ".repeat(priority + (ansi ? AQUA.length() + GREEN.length() : 0))
+                    + "│" + " ".repeat(chat + (ansi ? AQUA.length() + GREEN.length() : 0)) + "║", true);
+
+            int x = 2 + (ansi ? GREEN.length() : 0);
+            settingOut = replaceAt(settingOut, x, ansi("/aqua/" + rank.getId() + "/green/", false));
+            x += 1 + id + (ansi ? AQUA.length() + GREEN.length() : 0);
+            settingOut = replaceAt(settingOut, x, ansi("/aqua/" + rank.getPriority() + "/green/", false));
+            x += 1 + priority + (ansi ? AQUA.length() + GREEN.length() : 0);
+            settingOut = replaceAt(settingOut, x, ansi("/aqua/" + showChatRankExample(rank) + "/green/", false));
+
+            System.out.println(settingOut);
+
+        }
+
+        System.out.println("/green/" + replaceCharactersSpecial("╚" + "═".repeat( rep.length()-2) + "╝", rep, '|', '╧'));
+
     }
 
     public static void showSettingsListing(HashMap<String, ValueType> settings) {
+        if(settings.size()==0) {
+            showNothingFound("No settings found.");
+            return;
+        }
+
         int name = getLongestFromCompute(4, str -> str, settings.keySet()) + 2;
         int type = getLongestFromCompute(4, ValueType::convertValueTypeToString, settings.values()) + 2;
         int value = getLongestFromCompute(5, ValueType::toString, settings.values()) + 2;
-
-
-        if(settings.size()==0) {
-            int amt = "No settings found".length()+20;
-            System.out.println("/red/╔" + "═".repeat(amt) + "╗");
-            String x = "║" + " ".repeat(amt) + "║";
-            System.out.println("/red/" + replaceAt(x, amt/2-8, "No settings found."));
-            System.out.println("/red/╚" + "═".repeat(amt) + "╝");
-            return;
-        }
 
         String rep = "║" + " ".repeat(name) + "|" + " ".repeat(type) + "|" + " ".repeat(value) + "║";
 
@@ -271,6 +319,11 @@ public class Main {
 
     public static void showServerListing(ArrayList<ServerInfo> servers) {
 
+        if(servers.size()==0) {
+            showNothingFound("No servers found.");
+            return;
+        }
+
         final long time = System.currentTimeMillis();
         int id = getLongestFromCompute(2, (serv) -> serv.id, servers) + 2;
         int type = getLongestFromCompute(4, (serv) -> serv.type, servers) + 2;
@@ -281,14 +334,6 @@ public class Main {
 
         String rep = "║" + " ".repeat(id) + "|" + " ".repeat(type) + "|" + " ".repeat(players) + "|" + " ".repeat(version) + "|" + " ".repeat(ip) + "|" + " ".repeat(uptime) + "║";
 
-        if(servers.size()==0) {
-            int amt = "No servers found".length()+20;
-            System.out.println("/red/╔" + "═".repeat(amt) + "╗");
-            String x = "║" + " ".repeat(amt) + "║";
-            System.out.println("/red/" + replaceAt(x, amt/2-8, "No servers found."));
-            System.out.println("/red/╚" + "═".repeat(amt) + "╝");
-            return;
-        }
         rep = setStrings(rep, new StringInfo(id, "ID"), new StringInfo(type, "TYPE"), new StringInfo(players, "PLAYERS"), new StringInfo(version, "VERSION"), new StringInfo(ip, "IP"), new StringInfo(uptime, "UPTIME"));
 
         System.out.println("/green/" + replaceCharactersSpecial("╔" + "═".repeat(rep.length()-2) + "╗", rep, '|', '╤'));
@@ -321,6 +366,14 @@ public class Main {
 
         System.out.println("/green/" + replaceCharactersSpecial("╚" + "═".repeat( rep.length()-2) + "╝", rep, '|', '╧'));
 
+    }
+
+    public static void showNothingFound(String str) {
+        int amt = 30;
+        System.out.println("/red/╔" + "═".repeat(amt) + "╗");
+        String x = "║" + " ".repeat(amt) + "║";
+        System.out.println("/red/" + replaceAt(x, amt/2-(str.length()-1)/2, str));
+        System.out.println("/red/╚" + "═".repeat(amt) + "╝");
     }
 
 }

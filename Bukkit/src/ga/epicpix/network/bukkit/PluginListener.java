@@ -10,6 +10,7 @@ import ga.epicpix.network.common.settings.SettingsManager;
 import ga.epicpix.network.common.text.ChatColor;
 import ga.epicpix.network.common.text.ChatComponent;
 import ga.epicpix.network.common.values.ValueType;
+import ga.epicpix.network.common.websocket.Errorable;
 import ga.epicpix.network.common.websocket.requests.data.UpdatePlayerRequest;
 import ga.epicpix.network.common.websocket.requests.data.UpdateServerDataRequest;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -69,7 +70,11 @@ public class PluginListener implements Listener {
     public void onPlayerChat(AsyncPlayerChatEvent e) {
         Player player = e.getPlayer();
         PlayerInfo info = PlayerManager.getPlayerOrCreate(player.getUniqueId(), player.getName()).getValue();
-        boolean showColon = SettingsManager.getSettingOrDefault("SHOW_COLON_CHAT", new ValueType(true)).getAsBoolean();
+        Errorable<ValueType> rshowColon = SettingsManager.getSettingOrDefault("SHOW_COLON_CHAT", new ValueType(true));
+        boolean showColon = true;
+        if(!rshowColon.hasFailed()) {
+            showColon = rshowColon.getValue().getAsBoolean();
+        }
         Rank rank = info.getRank();
         e.setCancelled(true);
         ArrayList<TextComponent> components = new ArrayList<>();

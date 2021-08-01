@@ -170,8 +170,12 @@ public class Main {
                 System.out.println("server <id> stop - Stop a server");
                 System.out.println("servers - List servers");
             }else if(cmdline.equals("settings")) {
-                HashMap<String, ValueType> resp = SettingsManager.getSettings();
-                showSettingsListing(resp);
+                Errorable<HashMap<String, ValueType>> rresp = SettingsManager.getSettings();
+                if(rresp.hasFailed()) {
+                    System.out.println("/red/Could not request the setting list!");
+                }else {
+                    showSettingsListing(rresp.getValue());
+                }
             }else if(cmdline.equals("server")) {
                 if(getParam(cmd, 1) != null) {
                     Errorable<ServerInfo> reqserver = ServerManager.getServerInfo(getParam(cmd, 1));

@@ -10,6 +10,7 @@ import ga.epicpix.network.common.settings.SettingsManager;
 import ga.epicpix.network.common.text.ChatComponent;
 import ga.epicpix.network.common.values.ValueType;
 import ga.epicpix.network.common.websocket.ClientType;
+import ga.epicpix.network.common.websocket.Errorable;
 import ga.epicpix.network.common.websocket.WebSocketConnection;
 import ga.epicpix.network.common.websocket.requests.data.UpdateServerDataRequest;
 import org.bukkit.Bukkit;
@@ -84,8 +85,12 @@ public class Entry extends JavaPlugin {
         ServerManager.makeWebSocketServerOwner(Bukkit.getServerId());
 
         Runtime.getRuntime().addShutdownHook(shutdownHook = new Thread(() -> ServerManager.removeServer(BukkitCommon.getServerId())));
-        BukkitCommon.setBungeeCord(SettingsManager.getSettingOrDefault("BUNGEE_CORD", new ValueType(false)).getAsBoolean());
-
+        Errorable<ValueType> val = SettingsManager.getSettingOrDefault("BUNGEE_CORD", new ValueType(false));
+        if(val.hasFailed()) {
+            BukkitCommon.setBungeeCord(false);
+        }else {
+            BukkitCommon.setBungeeCord(val.getValue().getAsBoolean());
+        }
     }
 
     public void onEnable() {

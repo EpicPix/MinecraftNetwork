@@ -161,6 +161,10 @@ public class Main {
         }
     }
 
+    public static int itemEntryLength(int len) {
+        return len+ansiLength(AQUA + GREEN);
+    }
+
     public static String showChatRankExample(Rank rank) {
         StringBuilder builder = new StringBuilder();
         String prefix = ChatColor.convertColorText(ChatComponent.componentsToString(rank.getPrefix()));
@@ -190,15 +194,15 @@ public class Main {
         printlnGreen(replaceCharactersSpecial("╟" + "─".repeat(rep.length()-2) + "╢", rep, '|', '┼'));
 
         for(Rank rank : ranks) {
-            String settingOut = ansi("/green/║" + " ".repeat(idLen + ansiLength(AQUA+GREEN))
-                    + "│" + " ".repeat(priorityLen + ansiLength(AQUA+GREEN))
-                    + "│" + " ".repeat(chatLen + ansiLength(AQUA+GREEN)) + "║", true);
+            String settingOut = ansi("/green/║" + " ".repeat(itemEntryLength(idLen))
+                    + "│" + " ".repeat(itemEntryLength(priorityLen))
+                    + "│" + " ".repeat(itemEntryLength(chatLen)) + "║", true);
 
             int x = 2 + ansiLength(GREEN);
             settingOut = replaceAt(settingOut, x, ansi("/aqua/" + rank.getId() + "/green/", false));
-            x += 1 + idLen +ansiLength(AQUA+GREEN);
+            x += 1 + itemEntryLength(idLen);
             settingOut = replaceAt(settingOut, x, ansi("/aqua/" + rank.getPriority() + "/green/", false));
-            x += 1 + priorityLen + ansiLength(AQUA+GREEN);
+            x += 1 + itemEntryLength(priorityLen);
             settingOut = replaceAt(settingOut, x, ansi("/aqua/" + showChatRankExample(rank) + "/green/", false));
 
             System.out.println(settingOut);
@@ -228,15 +232,15 @@ public class Main {
         printlnGreen(replaceCharactersSpecial("╟" + "─".repeat(rep.length()-2) + "╢", rep, '|', '┼'));
 
         for(Entry<String, ValueType> setting : settings.entrySet()) {
-            String settingOut = ansi("/green/║" + " ".repeat(nameLen + ansiLength(AQUA+GREEN))
-                    + "│" + " ".repeat(typeLen + ansiLength(AQUA+GREEN))
-                    + "│" + " ".repeat(valueLen + ansiLength(AQUA+GREEN)) + "║", true);
+            String settingOut = ansi("/green/║" + " ".repeat(itemEntryLength(nameLen))
+                    + "│" + " ".repeat(itemEntryLength(typeLen))
+                    + "│" + " ".repeat(itemEntryLength(valueLen)) + "║", true);
 
             int x = 2 + ansiLength(GREEN);
             settingOut = replaceAt(settingOut, x, ansi("/aqua/" + setting.getKey() + "/green/", false));
-            x += 1 + nameLen + ansiLength(AQUA+GREEN);
+            x += 1 + itemEntryLength(nameLen);
             settingOut = replaceAt(settingOut, x, ansi("/aqua/" + ValueType.convertValueTypeToString(setting.getValue()) + "/green/", false));
-            x += 1 + typeLen + ansiLength(AQUA+GREEN);
+            x += 1 + itemEntryLength(typeLen);
             settingOut = replaceAt(settingOut, x, ansi("/aqua/" + setting.getValue().toString() + "/green/", false));
 
             System.out.println(settingOut);
@@ -271,24 +275,24 @@ public class Main {
         printlnGreen(replaceCharactersSpecial("╟" + "─".repeat(rep.length()-2) + "╢", rep, '|', '┼'));
 
         for(ServerInfo server : servers) {
-            String serverOut = ansi("/green/║" + " ".repeat(idLen+ansiLength(AQUA+GREEN))
-                    + "│" + " ".repeat(typeLen+ansiLength(AQUA+GREEN))
-                    + "│" + " ".repeat(playersLen+ansiLength(AQUA+GREEN))
-                    + "│" + " ".repeat(versionLen+ansiLength(AQUA+GREEN))
-                    + "│" + " ".repeat(ipLen+ansiLength(AQUA+GREEN))
-                    + "│" + " ".repeat(uptimeLen+ansiLength(AQUA+GREEN)) + "║", true);
+            String serverOut = ansi("/green/║" + " ".repeat(itemEntryLength(idLen))
+                    + "│" + " ".repeat(itemEntryLength(typeLen))
+                    + "│" + " ".repeat(itemEntryLength(playersLen))
+                    + "│" + " ".repeat(itemEntryLength(versionLen))
+                    + "│" + " ".repeat(itemEntryLength(ipLen))
+                    + "│" + " ".repeat(itemEntryLength(uptimeLen)) + "║", true);
 
             int x = 2+ansiLength(GREEN);
             serverOut = replaceAt(serverOut, x, ansi("/aqua/" + server.id + "/green/", false));
-            x += 1+idLen+ansiLength(AQUA+GREEN);
+            x += 1+itemEntryLength(idLen);
             serverOut = replaceAt(serverOut, x, ansi("/aqua/" + server.type + "/green/", false));
-            x += 1+typeLen+ansiLength(AQUA+GREEN);
+            x += 1+itemEntryLength(typeLen);
             serverOut = replaceAt(serverOut, x, ansi("/aqua/" + server.onlinePlayers + "/" + server.maxPlayers + "/green/", false));
-            x += 1+playersLen+ansiLength(AQUA+GREEN);
+            x += 1+itemEntryLength(playersLen);
             serverOut = replaceAt(serverOut, x, ansi("/aqua/" + server.version.name() + "/green/", false));
-            x += 1+versionLen+ansiLength(AQUA+GREEN);
+            x += 1+itemEntryLength(versionLen);
             serverOut = replaceAt(serverOut, x, ansi("/aqua/" + server.details.ip() + ":" + server.details.port() + "/green/", false));
-            x += 1+ipLen+ansiLength(AQUA+GREEN);
+            x += 1+itemEntryLength(ipLen);
             serverOut = replaceAt(serverOut, x, ansi("/aqua/" + convertTime(time-server.start) + "/green/", false));
 
             System.out.println(serverOut);

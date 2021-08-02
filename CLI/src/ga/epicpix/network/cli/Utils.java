@@ -44,4 +44,17 @@ public class Utils {
         return args.length > arg ? args[arg] : null;
     }
 
+    public static String convertTime(long timems) {
+        boolean neg = timems<0;
+        timems = Math.abs(timems);
+        long sec = (timems/1000)%60;
+        long min = (timems/60000)%60;
+        long hr = (timems/3600000)%24;
+        long d = timems/86400000;
+        if(d!=0) return (neg?"-":"") + d + "d " + hr + "h " + min + "m " + sec + "s";
+        else if(hr!=0) return (neg?"-":"") + hr + "h " + min + "m " + sec + "s";
+        else if(min!=0) return (neg?"-":"") + min + "m " + sec + "s";
+        else return (neg?"-":"") + sec + "s";
+    }
+
 }

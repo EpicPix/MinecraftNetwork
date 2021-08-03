@@ -30,7 +30,7 @@ module.exports = function(websocket, json) {
                 copy(rank, data, 'permissions');
                 copy(rank, data, 'nameColor');
                 copy(rank, data, 'chatColor');
-                for(const ws of require('../index').wss.clients) {
+                for(const ws of require('../websocket').wss.clients) {
                     if(ws.hasCapability(Capabilities.CAPRANKUPD)) {
                         ws.send(JSON.stringify({opcode: StringOpcodes.RANK_UPDATE, rank}));
                     }

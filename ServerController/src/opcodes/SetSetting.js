@@ -17,7 +17,7 @@ module.exports = function(websocket, json) {
                     settings.push(setting);
                 }
                 setting.value = json['value'];
-                for(const ws of require('../index').wss.clients) {
+                for(const ws of require('../websocket').wss.clients) {
                     if(ws.hasCapability(Capabilities.CAPSETTINGUPD)) {
                         ws.send(JSON.stringify({opcode: StringOpcodes.SETTINGS_UPDATE, name: setting.name, value: setting.value}));
                     }

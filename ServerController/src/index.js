@@ -1,13 +1,14 @@
 const fs = require('fs');
 
-const { Server } = require('ws');
-const { StringOpcodes, toOpcodeId, ErrorNumbers } = require('./opcodes');
-
 Array.prototype.removeElement = function(value) { 
     return this.filter(function(ele){ 
         return ele != value; 
     });
 }
+
+process.on('uncaughtException', function(exception) {
+    console.log(exception);
+});
 
 const port = 8080;
 
@@ -226,16 +227,14 @@ function backup() {
     });
 }
 
-const wss = new Server({ noServer: true, path: "/wss" });
 const express = require('express');
 const app = express();
-module.exports = { webhook, sendWebhook, logins, servers, settings, ranks, getPlayerByUUID, getPlayerByUsername, getPlayerOrCreate, getDefaultRank, updatePlayer, players, wss };
+module.exports = { webhook, sendWebhook, logins, servers, settings, ranks, getPlayerByUUID, getPlayerByUsername, getPlayerOrCreate, getDefaultRank, updatePlayer, players };
 
 async function main() {
 
     load();
     getDefaultRank();
-    backup();
 
     if(logins.length===0) {
         console.log('No accounts are created, an account will be auto generated');
@@ -243,68 +242,13 @@ async function main() {
         logins.push({username: 'admin', password: 'admin'});
     }
 
-
-    wss.on('connection', function (ws) {
-        ws.userData = { authenticated: false, server: null, capabilities: 0 };
-        ws.respond = function(message, data) {
-            data.rid = message.rid;
-            ws.send(JSON.stringify(data));
-        };
-        ws.checkAuth = function() {
-            if(!ws.userData.authenticated) {
-                ws.close(4006, "Not authenticated");
-                return false;
-            }
-            return true;
-        };
-        ws.hasCapability = function(cap) {
-            if((ws.userData.capabilities & cap) === cap) {
-                return true;
-            }
-            return false;
-        };
-        ws.on('message', function (message) {
-            var json;
-            try {
-                json = JSON.parse(message);
-            } catch (error) {
-                ws.close(4000, "Non-JSON data.");
-            }
-            
-            var operationCode = json['opcode'];
-
-            if(typeof operationCode === 'undefined' || operationCode === null) {
-                ws.close(4002, 'Opcode not provided');
-                return;
-            }
-
-            if(!Number.isInteger(operationCode)) {
-                ws.close(4001, "Unknown opcode.");
-                return;
-            }
-
-            var operationId = toOpcodeId(operationCode);
-
-            if (operationId !== null) {
-                try {
-                    require(`./opcodes/${operationId}`)(ws, json);
-                }catch(error) {
-                    console.log(error);
-                    ws.respond(json, {ok: false, errno: ErrorNumbers.INTERNAL_ERROR});
-                }
-            } else {
-                ws.close(4001, "Unknown opcode.");
-            }
-        });
-    });
-
     const server = app.listen(port);
-    server.on('upgrade', (request, socket, head) => {
-        wss.handleUpgrade(request, socket, head, (websocket) => {
-            wss.emit("connection", websocket, request);
-        });
-    });
-    console.log(`HTTP Server listening at port ${port}`)
+
+    require('./websocket').bindWebsocketToServer(server);
+    
+    console.log(`HTTP Server listening at port ${port}`);
+    
+    backup();
 
     setInterval(() => {
         save();

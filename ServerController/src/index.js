@@ -1,5 +1,3 @@
-const fs = require('fs');
-
 Array.prototype.removeElement = function(value) { 
     return this.filter(function(ele){ 
         return ele != value; 
@@ -21,6 +19,10 @@ var players = [];
 for(var p = 0; p<16*16; p++) {
     players.push([]);
 }
+
+module.exports = { logins, servers, settings, ranks, players };
+
+const {load, save, makeSureExists} = require('./saver');
 
 function getDefaultRank() {
     if(ranks.length==0) {
@@ -91,6 +93,8 @@ function getPlayerByUsername(username) {
     return null;
 }
 
+module.exports = { logins, servers, settings, ranks, getPlayerByUUID, getPlayerByUsername, getPlayerOrCreate, getDefaultRank, updatePlayer, players };
+
 var t = false;
 
 process.once('exit', exit);
@@ -106,130 +110,8 @@ function exit() {
     process.exit(0);
 }
 
-if(!fs.existsSync('files')) {
-    fs.mkdirSync('files');
-}
-
-const path = require('path');
-const mainFolder = path.resolve(__dirname, '..');
-const filesFolder = path.resolve(mainFolder, 'files');
-const currentFolder = path.resolve(filesFolder, 'current');
-const backupFolder = path.resolve(filesFolder, 'backup');
-const backupPath = function(date) {
-    return path.resolve(backupFolder, `backup-${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()} ${date.getHours().toString().padStart(2, '0')}.${date.getMinutes().toString().padStart(2, '0')}`);
-}
-
-const currentAuthFile = path.resolve(currentFolder, 'auth.json');
-const currentSettingsFile = path.resolve(currentFolder, 'settings.json');
-const currentRanksFile = path.resolve(currentFolder, 'ranks.json');
-const currentPlayersFolder = path.resolve(currentFolder, 'players');
-
-function makeSureExists(file, dir, content) {
-    if(!content && content!=='') content = '[]';
-    fs.mkdirSync(path.resolve(file, '..'), {recursive: true});
-    if(!fs.existsSync(file)) {
-        if(dir) {
-            fs.mkdirSync(file);
-        }else {
-            fs.writeFileSync(file, content);
-        }
-        return true;
-    }
-    return false;
-}
-
-makeSureExists('secrets.properties', false, '');
-var secrets = require('./PropertyReader').readFile('secrets.properties')
-
-var webhook = secrets['webhook']; //Discord webhook, can be null
-
-const https = require('https');
-
-function sendWebhook(name, title, description, color) {
-    if(webhook!==null && webhook!=='') {
-        var data = JSON.stringify({username: name, embeds: [{title, description, color}]});
-        var req = https.request({
-            hostname: "discord.com",
-            port: 443,
-            path: webhook.substring("https://discord.com".length, webhook.length),
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                'Content-Length': data.length
-            }
-        }, (res) => {
-            if(res.statusCode!==204) {
-                console.log("An error occurred while sending webhook: " + res.statusCode + " " + res.statusMessage);
-            }
-        });
-        
-        req.write(data)
-        req.end()
-    }
-}
-
-function loadPlayers() {
-    makeSureExists(currentPlayersFolder, true);
-    for(var i = 0; i<256; i++) {
-        var res = path.resolve(currentPlayersFolder, `${i.toString(16).padStart(2, '0')}.json`);
-        if(fs.existsSync(res)) {
-            players[i].push(...JSON.parse(fs.readFileSync(res)));
-        }
-    }
-}
-
-function load() {
-    makeSureExists(currentAuthFile);
-    makeSureExists(currentSettingsFile);
-    makeSureExists(currentRanksFile);
-    logins.push(...JSON.parse(fs.readFileSync(currentAuthFile)));
-    settings.push(...JSON.parse(fs.readFileSync(currentSettingsFile)));
-    ranks.push(...JSON.parse(fs.readFileSync(currentRanksFile)));
-    loadPlayers();
-}
-
-function savePlayers() {
-    makeSureExists(currentPlayersFolder, true);
-    for(var i = 0; i<256; i++) {
-        if(players[i].length!==0) {
-            var res = path.resolve(currentPlayersFolder, `${i.toString(16).padStart(2, '0')}.json`);
-            fs.writeFileSync(res, JSON.stringify(players[i]));
-        }
-    }
-}
-
-function save() {
-    makeSureExists(currentAuthFile);
-    makeSureExists(currentSettingsFile);
-    makeSureExists(currentRanksFile);
-    fs.writeFileSync(currentAuthFile, JSON.stringify(logins));
-    fs.writeFileSync(currentSettingsFile, JSON.stringify(settings));
-    fs.writeFileSync(currentRanksFile, JSON.stringify(ranks));
-    savePlayers();
-}
-  
-const tar = require('tar');
-
-function backup() {
-    makeSureExists(backupFolder, true);
-    var date = new Date();
-    console.log(`[${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}] Starting backup`);
-    tar.c(
-        {
-            gzip: true,
-            file: `${backupPath(date)}.tar.gz`,
-            cwd: currentFolder
-        },
-        fs.readdirSync(currentFolder)
-    ).then(_ => {
-        date = new Date();
-        console.log(`[${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}] Finished backup`);
-    });
-}
-
 const express = require('express');
 const app = express();
-module.exports = { webhook, sendWebhook, logins, servers, settings, ranks, getPlayerByUUID, getPlayerByUsername, getPlayerOrCreate, getDefaultRank, updatePlayer, players };
 
 async function main() {
 
@@ -247,8 +129,8 @@ async function main() {
     require('./websocket').bindWebsocketToServer(server);
     
     console.log(`HTTP Server listening at port ${port}`);
-    
-    backup();
+
+    require('./backups').backup();
 
     setInterval(() => {
         save();

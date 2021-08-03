@@ -33,7 +33,7 @@ module.exports = function(websocket, json) {
                 copy(public, data, 'details', 0x0020);
                 copy(public, data, 'bootMillis', 0x0040);
                 if((flags&0x0001)==0x0001) {
-                    require('../index').sendWebhook('Server Manager', 'Server Created', `The server \`${server.public.id}\` got created`, 0x22E022);
+                    require('../webhooks').sendWebhook('Server Manager', 'Server Created', `The server \`${server.public.id}\` got created`, 0x22E022);
                 }
                 websocket.respond(json, {ok: true, server: public, flags});
             }else {

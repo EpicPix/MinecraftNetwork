@@ -8,8 +8,6 @@ process.on('uncaughtException', function(exception) {
     console.log(exception);
 });
 
-const port = 8080;
-
 var logins = [];
 var servers = [];
 var settings = [];
@@ -110,9 +108,6 @@ function exit() {
     process.exit(0);
 }
 
-const express = require('express');
-const app = express();
-
 async function main() {
 
     load();
@@ -124,12 +119,7 @@ async function main() {
         logins.push({username: 'admin', password: 'admin'});
     }
 
-    const server = app.listen(port);
-
-    require('./websocket').bindWebsocketToServer(server);
-    
-    console.log(`HTTP Server listening at port ${port}`);
-
+    require('./server').startServer(8080);
     require('./backups').backup();
 
     setInterval(() => {

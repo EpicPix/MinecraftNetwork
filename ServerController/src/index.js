@@ -128,7 +128,7 @@ async function main() {
 
     setInterval(() => {
         save();
-        backup();
+        require('./backups').backup();
     }, 1000*60*30); //backup every 30 minutes
 }
 

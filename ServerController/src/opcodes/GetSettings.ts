@@ -1,5 +1,3 @@
-const { ErrorNumbers } = require('../opcodes');
-
 module.exports = function(websocket, json) {
     if(websocket.checkAuth()) {
         const settings = require('../index').settings;

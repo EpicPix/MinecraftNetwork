@@ -94,36 +94,30 @@ process.once('SIGINT', exit);
 process.once('SIGTERM', exit);
 
 function exit() {
-    if(!t) {
-        save();
-        console.log('\nSaved.\n');
-    }
-    t = true;
-    process.exit(0);
+if(!t) {
+    save();
+    console.log('\nSaved.\n');
+}
+t = true;
+process.exit(0);
+}
+load();
+getDefaultRank();
+
+if(logins.length===0) {
+    console.log('No accounts are created, an account will be auto generated');
+    console.log("Username and Password are 'admin'");
+    logins.push({username: 'admin', password: 'admin'});
 }
 
-async function main() {
+require('./server').startServer(8080);
+require('./backups').backup();
 
-    load();
-    getDefaultRank();
+setInterval(() => {
+    save();
+}, 1000*60*2);
 
-    if(logins.length===0) {
-        console.log('No accounts are created, an account will be auto generated');
-        console.log("Username and Password are 'admin'");
-        logins.push({username: 'admin', password: 'admin'});
-    }
-
-    require('./server').startServer(8080);
+setInterval(() => {
+    save();
     require('./backups').backup();
-
-    setInterval(() => {
-        save();
-    }, 1000*60*2);
-
-    setInterval(() => {
-        save();
-        require('./backups').backup();
-    }, 1000*60*30); //backup every 30 minutes
-}
-
-Promise.resolve(main());
+}, 1000*60*30); //backup every 30 minutes

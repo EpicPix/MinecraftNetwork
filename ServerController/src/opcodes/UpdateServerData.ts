@@ -1,4 +1,4 @@
-const { ErrorNumbers } = require('../opcodes');
+import { ErrorNumbers } from '../opcodes'
 
 module.exports = function(websocket, json) {
     if(websocket.checkAuth()) {
@@ -18,7 +18,7 @@ module.exports = function(websocket, json) {
                     server = { public: { id: json['server'], type: "UNKNOWN", onlinePlayers: -1, maxPlayers: -1, version: {protocol: -1, name: "???"}, details: {ip: "0.0.0.0", port: 0}, bootMillis: -1 }, websocket: null };
                     servers.push(server);
                 }
-                var public = server.public;
+                var publicData = server.public;
                 var data = json['data'];
                 var copy = function(a, b, c, d) {
                     if(typeof b[c] !== 'undefined') {
@@ -26,16 +26,16 @@ module.exports = function(websocket, json) {
                         flags |= d;
                     }
                 }
-                copy(public, data, 'type', 0x0002);
-                copy(public, data, 'onlinePlayers', 0x0004);
-                copy(public, data, 'maxPlayers', 0x0008);
-                copy(public, data, 'version', 0x0010);
-                copy(public, data, 'details', 0x0020);
-                copy(public, data, 'bootMillis', 0x0040);
+                copy(publicData, data, 'type', 0x0002);
+                copy(publicData, data, 'onlinePlayers', 0x0004);
+                copy(publicData, data, 'maxPlayers', 0x0008);
+                copy(publicData, data, 'version', 0x0010);
+                copy(publicData, data, 'details', 0x0020);
+                copy(publicData, data, 'bootMillis', 0x0040);
                 if((flags&0x0001)==0x0001) {
                     require('../webhooks').sendWebhook('Server Manager', 'Server Created', `The server \`${server.public.id}\` got created`, 0x22E022);
                 }
-                websocket.respond(json, {ok: true, server: public, flags});
+                websocket.respond(json, {ok: true, server: publicData, flags});
             }else {
                 websocket.respond(json, {ok: false, errno: ErrorNumbers.NO_DATA_FIELD});
             }

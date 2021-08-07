@@ -1,7 +1,8 @@
-const { makeSureExists, filesFolder, currentFolder } = require('./saver');
-const tar = require('tar');
-const path = require('path');
-const fs = require('fs');
+import { makeSureExists, filesFolder, currentFolder } from './saver'
+
+import tar from 'tar';
+import path from 'path';
+import fs from 'fs';
 
 const backupFolder = path.resolve(filesFolder, 'backup');
 const backupPath = function(date) {

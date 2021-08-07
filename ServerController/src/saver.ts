@@ -21,8 +21,8 @@ export function makeSureExists(file, dir = false, content = '[]') {
 }
 
 const mainFolder = path.resolve(__dirname, '..');
-const filesFolder = path.resolve(mainFolder, 'files');
-const currentFolder = path.resolve(filesFolder, 'current');
+export const filesFolder = path.resolve(mainFolder, 'files');
+export const currentFolder = path.resolve(filesFolder, 'current');
 
 const currentAuthFile = path.resolve(currentFolder, 'auth.json');
 const currentSettingsFile = path.resolve(currentFolder, 'settings.json');
@@ -68,5 +68,3 @@ export function save() {
     fs.writeFileSync(currentRanksFile, JSON.stringify(ranks));
     savePlayers();
 }
-
-module.exports = {save, load, filesFolder, currentFolder, makeSureExists}

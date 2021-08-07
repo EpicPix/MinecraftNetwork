@@ -1,4 +1,4 @@
-const { ErrorNumbers } = require('../opcodes');
+import { ErrorNumbers } from '../opcodes'
 
 module.exports = function(websocket, json) {
     if(websocket.checkAuth()) {

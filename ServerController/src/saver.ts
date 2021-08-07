@@ -7,8 +7,7 @@ if(!fs.existsSync('files')) {
 
 const path = require('path');
 
-function makeSureExists(file, dir, content) {
-    if(!content && content!=='') content = '[]';
+export function makeSureExists(file, dir = false, content = '[]') {
     fs.mkdirSync(path.resolve(file, '..'), {recursive: true});
     if(!fs.existsSync(file)) {
         if(dir) {
@@ -30,7 +29,7 @@ const currentSettingsFile = path.resolve(currentFolder, 'settings.json');
 const currentRanksFile = path.resolve(currentFolder, 'ranks.json');
 const currentPlayersFolder = path.resolve(currentFolder, 'players');
 
-function loadPlayers() {
+export function loadPlayers() {
     makeSureExists(currentPlayersFolder, true);
     for(var i = 0; i<256; i++) {
         var res = path.resolve(currentPlayersFolder, `${i.toString(16).padStart(2, '0')}.json`);
@@ -40,7 +39,7 @@ function loadPlayers() {
     }
 }
 
-function load() {
+export function load() {
     makeSureExists(currentAuthFile);
     makeSureExists(currentSettingsFile);
     makeSureExists(currentRanksFile);
@@ -50,7 +49,7 @@ function load() {
     loadPlayers();
 }
 
-function savePlayers() {
+export function savePlayers() {
     makeSureExists(currentPlayersFolder, true);
     for(var i = 0; i<256; i++) {
         if(players[i].length!==0) {
@@ -60,7 +59,7 @@ function savePlayers() {
     }
 }
 
-function save() {
+export function save() {
     makeSureExists(currentAuthFile);
     makeSureExists(currentSettingsFile);
     makeSureExists(currentRanksFile);

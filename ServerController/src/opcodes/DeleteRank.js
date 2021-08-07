@@ -15,7 +15,7 @@ module.exports = function(websocket, json) {
                 websocket.respond(json, {ok: false, errno: ErrorNumbers.RANK_NOT_FOUND});
                 return;
             }
-            ranks.removeElement(rank);
+            ranks.filter(ele => ele != rank);
             websocket.respond(json, {ok: true});
         }else {
             websocket.respond(json, {ok: false, errno: ErrorNumbers.NO_RANK_FIELD});

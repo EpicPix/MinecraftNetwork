@@ -1,8 +1,9 @@
-const path = require('path');
-const fs = require('fs');
+import path from 'path';
+import fs from 'fs';
+import { Router } from 'express';
 
-function createRouter(express) {
-    var router = express.Router();
+function createRouter() {
+    var router = Router();
     router.use(function(req, res, next) {
         res.setHeader('Cache-Control', 'no-store');
         next();

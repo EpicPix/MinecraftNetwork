@@ -1,9 +1,25 @@
-const { Server } = require('ws');
-const { ErrorNumbers, toOpcodeId } = require('./opcodes');
+import * as WebSocket from 'ws';
+const { toOpcodeId } = require('./opcodes');
+import { ErrorNumbers } from "./opcodes";
 
-const wss = new Server({ noServer: true, path: '/wss' });
+const wss = new WebSocket.Server({ noServer: true, path: '/wss' });
 
-wss.on('connection', function (ws) {
+interface UserData {
+
+    authenticated: boolean,
+    server: any,
+    capabilities: number
+
+}
+
+interface ClientWebSocket extends WebSocket {
+    userData: UserData,
+    respond: (request: any & {rid: number}, response: any & {rid: number}) => void,
+    checkAuth: () => boolean,
+    hasCapability: (capability: number) => boolean
+}
+
+wss.on('connection', function (ws: ClientWebSocket) {
     ws.userData = { authenticated: false, server: null, capabilities: 0 };
     ws.respond = function(message, data) {
         data.rid = message.rid;
@@ -23,9 +39,9 @@ wss.on('connection', function (ws) {
         return false;
     };
     ws.on('message', function (message) {
-        var json;
+        var json: object;
         try {
-            json = JSON.parse(message);
+            json = JSON.parse(message.toString());
         } catch (error) {
             ws.close(4000, "Non-JSON data.");
         }

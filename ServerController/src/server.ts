@@ -1,13 +1,17 @@
-const express = require('express');
-const fs = require('fs');
-const path = require('path');
+import express from 'express';
+import fs from 'fs';
+import path from 'path';
 
-function startServer(port) {
+interface ClientResponse extends express.Response {
+    sendJSON: (json: string | object, code: number) => void;
+}
+
+export function startServer(port: number) {
     const app = express();
     var endpoints = path.resolve(__dirname, 'endpoints');
     app.disable('x-powered-by');
-    app.use(function(req, res, next) {
-        res.sendJSON = function(json, code) {
+    app.use(function(req, res: ClientResponse, next) {
+        res.sendJSON = function(json: string | object, code: undefined | number) {
             if(typeof json !== 'string') {
                 json = JSON.stringify(json);
             }
@@ -31,7 +35,7 @@ function startServer(port) {
                 if(!endpointObj.createRouter) {
                     console.log(`Endpoint ${endpoint} does not have createRouter function!`);
                 }else {
-                    app.use(`/${endpoint}`, endpointObj.createRouter(express));
+                    app.use(`/${endpoint}`, endpointObj.createRouter());
                     console.log(`Endpoint /${endpoint} created`);
                 }
             }
@@ -43,5 +47,3 @@ function startServer(port) {
     require('./websocket').bindWebsocketToServer(server);
     console.log(`HTTP Server listening at port ${port}`);
 }
-
-module.exports = { startServer }

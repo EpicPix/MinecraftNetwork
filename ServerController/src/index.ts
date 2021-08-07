@@ -1,9 +1,3 @@
-Array.prototype.removeElement = function(value) { 
-    return this.filter(function(ele){ 
-        return ele != value; 
-    });
-}
-
 process.on('uncaughtException', function(exception) {
     console.log(exception);
 });
@@ -20,7 +14,7 @@ for(var p = 0; p<16*16; p++) {
 
 module.exports = { logins, servers, settings, ranks, players };
 
-const {load, save, makeSureExists} = require('./saver');
+import { load, save } from './saver';
 
 function getDefaultRank() {
     if(ranks.length==0) {

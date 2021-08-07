@@ -1,11 +1,11 @@
+import https from 'https';
+
 makeSureExists('secrets.properties', false, '');
 var secrets = require('./PropertyReader').readFile('secrets.properties')
 
 var webhook = secrets['webhook']; //Discord webhook, can be null
 
-const https = require('https');
-
-function sendWebhook(name, title, description, color) {
+function sendWebhook(name: string, title: string, description: string, color: string) {
     if(webhook!==null && webhook!=='') {
         var data = JSON.stringify({username: name, embeds: [{title, description, color}]});
         var req = https.request({

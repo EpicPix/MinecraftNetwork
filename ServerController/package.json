@@ -2,7 +2,7 @@
   "name": "servercontroller",
   "version": "1.0.0",
   "description": "Server Controller responsible for ranks, players, servers and more",
-  "main": "src/index.js",
+  "main": "build/index.js",
   "keywords": [],
   "author": "EpicPix",
   "dependencies": {
@@ -17,5 +17,11 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/EpicPix/MinecraftNetwork.git"
+  },
+  "devDependencies": {
+    "typescript": "^4.3.5"
+  },
+  "scripts": {
+    "start": "tsc && node build/index.js"
   }
 }

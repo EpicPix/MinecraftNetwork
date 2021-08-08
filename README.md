@@ -10,8 +10,27 @@ A ServerManager is a Server which will control all settings, player data, server
 
 You will require
 
- - Java 16 Java Development Kit
- - A server to host the server on (localhost would work)
+ - Java 16 Java Development Kit (For compiling)
+ - A server to host the server on
  - Node.js hosting
 
+*The hosting can be localhost for testing and another purposes, but i would recommend putting it on a host for other purposes like hosting a actual server*
+
 More data will be added later
+
+# Dependencies
+
+## Java
+
+ - Spigot (BungeeCord Module)
+ - BungeeCord (BungeeCord Module)
+ - Gson (Common Module)
+
+ The common module is used in CLI, BungeeCord and Bukkit modules
+
+ ## Node
+
+ To install dependencies for node you have to go to the ServerController folder and run `npm install` and that will install all dependencies for node
+
+
+ ***Todo add more things in 2 months lmao***

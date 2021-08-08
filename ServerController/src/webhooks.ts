@@ -1,12 +1,13 @@
 import https from 'https';
 import { makeSureExists } from './saver';
+import { readFile } from './PropertyReader';
 
 makeSureExists('secrets.properties', false, '');
-var secrets = require('./PropertyReader').readFile('secrets.properties')
+var secrets = readFile('secrets.properties')
 
 var webhook = secrets['webhook']; //Discord webhook, can be null
 
-function sendWebhook(name: string, title: string, description: string, color: string) {
+export function sendWebhook(name: string, title: string, description: string, color: number) {
     if(webhook!==null && webhook!=='') {
         var data = JSON.stringify({username: name, embeds: [{title, description, color}]});
         var req = https.request({
@@ -28,5 +29,3 @@ function sendWebhook(name: string, title: string, description: string, color: st
         req.end()
     }
 }
-
-module.exports = { sendWebhook }

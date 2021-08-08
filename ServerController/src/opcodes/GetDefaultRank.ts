@@ -1,5 +1,7 @@
-module.exports = function(websocket, json) {
+import { getDefaultRank } from '../index';
+
+export function run(websocket, json) {
     if(websocket.checkAuth()) {
-        websocket.respond(json, {ok: true, rank: require('../index').getDefaultRank()});
+        websocket.respond(json, {ok: true, rank: getDefaultRank()});
     }
 }

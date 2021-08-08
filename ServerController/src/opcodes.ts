@@ -90,8 +90,8 @@ export function toOpcodeId(opcode) {
     return `${words.join('')}`;
 }
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 var failed = false;
 

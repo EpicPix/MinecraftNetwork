@@ -1,9 +1,11 @@
+import { servers } from '../../../index';
+
 module.exports = {
     method: 'GET',
     endpoint: '/servers',
     handler: function(req, res) {
-        var servers = [];
-        require('../../../index').servers.forEach((server) => servers.push(server.public));
-        res.sendJSON(servers);
+        var pubServers = [];
+        servers.forEach((server) => pubServers.push(server.public));
+        res.sendJSON(pubServers);
     }
 }

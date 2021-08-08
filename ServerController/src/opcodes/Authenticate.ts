@@ -1,4 +1,6 @@
-module.exports = function(websocket, json) {
+import { logins } from '../index';
+
+export function run(websocket, json) {
     if(!websocket.userData.authenticated) {
         var username = json['username'];
         var password = json['password'];
@@ -10,7 +12,6 @@ module.exports = function(websocket, json) {
             websocket.close(4004, 'Password not provided');
             return;
         }
-        const logins = require('../index').logins;
         var success = logins.length===0;
         for(const login of logins) {
             if(login['username']===username && login['password']===password) {

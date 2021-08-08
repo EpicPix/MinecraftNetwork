@@ -9,7 +9,7 @@ const backupPath = function(date) {
     return path.resolve(backupFolder, `backup-${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()} ${date.getHours().toString().padStart(2, '0')}.${date.getMinutes().toString().padStart(2, '0')}`);
 }
 
-function backup() {
+export function backup() {
     makeSureExists(backupFolder, true);
     var date = new Date();
     console.log(`[${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}] Starting backup`);
@@ -25,5 +25,3 @@ function backup() {
         console.log(`[${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}] Finished backup`);
     });
 }
-
-module.exports = { backup }

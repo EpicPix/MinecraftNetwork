@@ -2,11 +2,13 @@ import express from 'express';
 import fs from 'fs';
 import path from 'path';
 
+import { bindWebsocketToServer } from './websocket';
+
 interface ClientResponse extends express.Response {
     sendJSON: (json: string | object, code: number) => void;
 }
 
-export function startServer(port: number) {
+export async function startServer(port: number) {
     const app = express();
     var endpoints = path.resolve(__dirname, 'endpoints');
     app.disable('x-powered-by');
@@ -31,11 +33,11 @@ export function startServer(port: number) {
             if(!fs.existsSync(index)) {
                 console.log(`Endpoint ${endpoint} does not have index.js!`);
             }else {
-                var endpointObj = require(`./endpoints/${endpoint}/index`);
+                var endpointObj = await import(`./endpoints/${endpoint}/index`);
                 if(!endpointObj.createRouter) {
                     console.log(`Endpoint ${endpoint} does not have createRouter function!`);
                 }else {
-                    app.use(`/${endpoint}`, endpointObj.createRouter());
+                    app.use(`/${endpoint}`, await endpointObj.createRouter());
                     console.log(`Endpoint /${endpoint} created`);
                 }
             }
@@ -44,6 +46,6 @@ export function startServer(port: number) {
         }
     }
     const server = app.listen(port);
-    require('./websocket').bindWebsocketToServer(server);
+    bindWebsocketToServer(server);
     console.log(`HTTP Server listening at port ${port}`);
 }

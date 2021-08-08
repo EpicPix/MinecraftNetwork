@@ -1,8 +1,8 @@
 import * as WebSocket from 'ws';
-const { toOpcodeId } = require('./opcodes');
+import { toOpcodeId } from './opcodes';
 import { ErrorNumbers } from "./opcodes";
 
-const wss = new WebSocket.Server({ noServer: true, path: '/wss' });
+export const wss = new WebSocket.Server({ noServer: true, path: '/wss' });
 
 interface UserData {
 
@@ -12,7 +12,7 @@ interface UserData {
 
 }
 
-interface ClientWebSocket extends WebSocket {
+export interface ClientWebSocket extends WebSocket {
     userData: UserData,
     respond: (request: any & {rid: number}, response: any & {rid: number}) => void,
     checkAuth: () => boolean,
@@ -38,7 +38,7 @@ wss.on('connection', function (ws: ClientWebSocket) {
         }
         return false;
     };
-    ws.on('message', function (message) {
+    ws.on('message', async function (message) {
         var json: object;
         try {
             json = JSON.parse(message.toString());
@@ -62,7 +62,7 @@ wss.on('connection', function (ws: ClientWebSocket) {
 
         if (operationId !== null) {
             try {
-                require(`./opcodes/${operationId}`)(ws, json);
+                (await import(`./opcodes/${operationId}`)).run(ws, json);
             }catch(error) {
                 console.log(error);
                 ws.respond(json, {ok: false, errno: ErrorNumbers.INTERNAL_ERROR});
@@ -73,12 +73,10 @@ wss.on('connection', function (ws: ClientWebSocket) {
     });
 });
 
-function bindWebsocketToServer(server) {
+export function bindWebsocketToServer(server) {
     server.on('upgrade', (request, socket, head) => {
         wss.handleUpgrade(request, socket, head, (websocket) => {
             wss.emit("connection", websocket, request);
         });
     });
 }
-
-module.exports = { bindWebsocketToServer, wss };

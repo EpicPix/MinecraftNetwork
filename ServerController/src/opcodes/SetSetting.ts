@@ -1,10 +1,11 @@
 import { Capabilities, ErrorNumbers, StringOpcodes } from '../opcodes'
+import { settings } from '../index';
+import { wss, ClientWebSocket } from '../websocket';
 
-module.exports = function(websocket, json) {
+export function run(websocket, json) {
     if(websocket.checkAuth()) {
         if(json['setting']) {
             if(json['value']) {
-                const settings = require('../index').settings;
                 var setting = null;
                 for(var st of settings) {
                     if(st.name === json['setting']) {
@@ -17,7 +18,7 @@ module.exports = function(websocket, json) {
                     settings.push(setting);
                 }
                 setting.value = json['value'];
-                for(const ws of require('../websocket').wss.clients) {
+                for(const ws of wss.clients as Set<ClientWebSocket>) {
                     if(ws.hasCapability(Capabilities.CAPSETTINGUPD)) {
                         ws.send(JSON.stringify({opcode: StringOpcodes.SETTINGS_UPDATE, name: setting.name, value: setting.value}));
                     }

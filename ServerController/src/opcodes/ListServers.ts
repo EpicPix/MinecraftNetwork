@@ -1,7 +1,9 @@
-module.exports = function(websocket, json) {
+import { servers } from '../index';
+
+export function run(websocket, json) {
     if(websocket.checkAuth()) {
         var safeServers = [];
-        require('../index').servers.forEach((server) => {
+        servers.forEach((server) => {
             safeServers.push(server.public);
         });
         websocket.respond(json, {ok: true, servers: safeServers});

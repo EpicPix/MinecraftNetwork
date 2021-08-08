@@ -1,22 +1,23 @@
+import { backup } from './backups';
+import { startServer } from './server';
+
 process.on('uncaughtException', function(exception) {
     console.log(exception);
 });
 
-var logins = [];
-var servers = [];
-var settings = [];
-var ranks = [];
-var players = [];
+export const logins = [];
+export const servers = [];
+export const settings = [];
+export const ranks = [];
+export const players = [];
 //00-ff will have it's own entry in players
 for(var p = 0; p<16*16; p++) {
     players.push([]);
 }
 
-module.exports = { logins, servers, settings, ranks, players };
-
 import { load, save } from './saver';
 
-function getDefaultRank() {
+export function getDefaultRank() {
     if(ranks.length==0) {
         ranks.push({id: "default", priority: 0, prefix: [], suffix: [], permissions: [], nameColor: "white", chatColor: "white"});
     }
@@ -29,7 +30,7 @@ function getDefaultRank() {
     return lowestRank;
 }
 
-function updatePlayer(player, data) {
+export function updatePlayer(player, data) {
     var copy = function(a, b, c) {
         if(typeof b[c] !== 'undefined') {
             a[c] = b[c];
@@ -41,7 +42,7 @@ function updatePlayer(player, data) {
     copy(player, data, 'lastLogin');
 }
 
-function getPlayerOrCreate(player) {
+export function getPlayerOrCreate(player) {
     var uuid = player.uuid;
     var prefixindex = parseInt(uuid.slice(0, 2), 16);
     var pplayers = players[prefixindex];
@@ -58,7 +59,7 @@ function getPlayerOrCreate(player) {
     return player;
 }
 
-function getPlayerByUUID(uuid) {
+export function getPlayerByUUID(uuid) {
     var prefixindex = parseInt(uuid.slice(0, 2), 16);
     var pplayers = players[prefixindex];
     if(pplayers.length==0) {
@@ -73,8 +74,7 @@ function getPlayerByUUID(uuid) {
     return null;
 }
 
-//more inefficient because it has to go thru each player, this will probably have indexing
-function getPlayerByUsername(username) {
+export function getPlayerByUsername(username) {
     for(var pplayers of players) {
         for(var player of pplayers) {
             if(player.username===username) {
@@ -84,8 +84,6 @@ function getPlayerByUsername(username) {
     }
     return null;
 }
-
-module.exports = { logins, servers, settings, ranks, getPlayerByUUID, getPlayerByUsername, getPlayerOrCreate, getDefaultRank, updatePlayer, players };
 
 var t = false;
 
@@ -110,14 +108,15 @@ if(logins.length===0) {
     logins.push({username: 'admin', password: 'admin'});
 }
 
-require('./server').startServer(8080);
-require('./backups').backup();
+startServer(8080).then(() => {
+    backup();
 
-setInterval(() => {
-    save();
-}, 1000*60*2);
+    setInterval(() => {
+        save();
+    }, 1000*60*2);
 
-setInterval(() => {
-    save();
-    require('./backups').backup();
-}, 1000*60*30); //backup every 30 minutes
+    setInterval(() => {
+        save();
+        backup();
+    }, 1000*60*30); //backup every 30 minutes
+});

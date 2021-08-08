@@ -1,10 +1,11 @@
 import { ErrorNumbers } from '../opcodes'
+import { servers } from '../index';
+import { sendWebhook } from '../webhooks';
 
-module.exports = function(websocket, json) {
+export function run(websocket, json) {
     if(websocket.checkAuth()) {
         if(json['server']) {
             if(json['data']) {
-                const servers = require('../index').servers;
                 var server = null;
                 for(var serv of servers) {
                     if(serv.public.id === json['server']) {
@@ -33,7 +34,7 @@ module.exports = function(websocket, json) {
                 copy(publicData, data, 'details', 0x0020);
                 copy(publicData, data, 'bootMillis', 0x0040);
                 if((flags&0x0001)==0x0001) {
-                    require('../webhooks').sendWebhook('Server Manager', 'Server Created', `The server \`${server.public.id}\` got created`, 0x22E022);
+                    sendWebhook('Server Manager', 'Server Created', `The server \`${server.public.id}\` got created`, 0x22E022);
                 }
                 websocket.respond(json, {ok: true, server: publicData, flags});
             }else {

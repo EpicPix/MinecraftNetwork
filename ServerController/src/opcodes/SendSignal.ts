@@ -1,10 +1,10 @@
 import { Capabilities, ErrorNumbers, StringOpcodes } from '../opcodes'
+import { servers } from '../index';
 
-module.exports = function(websocket, json) {
+export function run(websocket, json) {
     if(websocket.checkAuth()) {
         if(json['server']) {
             if(json['signal']) {
-                const servers = require('../index').servers;
                 var server = null;
                 for(var serv of servers) {
                     if(serv.public.id === json['server']) {

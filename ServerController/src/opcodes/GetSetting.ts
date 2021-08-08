@@ -1,9 +1,9 @@
 import { ErrorNumbers } from '../opcodes'
+import { settings } from '../index';
 
-module.exports = function(websocket, json) {
+export function run(websocket, json) {
     if(websocket.checkAuth()) {
         if(json['setting']) {
-            const settings = require('../index').settings;
             var setting = null;
             for(var st of settings) {
                 if(st.name === json['setting']) {

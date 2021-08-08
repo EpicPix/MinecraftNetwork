@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import { Router } from 'express';
 
-function createRouter() {
+export async function createRouter() {
     var router = Router();
     router.use(function(req, res, next) {
         res.setHeader('Cache-Control', 'no-store');
@@ -10,7 +10,7 @@ function createRouter() {
     });
     var endpoints = path.resolve(__dirname, 'endpoints');
     for(var endpoint of fs.readdirSync(endpoints)) {
-        var endpointObj = require(`./endpoints/${endpoint}`);
+        var endpointObj = await import(`./endpoints/${endpoint}`);
         var method = endpointObj.method.toLowerCase();
         if(!router[method]) {
             router.use(`${endpointObj.endpoint}`, endpointObj.handler);
@@ -20,5 +20,3 @@ function createRouter() {
     }
     return router;
 }
-
-module.exports = { createRouter }

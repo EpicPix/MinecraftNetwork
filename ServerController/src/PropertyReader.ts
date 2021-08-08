@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-function readFile(file) {
+export function readFile(file) {
     var contents = fs.readFileSync(file).toString();
     var lines = contents.split('\n');
     for(var i = 0; i<lines.length; i++) {
@@ -25,5 +25,3 @@ function readFile(file) {
     }
     return output;
 }
-
-module.exports = { readFile };

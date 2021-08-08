@@ -1,9 +1,9 @@
 import { ErrorNumbers } from '../opcodes'
+import { ranks } from '../index';
 
-module.exports = function(websocket, json) {
+export function run(websocket, json) {
     if(websocket.checkAuth()) {
         if(json['rank']) {
-            var ranks = require('../index').ranks;
             var gotrank = null;
             for(var rank of ranks) {
                 if(rank.id===json['rank']) {

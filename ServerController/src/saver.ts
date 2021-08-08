@@ -1,11 +1,10 @@
-const fs = require('fs');
-var { logins, settings, ranks, players } = require('./index');
+import fs from 'fs';
+import path from 'path';
+import { logins, settings, ranks, players } from './index';
 
 if(!fs.existsSync('files')) {
     fs.mkdirSync('files');
 }
-
-const path = require('path');
 
 export function makeSureExists(file, dir = false, content = '[]') {
     fs.mkdirSync(path.resolve(file, '..'), {recursive: true});
@@ -34,7 +33,7 @@ export function loadPlayers() {
     for(var i = 0; i<256; i++) {
         var res = path.resolve(currentPlayersFolder, `${i.toString(16).padStart(2, '0')}.json`);
         if(fs.existsSync(res)) {
-            players[i].push(...JSON.parse(fs.readFileSync(res)));
+            players[i].push(...JSON.parse(fs.readFileSync(res).toString()));
         }
     }
 }
@@ -43,9 +42,9 @@ export function load() {
     makeSureExists(currentAuthFile);
     makeSureExists(currentSettingsFile);
     makeSureExists(currentRanksFile);
-    logins.push(...JSON.parse(fs.readFileSync(currentAuthFile)));
-    settings.push(...JSON.parse(fs.readFileSync(currentSettingsFile)));
-    ranks.push(...JSON.parse(fs.readFileSync(currentRanksFile)));
+    logins.push(...JSON.parse(fs.readFileSync(currentAuthFile).toString()));
+    settings.push(...JSON.parse(fs.readFileSync(currentSettingsFile).toString()));
+    ranks.push(...JSON.parse(fs.readFileSync(currentRanksFile).toString()));
     loadPlayers();
 }
 

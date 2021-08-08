@@ -1,10 +1,11 @@
 import { Capabilities, ErrorNumbers, StringOpcodes } from '../opcodes'
+import { ranks } from '../index';
+import { ClientWebSocket, wss } from '../websocket';
 
-module.exports = function(websocket, json) {
+export function run(websocket, json) {
     if(websocket.checkAuth()) {
         if(json['rank']) {
             if(json['data']) {
-                const ranks = require('../index').ranks;
                 var rank = null;
                 for(var rk of ranks) {
                     if(rk.id === json['rank']) {
@@ -30,7 +31,7 @@ module.exports = function(websocket, json) {
                 copy(rank, data, 'permissions');
                 copy(rank, data, 'nameColor');
                 copy(rank, data, 'chatColor');
-                for(const ws of require('../websocket').wss.clients) {
+                for(const ws of wss.clients as Set<ClientWebSocket>) {
                     if(ws.hasCapability(Capabilities.CAPRANKUPD)) {
                         ws.send(JSON.stringify({opcode: StringOpcodes.RANK_UPDATE, rank}));
                     }

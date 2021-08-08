@@ -1,9 +1,10 @@
 import { ErrorNumbers } from '../opcodes'
+import { servers } from '../index';
+import { sendWebhook } from '../webhooks';
 
-module.exports = function(websocket, json) {
+export function run(websocket, json) {
     if(websocket.checkAuth()) {
         if(json['server']) {
-            const servers = require('../index').servers;
             for(var serv of servers) {
                 if(serv.public.id === json['server']) {
                     const index = servers.indexOf(serv);
@@ -13,7 +14,7 @@ module.exports = function(websocket, json) {
                     break;
                 }
             }
-            require('../webhooks').sendWebhook('Server Manager', 'Server Removed', `The server \`${json['server']}\` got removed`, 0xE02222);
+            sendWebhook('Server Manager', 'Server Removed', `The server \`${json['server']}\` got removed`, 0xE02222);
             websocket.respond(json, {ok: true});
         }else {
             websocket.respond(json, {ok: false, errno: ErrorNumbers.NO_SERVER_FIELD});

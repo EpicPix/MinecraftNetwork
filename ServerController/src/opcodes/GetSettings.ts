@@ -1,6 +1,7 @@
-module.exports = function(websocket, json) {
+import { settings } from '../index';
+
+export function run(websocket, json) {
     if(websocket.checkAuth()) {
-        const settings = require('../index').settings;
         websocket.respond(json, {ok: true, settings});
     }
 }

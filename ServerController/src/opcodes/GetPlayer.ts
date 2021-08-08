@@ -1,15 +1,16 @@
 import { ErrorNumbers } from '../opcodes'
+import { getPlayerByUUID, getPlayerByUsername } from '../index';
 
-module.exports = function(websocket, json) {
+export function run(websocket, json) {
     if(websocket.checkAuth()) {
         if(json['uuid']) {
-            var p1 = require('../index').getPlayerByUUID(json['uuid']);
+            var p1 = getPlayerByUUID(json['uuid']);
             if(p1) {
                 websocket.respond(json, {ok: true, player: p1});
                 return;
             }
             if(json['username']) {
-                var p2 = require('../index').getPlayerByUsername(json['username']);
+                var p2 = getPlayerByUsername(json['username']);
                 if(p2) {
                     websocket.respond(json, {ok: true, player: p2});
                     return;
@@ -17,7 +18,7 @@ module.exports = function(websocket, json) {
             }
             websocket.respond(json, {ok: false, errno: ErrorNumbers.PLAYER_NOT_FOUND});
         }else if(json['username']) {
-            var p1 = require('../index').getPlayerByUsername(json['username']);
+            var p1 = getPlayerByUsername(json['username']);
             if(p1) {
                 websocket.respond(json, {ok: true, player: p1});
                 return;

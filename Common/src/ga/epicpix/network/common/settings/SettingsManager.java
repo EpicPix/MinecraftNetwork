@@ -47,7 +47,7 @@ public class SettingsManager {
         var map = new HashMap<String, ValueType>();
         for(JsonElement e : resp.getAsJsonArray("settings")) {
             JsonObject o = (JsonObject) e;
-            map.put(o.get("name").getAsString(), ValueType.getValueTypeFromJson(o.getAsJsonObject("value")));
+            map.put(o.get("stringVersion").getAsString(), ValueType.getValueTypeFromJson(o.getAsJsonObject("value")));
         }
         return new Errorable<>(map);
     }

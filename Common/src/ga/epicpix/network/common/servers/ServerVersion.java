@@ -1,69 +1,46 @@
 package ga.epicpix.network.common.servers;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import ga.epicpix.network.common.SerializableJson;
+import ga.epicpix.network.common.websocket.Errorable;
+import ga.epicpix.network.common.websocket.Opcodes;
+import ga.epicpix.network.common.websocket.requests.Request;
+import ga.epicpix.network.common.websocket.requests.data.GetVersionsRequest;
 
 import java.util.*;
 
-public record ServerVersion(int protocol, String name) implements SerializableJson {
+public class ServerVersion implements SerializableJson {
 
-    public static final ArrayList<ServerVersion> VERSIONS = new ArrayList<>();
+    private static final ArrayList<ServerVersion> VERSIONS = new ArrayList<>();
 
-    public static final ServerVersion UNKNOWN;
+    //Use this like it's null for this type
+    public static final ServerVersion UNKNOWN = new ServerVersion(-1, "???");
 
-    static {
-        VERSIONS.add(UNKNOWN = new ServerVersion(-1, "???"));
+    private int protocolVersion;
+    private String stringVersion;
 
-        VERSIONS.add(new ServerVersion(47, "1.8"));
-        VERSIONS.add(new ServerVersion(47, "1.8.1"));
-        VERSIONS.add(new ServerVersion(47, "1.8.2"));
-        VERSIONS.add(new ServerVersion(47, "1.8.3"));
-        VERSIONS.add(new ServerVersion(47, "1.8.4"));
-        VERSIONS.add(new ServerVersion(47, "1.8.5"));
-        VERSIONS.add(new ServerVersion(47, "1.8.6"));
-        VERSIONS.add(new ServerVersion(47, "1.8.7"));
-        VERSIONS.add(new ServerVersion(47, "1.8.8"));
-        VERSIONS.add(new ServerVersion(107, "1.9"));
-        VERSIONS.add(new ServerVersion(108, "1.9.1"));
-        VERSIONS.add(new ServerVersion(109, "1.9.2"));
-        VERSIONS.add(new ServerVersion(110, "1.9.3"));
-        VERSIONS.add(new ServerVersion(110, "1.9.4"));
-        VERSIONS.add(new ServerVersion(210, "1.10"));
-        VERSIONS.add(new ServerVersion(210, "1.10.1"));
-        VERSIONS.add(new ServerVersion(210, "1.10.2"));
-        VERSIONS.add(new ServerVersion(315, "1.11"));
-        VERSIONS.add(new ServerVersion(316, "1.11.1"));
-        VERSIONS.add(new ServerVersion(316, "1.11.2"));
-        VERSIONS.add(new ServerVersion(335, "1.12"));
-        VERSIONS.add(new ServerVersion(338, "1.12.1"));
-        VERSIONS.add(new ServerVersion(340, "1.12.2"));
-        VERSIONS.add(new ServerVersion(393, "1.13"));
-        VERSIONS.add(new ServerVersion(401, "1.13.1"));
-        VERSIONS.add(new ServerVersion(404, "1.13.2"));
-        VERSIONS.add(new ServerVersion(477, "1.14"));
-        VERSIONS.add(new ServerVersion(480, "1.14.1"));
-        VERSIONS.add(new ServerVersion(485, "1.14.2"));
-        VERSIONS.add(new ServerVersion(490, "1.14.3"));
-        VERSIONS.add(new ServerVersion(498, "1.14.4"));
-        VERSIONS.add(new ServerVersion(573, "1.15"));
-        VERSIONS.add(new ServerVersion(575, "1.15.1"));
-        VERSIONS.add(new ServerVersion(578, "1.15.2"));
-        VERSIONS.add(new ServerVersion(735, "1.16"));
-        VERSIONS.add(new ServerVersion(736, "1.16.1"));
-        VERSIONS.add(new ServerVersion(751, "1.16.2"));
-        VERSIONS.add(new ServerVersion(753, "1.16.3"));
-        VERSIONS.add(new ServerVersion(754, "1.16.4"));
-        VERSIONS.add(new ServerVersion(754, "1.16.5"));
-        VERSIONS.add(new ServerVersion(755, "1.17"));
+    public ServerVersion(int protocolVersion, String stringVersion) {
+        this.protocolVersion = protocolVersion;
+        this.stringVersion = stringVersion;
+    }
+
+    public int getProtocolVersion() {
+        return protocolVersion;
+    }
+
+    public String getStringVersion() {
+        return stringVersion;
     }
 
     public String toString() {
-        return name();
+        return getStringVersion();
     }
 
     public static ServerVersion getVersionByName(String name) {
         for (ServerVersion version : VERSIONS) {
-            if (version.name().equals(name)) {
+            if (version.getStringVersion().equals(name)) {
                 return version;
             }
         }
@@ -72,17 +49,30 @@ public record ServerVersion(int protocol, String name) implements SerializableJs
 
     public static ServerVersion getVersionByProtocol(int protocol) {
         for (ServerVersion version : VERSIONS) {
-            if (version.protocol() == protocol) {
+            if (version.getProtocolVersion() == protocol) {
                 return version;
             }
         }
         return UNKNOWN;
     }
 
+    // This is required to be called if you want to use any version methods
+    public static Errorable<Boolean> load() {
+        JsonObject data = Request.sendRequest(Request.createRequest(Opcodes.GET_VERSIONS, GetVersionsRequest.build()));
+        if(!data.get("ok").getAsBoolean()) {
+            return new Errorable<>(data.get("errno").getAsInt());
+        }
+        VERSIONS.clear();
+        for(JsonElement e : data.getAsJsonArray("versions")) {
+            VERSIONS.add(new Gson().fromJson(e, ServerVersion.class));
+        }
+        return new Errorable<>(true);
+    }
+
     public JsonObject toJson() {
         JsonObject obj = new JsonObject();
-        obj.addProperty("name", name);
-        obj.addProperty("protocol", protocol);
+        obj.addProperty("stringVersion", stringVersion);
+        obj.addProperty("protocolVersion", protocolVersion);
         return obj;
     }
 }

@@ -3,6 +3,7 @@ package ga.epicpix.network.common.websocket.requests;
 import ga.epicpix.network.common.players.PlayerManager;
 import ga.epicpix.network.common.ranks.RankManager;
 import ga.epicpix.network.common.servers.ServerManager;
+import ga.epicpix.network.common.servers.ServerVersion;
 import ga.epicpix.network.common.settings.SettingsManager;
 import ga.epicpix.network.common.websocket.Opcodes;
 import ga.epicpix.network.common.websocket.WebSocketConnection;
@@ -17,6 +18,7 @@ public final class RequestPolicies {
                 || opcode==Opcodes.SEND_SIGNAL
                 || opcode==Opcodes.LIST_SERVERS
                 || opcode==Opcodes.GET_SERVER) && clazz.equals(ServerManager.class.getName())) return true;
+        if(opcode==Opcodes.GET_VERSIONS && clazz.equals(ServerVersion.class.getName())) return true;
         if((opcode==Opcodes.GET_SETTING
                 || opcode==Opcodes.GET_SETTING_OR_DEFAULT
                 || opcode==Opcodes.SET_SETTING

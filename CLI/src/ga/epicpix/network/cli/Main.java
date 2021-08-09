@@ -3,6 +3,7 @@ package ga.epicpix.network.cli;
 import ga.epicpix.network.common.ranks.Rank;
 import ga.epicpix.network.common.ranks.RankManager;
 import ga.epicpix.network.common.servers.ServerManager;
+import ga.epicpix.network.common.servers.ServerVersion;
 import ga.epicpix.network.common.text.ChatColor;
 import ga.epicpix.network.common.servers.ServerInfo;
 import ga.epicpix.network.common.settings.SettingsManager;
@@ -89,6 +90,9 @@ public class Main {
 
         System.out.println("Network Manager CLI");
         System.out.println("Type \"help\" for help");
+        if(ServerVersion.load().hasFailed()) {
+            System.err.println("Versions could not be loaded!");
+        }
 
         Scanner sc = new Scanner(System.in);
         while(true) {
@@ -262,7 +266,7 @@ public class Main {
         int idLen = getLongestFromCompute(2, (serv) -> serv.id, servers) + 2;
         int typeLen = getLongestFromCompute(4, (serv) -> serv.type, servers) + 2;
         int playersLen = getLongestFromCompute(7, (serv) -> serv.onlinePlayers + "/" + serv.maxPlayers, servers) + 2;
-        int versionLen = getLongestFromCompute(7, (serv) -> serv.version.name(), servers) + 2;
+        int versionLen = getLongestFromCompute(7, (serv) -> serv.version.getStringVersion(), servers) + 2;
         int ipLen = getLongestFromCompute(2, (serv) -> serv.details.ip() + ":" + serv.details.port(), servers) + 2;
         int uptimeLen = getLongestFromCompute(6, (serv) -> convertTime(time-serv.start), servers) + 2;
 
@@ -289,7 +293,7 @@ public class Main {
             x += 1+itemEntryLength(typeLen);
             serverOut = replaceAt(serverOut, x, ansi("/aqua/" + server.onlinePlayers + "/" + server.maxPlayers + "/green/", false));
             x += 1+itemEntryLength(playersLen);
-            serverOut = replaceAt(serverOut, x, ansi("/aqua/" + server.version.name() + "/green/", false));
+            serverOut = replaceAt(serverOut, x, ansi("/aqua/" + server.version.getStringVersion() + "/green/", false));
             x += 1+itemEntryLength(versionLen);
             serverOut = replaceAt(serverOut, x, ansi("/aqua/" + server.details.ip() + ":" + server.details.port() + "/green/", false));
             x += 1+itemEntryLength(ipLen);

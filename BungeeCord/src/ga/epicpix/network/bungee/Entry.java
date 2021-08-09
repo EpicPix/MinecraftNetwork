@@ -1,6 +1,7 @@
 package ga.epicpix.network.bungee;
 
 import ga.epicpix.network.bungee.commands.ServerCommand;
+import ga.epicpix.network.common.servers.ServerVersion;
 import ga.epicpix.network.common.websocket.ClientType;
 import ga.epicpix.network.common.websocket.WebSocketConnection;
 import net.md_5.bungee.api.ProxyServer;
@@ -14,6 +15,7 @@ public class Entry extends Plugin {
         INSTANCE = this;
         WebSocketConnection.setClientType(ClientType.BUNGEE);
         WebSocketConnection.connect();
+        ServerVersion.load();
 
         Command.registerCommand(new ServerCommand());
     }

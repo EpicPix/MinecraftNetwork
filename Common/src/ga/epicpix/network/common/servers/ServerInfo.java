@@ -86,7 +86,7 @@ public class ServerInfo {
         info.type = obj.get("type").getAsString();
         info.onlinePlayers = obj.get("onlinePlayers").getAsInt();
         info.maxPlayers = obj.get("maxPlayers").getAsInt();
-        info.version = ServerVersion.getVersionByName(obj.getAsJsonObject("version").get("name").getAsString());
+        info.version = ServerVersion.getVersionByName(obj.getAsJsonObject("version").get("stringVersion").getAsString());
         info.details = new ServerDetails(obj.getAsJsonObject("details").get("ip").getAsString(), obj.getAsJsonObject("details").get("port").getAsInt());
         info.start = obj.get("bootMillis").getAsLong();
         return info;

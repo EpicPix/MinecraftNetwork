@@ -5,6 +5,7 @@ import ga.epicpix.network.bukkit.commands.BukkitCommandPlayer;
 import ga.epicpix.network.bukkit.commands.TestCommand;
 import ga.epicpix.network.common.Reflection;
 import ga.epicpix.network.common.servers.ServerManager;
+import ga.epicpix.network.common.servers.ServerVersion;
 import ga.epicpix.network.common.text.ChatColor;
 import ga.epicpix.network.common.ranks.Rank;
 import ga.epicpix.network.common.servers.ServerInfo;
@@ -54,7 +55,7 @@ public class Entry extends JavaPlugin {
         WebSocketConnection.setSettingsUpdateHandler((opcode, data, requester) -> {
             if(isEnabled()) {
                 JsonObject setting = data.getAsJsonObject("setting");
-                if (setting.get("name").getAsString().equals("BUNGEE_CORD")) {
+                if (setting.get("stringVersion").getAsString().equals("BUNGEE_CORD")) {
                     BukkitCommon.setBungeeCord(ValueType.getValueTypeFromJson(setting.getAsJsonObject("value")).getAsBoolean());
                 }
             }
@@ -85,6 +86,16 @@ public class Entry extends JavaPlugin {
         });
 
         WebSocketConnection.connect();
+        if(ServerVersion.load().hasFailed()) {
+            System.out.println("Could not load versions!");
+            Bukkit.shutdown();
+            return;
+        }
+        if(BukkitCommon.getVersion()==ServerVersion.UNKNOWN) {
+            System.out.println("Server version not found or not supported!");
+            Bukkit.shutdown();
+            return;
+        }
 
         ServerManager.updateServer(Bukkit.getServerId(), new UpdateServerDataRequest.Data()
                 .setType(ServerInfo.ServerType.UNKNOWN)

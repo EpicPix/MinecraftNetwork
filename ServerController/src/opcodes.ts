@@ -14,6 +14,7 @@ export enum StringOpcodes {
     SEND_SIGNAL = 0x0004,
     LIST_SERVERS = 0x0005,
     GET_SERVER = 0x0006,
+    GET_VERSIONS = 0x0007,
 
     //Settings 0x0010-0x001f
     GET_SETTING = 0x0010,

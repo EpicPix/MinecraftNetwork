@@ -5,4 +5,4 @@ test
 builds
 .idea
 libraries
-s_*.sh
+s_*

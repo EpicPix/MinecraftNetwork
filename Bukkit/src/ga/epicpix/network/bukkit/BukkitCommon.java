@@ -55,7 +55,7 @@ public class BukkitCommon {
     public static ServerInfo getThisServer() {
         ServerInfo info = new ServerInfo(getServerId());
         if(info.id==null) System.err.println("Server Id is not defined.");
-        info.type = ServerInfo.ServerType.UNKNOWN.id();
+        info.type = ServerInfo.ServerType.UNKNOWN.getId();
         info.onlinePlayers = Bukkit.getOnlinePlayers().size();
         info.maxPlayers = Bukkit.getMaxPlayers();
         info.details = getDetails();

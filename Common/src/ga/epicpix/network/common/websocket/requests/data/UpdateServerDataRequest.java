@@ -30,7 +30,7 @@ public class UpdateServerDataRequest extends RequestData {
         private Long bootMillis;
 
         public Data setType(ServerInfo.ServerType type) {
-            this.type = type.id();
+            this.type = type.getId();
             return this;
         }
 

@@ -19,7 +19,8 @@ public abstract class Command {
 
             public boolean execute(CommandSender sender, String usedCommandName, String[] args) {
                 PlayerInfo info = null;
-                if(sender instanceof Player player) {
+                if(sender instanceof Player) {
+                    Player player = (Player) sender;
                     info = PlayerManager.getPlayerOrCreate(player.getUniqueId(), player.getName()).getValue();
                     String req = cmd.getRequiredPermission();
                     if(req!=null) {

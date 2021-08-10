@@ -117,7 +117,8 @@ public final class WebSocketConnection implements WebSocket.Listener {
             if(!connection.sendAuthenticateRequest(creds)) {
                 if(hooks.containsKey("type_auth")) {
                     var objauth = hooks.get("type_auth").get();
-                    if(objauth instanceof String[] auth) {
+                    if(objauth instanceof String[]) {
+                        String[] auth = (String[]) objauth;
                         if(auth.length<2) {
                             System.err.println("The auth array is not 2 elements");
                         }else {
@@ -135,7 +136,7 @@ public final class WebSocketConnection implements WebSocket.Listener {
     }
 
     private boolean sendAuthenticateRequest(WebSocketCredentials credentials) {
-        return Request.sendRequest(Request.createRequest(Opcodes.AUTHENTICATE, AuthenticateRequest.build(credentials.username(), credentials.password(), getClientType(), capabilities))).get("success").getAsBoolean();
+        return Request.sendRequest(Request.createRequest(Opcodes.AUTHENTICATE, AuthenticateRequest.build(credentials.getUsername(), credentials.getPassword(), getClientType(), capabilities))).get("success").getAsBoolean();
     }
 
     void send(String data) {

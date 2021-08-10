@@ -10,7 +10,7 @@ A ServerManager is a Server which will control all settings, player data, server
 
 You will require
 
- - Java 16 Java Development Kit (For compiling)
+ - Java 11 Java Development Kit (For compiling)
  - A server to host the server on
  - Node.js hosting
 

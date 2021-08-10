@@ -267,7 +267,7 @@ public class Main {
         int typeLen = getLongestFromCompute(4, (serv) -> serv.type, servers) + 2;
         int playersLen = getLongestFromCompute(7, (serv) -> serv.onlinePlayers + "/" + serv.maxPlayers, servers) + 2;
         int versionLen = getLongestFromCompute(7, (serv) -> serv.version.getStringVersion(), servers) + 2;
-        int ipLen = getLongestFromCompute(2, (serv) -> serv.details.ip() + ":" + serv.details.port(), servers) + 2;
+        int ipLen = getLongestFromCompute(2, (serv) -> serv.details.getIp() + ":" + serv.details.getPort(), servers) + 2;
         int uptimeLen = getLongestFromCompute(6, (serv) -> convertTime(time-serv.start), servers) + 2;
 
         String rep = "║" + " ".repeat(idLen) + "|" + " ".repeat(typeLen) + "|" + " ".repeat(playersLen) + "|" + " ".repeat(versionLen) + "|" + " ".repeat(ipLen) + "|" + " ".repeat(uptimeLen) + "║";
@@ -295,7 +295,7 @@ public class Main {
             x += 1+itemEntryLength(playersLen);
             serverOut = replaceAt(serverOut, x, ansi("/aqua/" + server.version.getStringVersion() + "/green/", false));
             x += 1+itemEntryLength(versionLen);
-            serverOut = replaceAt(serverOut, x, ansi("/aqua/" + server.details.ip() + ":" + server.details.port() + "/green/", false));
+            serverOut = replaceAt(serverOut, x, ansi("/aqua/" + server.details.getIp() + ":" + server.details.getPort() + "/green/", false));
             x += 1+itemEntryLength(ipLen);
             serverOut = replaceAt(serverOut, x, ansi("/aqua/" + convertTime(time-server.start) + "/green/", false));
 

@@ -1,3 +1,4 @@
 main: ga.epicpix.network.bukkit.Entry
 name: NetworkBukkit
 version: 1.0.0
+load: STARTUP

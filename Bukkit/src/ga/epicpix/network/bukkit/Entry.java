@@ -1,15 +1,15 @@
 package ga.epicpix.network.bukkit;
 
 import com.google.gson.JsonObject;
-import ga.epicpix.network.bukkit.commands.BukkitCommandPlayer;
 import ga.epicpix.network.bukkit.commands.TestCommand;
+import ga.epicpix.network.bukkit.map.MapListener;
 import ga.epicpix.network.common.Reflection;
-import ga.epicpix.network.common.servers.ServerManager;
-import ga.epicpix.network.common.servers.ServerVersion;
-import ga.epicpix.network.common.text.ChatColor;
 import ga.epicpix.network.common.ranks.Rank;
 import ga.epicpix.network.common.servers.ServerInfo;
+import ga.epicpix.network.common.servers.ServerManager;
+import ga.epicpix.network.common.servers.ServerVersion;
 import ga.epicpix.network.common.settings.SettingsManager;
+import ga.epicpix.network.common.text.ChatColor;
 import ga.epicpix.network.common.text.ChatComponent;
 import ga.epicpix.network.common.values.ValueType;
 import ga.epicpix.network.common.websocket.ClientType;
@@ -17,14 +17,12 @@ import ga.epicpix.network.common.websocket.Errorable;
 import ga.epicpix.network.common.websocket.WebSocketConnection;
 import ga.epicpix.network.common.websocket.requests.data.UpdateServerDataRequest;
 import org.bukkit.Bukkit;
-import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.PluginLoadOrder;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Team;
 import org.spigotmc.SpigotConfig;
-import org.spigotmc.SpigotWorldConfig;
-
-import java.util.Map;
 
 import static ga.epicpix.network.common.servers.ServerInfo.ServerSignal;
 
@@ -118,17 +116,32 @@ public class Entry extends JavaPlugin {
     }
 
     public void onEnable() {
-        PluginListener.publicScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-        Bukkit.getServer().getPluginManager().registerEvents(new PluginListener(), this);
-        Bukkit.getScheduler().runTask(this, () -> {
-            BukkitCommon.removeDefaultPermissions();
-            BukkitCommon.removeCommandAliases();
-        });
+        if(getDescription().getLoad()==PluginLoadOrder.STARTUP) {
+            Bukkit.getServer().getPluginManager().registerEvents(new PluginListener(), this);
+            Bukkit.getServer().getPluginManager().registerEvents(new MapListener(), this);
+
+            // Make sure this plugin is "disabled" and the order is on POSTWORLD to run the rest of required things
+            PluginDescriptionFile f = getDescription();
+            Reflection.setValueOfField(f.getClass(), "order", f, PluginLoadOrder.POSTWORLD);
+            System.out.println("Plugin enabled 1/2");
+            if(Bukkit.getWorlds().size()!=0) {
+                onEnable();
+            }
+        }else {
+            PluginListener.publicScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+            Bukkit.getScheduler().runTask(this, () -> {
+                BukkitCommon.removeDefaultPermissions();
+                BukkitCommon.removeCommandAliases();
+            });
+            System.out.println("Plugin enabled 2/2");
+        }
     }
 
     public void onDisable() {
         shutdownHook.start();
         Runtime.getRuntime().removeShutdownHook(shutdownHook);
+        PluginDescriptionFile f = getDescription();
+        Reflection.setValueOfField(f.getClass(), "order", f, PluginLoadOrder.STARTUP);
     }
 
 }

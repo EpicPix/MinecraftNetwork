@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import ga.epicpix.network.common.Reflection;
 import ga.epicpix.network.common.SerializableJson;
+import ga.epicpix.network.common.annotations.CallerSensitive;
 import ga.epicpix.network.common.text.ChatComponent;
 import ga.epicpix.network.common.websocket.Opcodes;
 import ga.epicpix.network.common.websocket.requests.RequestPolicies;
@@ -63,6 +64,7 @@ public class UpdateRankRequest extends RequestData {
         }
     }
 
+    @CallerSensitive
     public static UpdateRankRequest build(String serverName, Data data) {
         if(!RequestPolicies.isAllowed(Opcodes.UPDATE_RANK, Reflection.getCaller())) {
             throw new SecurityException("Cannot build this request data!");

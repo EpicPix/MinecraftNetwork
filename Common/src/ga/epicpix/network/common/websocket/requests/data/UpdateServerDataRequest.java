@@ -3,6 +3,7 @@ package ga.epicpix.network.common.websocket.requests.data;
 import com.google.gson.JsonObject;
 import ga.epicpix.network.common.Reflection;
 import ga.epicpix.network.common.SerializableJson;
+import ga.epicpix.network.common.annotations.CallerSensitive;
 import ga.epicpix.network.common.servers.ServerDetails;
 import ga.epicpix.network.common.servers.ServerInfo;
 import ga.epicpix.network.common.servers.ServerVersion;
@@ -70,6 +71,7 @@ public class UpdateServerDataRequest extends RequestData {
         }
     }
 
+    @CallerSensitive
     public static UpdateServerDataRequest build(String serverName, Data data) {
         if(!RequestPolicies.isAllowed(Opcodes.UPDATE_SERVER_DATA, Reflection.getCaller())) {
             throw new SecurityException("Cannot build this request data!");

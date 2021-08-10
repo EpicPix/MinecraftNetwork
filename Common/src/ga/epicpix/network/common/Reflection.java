@@ -1,5 +1,7 @@
 package ga.epicpix.network.common;
 
+import ga.epicpix.network.common.annotations.CallerSensitive;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -113,6 +115,7 @@ public class Reflection {
         }
     }
 
+    @CallerSensitive
     public static String getCaller() {
         return new Exception().getStackTrace()[2].getClassName();
     }

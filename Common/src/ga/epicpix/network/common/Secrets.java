@@ -1,5 +1,7 @@
 package ga.epicpix.network.common;
 
+import ga.epicpix.network.common.annotations.CallerSensitive;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,6 +28,7 @@ public class Secrets {
         }
     }
 
+    @CallerSensitive
     public static String getSecret(String secret) {
         if(secrets==null) loadSecrets();
         if(secret.startsWith("serverController.") && !Reflection.getCaller().equals("ga.epicpix.network.common.websocket.WebSocketCredentials")) {

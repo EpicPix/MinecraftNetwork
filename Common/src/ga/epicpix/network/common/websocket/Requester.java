@@ -2,6 +2,7 @@ package ga.epicpix.network.common.websocket;
 
 import com.google.gson.JsonObject;
 import ga.epicpix.network.common.Reflection;
+import ga.epicpix.network.common.annotations.CallerSensitive;
 import ga.epicpix.network.common.websocket.requests.Request;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public final class Requester {
         }
     }
 
+    @CallerSensitive
     public static JsonObject sendRequest(Request req) {
         if(!Reflection.getCaller().equals(Request.class.getName())) {
             throw new SecurityException("Use the Request class to call sendRequest");

@@ -2,6 +2,7 @@ package ga.epicpix.network.common.websocket.requests.data;
 
 import com.google.gson.JsonObject;
 import ga.epicpix.network.common.Reflection;
+import ga.epicpix.network.common.annotations.CallerSensitive;
 import ga.epicpix.network.common.websocket.Opcodes;
 import ga.epicpix.network.common.websocket.requests.RequestPolicies;
 
@@ -17,6 +18,7 @@ public class GetPlayerRequest extends RequestData {
         this.username = username;
     }
 
+    @CallerSensitive
     public static GetPlayerRequest build(UUID uuid, String username) {
         if(!RequestPolicies.isAllowed(Opcodes.GET_PLAYER, Reflection.getCaller())) {
             throw new SecurityException("Cannot build this request data!");

@@ -2,6 +2,7 @@ package ga.epicpix.network.common.websocket.requests.data;
 
 import com.google.gson.*;
 import ga.epicpix.network.common.Reflection;
+import ga.epicpix.network.common.annotations.CallerSensitive;
 import ga.epicpix.network.common.values.ValueType;
 import ga.epicpix.network.common.websocket.Opcodes;
 import ga.epicpix.network.common.websocket.requests.RequestPolicies;
@@ -16,6 +17,7 @@ public class SetSettingRequest extends RequestData {
         this.value = value;
     }
 
+    @CallerSensitive
     public static SetSettingRequest build(String server, ValueType value) {
         if(!RequestPolicies.isAllowed(Opcodes.SET_SETTING, Reflection.getCaller())) {
             throw new SecurityException("Cannot build this request data!");

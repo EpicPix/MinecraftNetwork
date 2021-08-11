@@ -2,10 +2,10 @@ package ga.epicpix.network.common.servers;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import ga.epicpix.network.common.http.websocket.Errorable;
-import ga.epicpix.network.common.http.websocket.Opcodes;
-import ga.epicpix.network.common.http.websocket.requests.Request;
-import ga.epicpix.network.common.http.websocket.requests.data.*;
+import ga.epicpix.network.common.net.websocket.Errorable;
+import ga.epicpix.network.common.net.websocket.Opcodes;
+import ga.epicpix.network.common.net.websocket.requests.WebsocketRequest;
+import ga.epicpix.network.common.net.websocket.requests.data.*;
 
 import java.util.ArrayList;
 
@@ -21,7 +21,7 @@ public class ServerManager {
         if(data==null) {
             throw new NullPointerException("Data is null");
         }
-        JsonObject resp = Request.sendRequest(Request.createRequest(Opcodes.UPDATE_SERVER_DATA, UpdateServerDataRequest.build(server, data)));
+        JsonObject resp = WebsocketRequest.sendRequest(WebsocketRequest.createRequest(Opcodes.UPDATE_SERVER_DATA, UpdateServerDataRequest.build(server, data)));
         if(!resp.get("ok").getAsBoolean()) {
             return new Errorable<>(resp.get("errno").getAsInt());
         }
@@ -35,7 +35,7 @@ public class ServerManager {
         if(server.isEmpty()) {
             throw new IllegalArgumentException("Server name is empty");
         }
-        JsonObject data = Request.sendRequest(Request.createRequest(Opcodes.REMOVE_SERVER, RemoveServerRequest.build(server)));
+        JsonObject data = WebsocketRequest.sendRequest(WebsocketRequest.createRequest(Opcodes.REMOVE_SERVER, RemoveServerRequest.build(server)));
         if(!data.get("ok").getAsBoolean()) {
             return new Errorable<>(data.get("errno").getAsInt());
         }
@@ -43,7 +43,7 @@ public class ServerManager {
     }
 
     public static Errorable<Boolean> makeWebSocketServerOwner(String server) {
-        JsonObject data = Request.sendRequest(Request.createRequest(Opcodes.MAKE_WEB_SOCKET_SERVER_OWNER, MakeWebSocketServerOwnerRequest.build(server)));
+        JsonObject data = WebsocketRequest.sendRequest(WebsocketRequest.createRequest(Opcodes.MAKE_WEB_SOCKET_SERVER_OWNER, MakeWebSocketServerOwnerRequest.build(server)));
         if(!data.get("ok").getAsBoolean()) {
             return new Errorable<>(data.get("errno").getAsInt());
         }
@@ -51,7 +51,7 @@ public class ServerManager {
     }
 
     public static Errorable<Boolean> sendSignal(String server, ServerInfo.ServerSignal signal) {
-        JsonObject data = Request.sendRequest(Request.createRequest(Opcodes.SEND_SIGNAL, SendSignalRequest.build(server, signal)));
+        JsonObject data = WebsocketRequest.sendRequest(WebsocketRequest.createRequest(Opcodes.SEND_SIGNAL, SendSignalRequest.build(server, signal)));
         if(!data.get("ok").getAsBoolean()) {
             return new Errorable<>(data.get("errno").getAsInt());
         }
@@ -59,7 +59,7 @@ public class ServerManager {
     }
 
     public static Errorable<ArrayList<ServerInfo>> requestServerList() {
-        JsonObject data = Request.sendRequest(Request.createRequest(Opcodes.LIST_SERVERS, ListServersRequest.build()));
+        JsonObject data = WebsocketRequest.sendRequest(WebsocketRequest.createRequest(Opcodes.LIST_SERVERS, ListServersRequest.build()));
         if(!data.get("ok").getAsBoolean()) {
             return new Errorable<>(data.get("errno").getAsInt());
         }
@@ -71,7 +71,7 @@ public class ServerManager {
     }
 
     public static Errorable<ServerInfo> getServerInfo(String server) {
-        JsonObject data = Request.sendRequest(Request.createRequest(Opcodes.GET_SERVER, GetServerRequest.build(server)));
+        JsonObject data = WebsocketRequest.sendRequest(WebsocketRequest.createRequest(Opcodes.GET_SERVER, GetServerRequest.build(server)));
         if(!data.get("ok").getAsBoolean()) {
             return new Errorable<>(data.get("errno").getAsInt());
         }

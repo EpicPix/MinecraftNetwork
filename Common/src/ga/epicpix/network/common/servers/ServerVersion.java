@@ -4,10 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import ga.epicpix.network.common.SerializableJson;
-import ga.epicpix.network.common.http.websocket.Errorable;
-import ga.epicpix.network.common.http.websocket.Opcodes;
-import ga.epicpix.network.common.http.websocket.requests.Request;
-import ga.epicpix.network.common.http.websocket.requests.data.GetVersionsRequest;
+import ga.epicpix.network.common.net.websocket.Errorable;
+import ga.epicpix.network.common.net.websocket.Opcodes;
+import ga.epicpix.network.common.net.websocket.requests.WebsocketRequest;
+import ga.epicpix.network.common.net.websocket.requests.data.GetVersionsRequest;
 
 import java.util.*;
 
@@ -58,7 +58,7 @@ public class ServerVersion implements SerializableJson {
 
     // This is required to be called if you want to use any version methods
     public static Errorable<Boolean> load() {
-        JsonObject data = Request.sendRequest(Request.createRequest(Opcodes.GET_VERSIONS, GetVersionsRequest.build()));
+        JsonObject data = WebsocketRequest.sendRequest(WebsocketRequest.createRequest(Opcodes.GET_VERSIONS, GetVersionsRequest.build()));
         if(!data.get("ok").getAsBoolean()) {
             return new Errorable<>(data.get("errno").getAsInt());
         }

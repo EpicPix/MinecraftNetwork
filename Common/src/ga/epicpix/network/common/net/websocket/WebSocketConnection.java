@@ -136,7 +136,7 @@ public final class WebSocketConnection implements WebSocket.Listener {
     }
 
     private boolean sendAuthenticateRequest(WebSocketCredentials credentials) {
-        return WebsocketRequest.sendRequest(WebsocketRequest.createRequest(Opcodes.AUTHENTICATE, AuthenticateRequest.build(credentials.getUsername(), credentials.getPassword(), getClientType(), capabilities))).get("success").getAsBoolean();
+        return WebsocketRequest.sendRequest(WebsocketRequest.createRequest(AuthenticateRequest.build(credentials.getUsername(), credentials.getPassword(), getClientType(), capabilities))).get("success").getAsBoolean();
     }
 
     void send(String data) {

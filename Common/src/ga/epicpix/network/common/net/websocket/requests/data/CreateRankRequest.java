@@ -1,11 +1,9 @@
 package ga.epicpix.network.common.net.websocket.requests.data;
 
-import static ga.epicpix.network.common.net.websocket.requests.data.UpdateRankRequest.Data;
 import com.google.gson.JsonObject;
-import ga.epicpix.network.common.Reflection;
-import ga.epicpix.network.common.annotations.CallerSensitive;
 import ga.epicpix.network.common.net.websocket.Opcodes;
-import ga.epicpix.network.common.net.websocket.requests.RequestPolicies;
+
+import static ga.epicpix.network.common.net.websocket.requests.data.UpdateRankRequest.Data;
 
 public class CreateRankRequest extends RequestData {
 
@@ -17,11 +15,7 @@ public class CreateRankRequest extends RequestData {
         this.data = data;
     }
 
-    @CallerSensitive
     public static CreateRankRequest build(String serverName, Data data) {
-        if(!RequestPolicies.isAllowed(Opcodes.CREATE_RANK, Reflection.getCaller())) {
-            throw new SecurityException("Cannot build this request data!");
-        }
         return new CreateRankRequest(serverName, data);
     }
 

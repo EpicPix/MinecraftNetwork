@@ -1,10 +1,7 @@
 package ga.epicpix.network.common.net.websocket.requests.data;
 
 import com.google.gson.JsonObject;
-import ga.epicpix.network.common.Reflection;
-import ga.epicpix.network.common.annotations.CallerSensitive;
 import ga.epicpix.network.common.net.websocket.Opcodes;
-import ga.epicpix.network.common.net.websocket.requests.RequestPolicies;
 
 import java.util.UUID;
 
@@ -20,11 +17,7 @@ public class UpdatePlayerOrCreateRequest extends RequestData {
         this.data = data;
     }
 
-    @CallerSensitive
     public static UpdatePlayerOrCreateRequest build(UUID uuid, String username, UpdatePlayerRequest.Data data) {
-        if(!RequestPolicies.isAllowed(Opcodes.UPDATE_PLAYER_OR_CREATE, Reflection.getCaller())) {
-            throw new SecurityException("Cannot build this request data!");
-        }
         if(uuid==null || username==null) {
             throw new IllegalArgumentException("UUID and Username must not be null");
         }

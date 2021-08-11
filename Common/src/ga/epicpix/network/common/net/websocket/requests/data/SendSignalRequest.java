@@ -1,10 +1,7 @@
 package ga.epicpix.network.common.net.websocket.requests.data;
 
 import com.google.gson.JsonObject;
-import ga.epicpix.network.common.Reflection;
-import ga.epicpix.network.common.annotations.CallerSensitive;
 import ga.epicpix.network.common.net.websocket.Opcodes;
-import ga.epicpix.network.common.net.websocket.requests.RequestPolicies;
 
 import static ga.epicpix.network.common.servers.ServerInfo.ServerSignal;
 
@@ -18,11 +15,7 @@ public class SendSignalRequest extends RequestData {
         this.signal = signal;
     }
 
-    @CallerSensitive
     public static SendSignalRequest build(String serverName, ServerSignal signal) {
-        if(!RequestPolicies.isAllowed(Opcodes.SEND_SIGNAL, Reflection.getCaller())) {
-            throw new SecurityException("Cannot build this request data!");
-        }
         return new SendSignalRequest(serverName, signal);
     }
 

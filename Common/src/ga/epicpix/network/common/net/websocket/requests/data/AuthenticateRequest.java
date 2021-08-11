@@ -1,11 +1,8 @@
 package ga.epicpix.network.common.net.websocket.requests.data;
 
 import com.google.gson.JsonObject;
-import ga.epicpix.network.common.Reflection;
-import ga.epicpix.network.common.annotations.CallerSensitive;
 import ga.epicpix.network.common.net.websocket.ClientType;
 import ga.epicpix.network.common.net.websocket.Opcodes;
-import ga.epicpix.network.common.net.websocket.requests.RequestPolicies;
 
 public class AuthenticateRequest extends RequestData {
 
@@ -21,11 +18,7 @@ public class AuthenticateRequest extends RequestData {
         this.capabilities = capabilities;
     }
 
-    @CallerSensitive
     public static AuthenticateRequest build(String username, String password, ClientType type, int capabilities) {
-        if(!RequestPolicies.isAllowed(Opcodes.AUTHENTICATE, Reflection.getCaller())) {
-            throw new SecurityException("Cannot build this request data!");
-        }
         return new AuthenticateRequest(username, password, type, capabilities);
     }
 

@@ -5,12 +5,8 @@ import ga.epicpix.network.common.Reflection;
 import ga.epicpix.network.common.annotations.CallerSensitive;
 import ga.epicpix.network.common.annotations.NonNull;
 import ga.epicpix.network.common.net.Request;
-import ga.epicpix.network.common.net.websocket.Opcodes;
 import ga.epicpix.network.common.net.websocket.Requester;
 import ga.epicpix.network.common.net.websocket.requests.data.RequestData;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 
 public final class WebsocketRequest implements Request {
 
@@ -34,36 +30,8 @@ public final class WebsocketRequest implements Request {
         return data;
     }
 
-    @CallerSensitive
-    public static WebsocketRequest createRequest(int opcode, @NonNull RequestData data) {
-        String opcodename = null;
-        try {
-            boolean okopcode = false;
-            for(Field opcodes : Opcodes.class.getDeclaredFields()) {
-                if(opcodes.getModifiers() == (Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL)) {
-                    if(opcodes.getInt(null) == opcode) {
-                        opcodename = opcodes.getName();
-                        okopcode = true;
-                        break;
-                    }
-                }
-            }
-            if(!okopcode) {
-                throw new InvalidOpcodeException("Invalid opcode: " + opcode);
-            }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        if(!RequestPolicies.isAllowed(opcode, Reflection.getCaller())) {
-            throw new SecurityException(Reflection.getCaller() + " is not allowed to use opcode " + opcodename);
-        }
-        if(data==null) {
-            throw new NullPointerException("RequestData is null");
-        }
-        if(data.getOpcode()!=opcode) {
-            throw new IllegalStateException("The RequestData opcode is not the opcode provided!");
-        }
-        return new WebsocketRequest(opcode, data);
+    public static WebsocketRequest createRequest(@NonNull RequestData data) {
+        return new WebsocketRequest(data.getOpcode(), data);
     }
 
     public static JsonObject sendRequest(@NonNull WebsocketRequest request) {

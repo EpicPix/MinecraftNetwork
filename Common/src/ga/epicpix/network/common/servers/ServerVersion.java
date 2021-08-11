@@ -58,7 +58,7 @@ public class ServerVersion implements SerializableJson {
 
     // This is required to be called if you want to use any version methods
     public static Errorable<Boolean> load() {
-        JsonObject data = WebsocketRequest.sendRequest(WebsocketRequest.createRequest(Opcodes.GET_VERSIONS, GetVersionsRequest.build()));
+        JsonObject data = WebsocketRequest.sendRequest(WebsocketRequest.createRequest(GetVersionsRequest.build()));
         if(!data.get("ok").getAsBoolean()) {
             return new Errorable<>(data.get("errno").getAsInt());
         }

@@ -16,7 +16,7 @@ import java.util.HashMap;
 public class SettingsManager {
 
     public static Errorable<ValueType> getSetting(String setting) {
-        JsonObject resp = WebsocketRequest.sendRequest(WebsocketRequest.createRequest(Opcodes.GET_SETTING, GetSettingRequest.build(setting)));
+        JsonObject resp = WebsocketRequest.sendRequest(WebsocketRequest.createRequest(GetSettingRequest.build(setting)));
         if(!resp.get("ok").getAsBoolean()) {
             return new Errorable<>(resp.get("errno").getAsInt());
         }
@@ -24,7 +24,7 @@ public class SettingsManager {
     }
 
     public static Errorable<ValueType> getSettingOrDefault(String setting, ValueType defaults) {
-        JsonObject resp = WebsocketRequest.sendRequest(WebsocketRequest.createRequest(Opcodes.GET_SETTING_OR_DEFAULT, GetSettingOrDefaultRequest.build(setting, defaults)));
+        JsonObject resp = WebsocketRequest.sendRequest(WebsocketRequest.createRequest(GetSettingOrDefaultRequest.build(setting, defaults)));
         if(!resp.get("ok").getAsBoolean()) {
             return new Errorable<>(resp.get("errno").getAsInt());
         }
@@ -32,7 +32,7 @@ public class SettingsManager {
     }
 
     public static Errorable<Boolean> setSetting(String setting, ValueType value) {
-        JsonObject resp = WebsocketRequest.sendRequest(WebsocketRequest.createRequest(Opcodes.SET_SETTING, SetSettingRequest.build(setting, value)));
+        JsonObject resp = WebsocketRequest.sendRequest(WebsocketRequest.createRequest(SetSettingRequest.build(setting, value)));
         if(!resp.get("ok").getAsBoolean()) {
             return new Errorable<>(resp.get("errno").getAsInt());
         }
@@ -40,7 +40,7 @@ public class SettingsManager {
     }
 
     public static Errorable<HashMap<String, ValueType>> getSettings() {
-        JsonObject resp = WebsocketRequest.sendRequest(WebsocketRequest.createRequest(Opcodes.GET_SETTINGS, GetSettingsRequest.build()));
+        JsonObject resp = WebsocketRequest.sendRequest(WebsocketRequest.createRequest(GetSettingsRequest.build()));
         if(!resp.get("ok").getAsBoolean()) {
             return new Errorable<>(resp.get("errno").getAsInt());
         }

@@ -20,7 +20,7 @@ public class PlayerManager {
     }
 
     public static Errorable<PlayerInfo> getPlayer(UUID uuid, String username) {
-        JsonObject obj = WebsocketRequest.sendRequest(WebsocketRequest.createRequest(Opcodes.GET_PLAYER, GetPlayerRequest.build(uuid, username)));
+        JsonObject obj = WebsocketRequest.sendRequest(WebsocketRequest.createRequest(GetPlayerRequest.build(uuid, username)));
         if(!obj.get("ok").getAsBoolean()) {
             return new Errorable<>(obj.get("errno").getAsInt());
         }
@@ -36,7 +36,7 @@ public class PlayerManager {
     }
 
     public static Errorable<PlayerInfo> updatePlayer(UUID uuid, String username, UpdatePlayerRequest.Data data) {
-        JsonObject obj = WebsocketRequest.sendRequest(WebsocketRequest.createRequest(Opcodes.UPDATE_PLAYER, UpdatePlayerRequest.build(uuid, username, data)));
+        JsonObject obj = WebsocketRequest.sendRequest(WebsocketRequest.createRequest(UpdatePlayerRequest.build(uuid, username, data)));
         if(!obj.get("ok").getAsBoolean()) {
             return new Errorable<>(obj.get("errno").getAsInt());
         }
@@ -44,7 +44,7 @@ public class PlayerManager {
     }
 
     public static Errorable<PlayerInfo> updatePlayerOrCreate(UUID uuid, String username, UpdatePlayerRequest.Data data) {
-        JsonObject obj = WebsocketRequest.sendRequest(WebsocketRequest.createRequest(Opcodes.UPDATE_PLAYER_OR_CREATE, UpdatePlayerOrCreateRequest.build(uuid, username, data)));
+        JsonObject obj = WebsocketRequest.sendRequest(WebsocketRequest.createRequest(UpdatePlayerOrCreateRequest.build(uuid, username, data)));
         if(!obj.get("ok").getAsBoolean()) {
             return new Errorable<>(obj.get("errno").getAsInt());
         }
@@ -52,7 +52,7 @@ public class PlayerManager {
     }
 
     public static Errorable<PlayerInfo> getPlayerOrCreate(UUID uuid, String username) {
-        JsonObject obj = WebsocketRequest.sendRequest(WebsocketRequest.createRequest(Opcodes.GET_PLAYER_OR_CREATE, GetPlayerOrCreateRequest.build(uuid, username)));
+        JsonObject obj = WebsocketRequest.sendRequest(WebsocketRequest.createRequest(GetPlayerOrCreateRequest.build(uuid, username)));
         if(!obj.get("ok").getAsBoolean()) {
             return new Errorable<>(obj.get("errno").getAsInt());
         }

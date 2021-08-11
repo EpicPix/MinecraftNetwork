@@ -31,7 +31,7 @@ public class Secrets {
     @CallerSensitive
     public static String getSecret(String secret) {
         if(secrets==null) loadSecrets();
-        if(secret.startsWith("serverController.") && !Reflection.getCaller().equals("ga.epicpix.network.common.websocket.WebSocketCredentials")) {
+        if(secret.startsWith("serverController.") && !Reflection.getCaller().equals("ga.epicpix.network.common.http.websocket.WebSocketCredentials")) {
             throw new IllegalCallerException("Tried to access Server Controller secrets!");
         }
         return (String) secrets.get(secret);

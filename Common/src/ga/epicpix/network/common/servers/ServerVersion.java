@@ -4,10 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import ga.epicpix.network.common.SerializableJson;
-import ga.epicpix.network.common.websocket.Errorable;
-import ga.epicpix.network.common.websocket.Opcodes;
-import ga.epicpix.network.common.websocket.requests.Request;
-import ga.epicpix.network.common.websocket.requests.data.GetVersionsRequest;
+import ga.epicpix.network.common.http.websocket.Errorable;
+import ga.epicpix.network.common.http.websocket.Opcodes;
+import ga.epicpix.network.common.http.websocket.requests.Request;
+import ga.epicpix.network.common.http.websocket.requests.data.GetVersionsRequest;
 
 import java.util.*;
 

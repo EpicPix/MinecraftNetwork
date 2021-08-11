@@ -1,7 +1,7 @@
 package ga.epicpix.network.bungee;
 
 import ga.epicpix.network.common.players.PlayerManager;
-import ga.epicpix.network.common.websocket.requests.data.UpdatePlayerRequest;
+import ga.epicpix.network.common.http.websocket.requests.data.UpdatePlayerRequest;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;

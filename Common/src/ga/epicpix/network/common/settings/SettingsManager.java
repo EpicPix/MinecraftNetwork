@@ -3,13 +3,13 @@ package ga.epicpix.network.common.settings;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import ga.epicpix.network.common.values.ValueType;
-import ga.epicpix.network.common.websocket.Errorable;
-import ga.epicpix.network.common.websocket.Opcodes;
-import ga.epicpix.network.common.websocket.requests.Request;
-import ga.epicpix.network.common.websocket.requests.data.GetSettingOrDefaultRequest;
-import ga.epicpix.network.common.websocket.requests.data.GetSettingRequest;
-import ga.epicpix.network.common.websocket.requests.data.GetSettingsRequest;
-import ga.epicpix.network.common.websocket.requests.data.SetSettingRequest;
+import ga.epicpix.network.common.http.websocket.Errorable;
+import ga.epicpix.network.common.http.websocket.Opcodes;
+import ga.epicpix.network.common.http.websocket.requests.Request;
+import ga.epicpix.network.common.http.websocket.requests.data.GetSettingOrDefaultRequest;
+import ga.epicpix.network.common.http.websocket.requests.data.GetSettingRequest;
+import ga.epicpix.network.common.http.websocket.requests.data.GetSettingsRequest;
+import ga.epicpix.network.common.http.websocket.requests.data.SetSettingRequest;
 
 import java.util.HashMap;
 

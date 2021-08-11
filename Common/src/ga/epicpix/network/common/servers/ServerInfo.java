@@ -2,10 +2,6 @@ package ga.epicpix.network.common.servers;
 
 import com.google.gson.JsonObject;
 import ga.epicpix.network.common.CommonUtils;
-import ga.epicpix.network.common.websocket.Errorable;
-import ga.epicpix.network.common.websocket.Opcodes;
-import ga.epicpix.network.common.websocket.requests.Request;
-import ga.epicpix.network.common.websocket.requests.data.*;
 
 import java.util.ArrayList;
 import java.util.Collections;

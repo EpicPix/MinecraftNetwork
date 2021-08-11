@@ -2,10 +2,10 @@ package ga.epicpix.network.common.ranks;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import ga.epicpix.network.common.websocket.Errorable;
-import ga.epicpix.network.common.websocket.Opcodes;
-import ga.epicpix.network.common.websocket.requests.Request;
-import ga.epicpix.network.common.websocket.requests.data.*;
+import ga.epicpix.network.common.http.websocket.Errorable;
+import ga.epicpix.network.common.http.websocket.Opcodes;
+import ga.epicpix.network.common.http.websocket.requests.Request;
+import ga.epicpix.network.common.http.websocket.requests.data.*;
 
 import java.util.ArrayList;
 

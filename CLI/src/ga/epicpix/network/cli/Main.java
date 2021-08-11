@@ -9,9 +9,9 @@ import ga.epicpix.network.common.servers.ServerInfo;
 import ga.epicpix.network.common.settings.SettingsManager;
 import ga.epicpix.network.common.text.ChatComponent;
 import ga.epicpix.network.common.values.ValueType;
-import ga.epicpix.network.common.websocket.ClientType;
-import ga.epicpix.network.common.websocket.Errorable;
-import ga.epicpix.network.common.websocket.WebSocketConnection;
+import ga.epicpix.network.common.http.websocket.ClientType;
+import ga.epicpix.network.common.http.websocket.Errorable;
+import ga.epicpix.network.common.http.websocket.WebSocketConnection;
 
 import java.io.Console;
 import java.io.PrintStream;

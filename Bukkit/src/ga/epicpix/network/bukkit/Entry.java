@@ -95,7 +95,7 @@ public class Entry extends JavaPlugin {
             return;
         }
 
-        ServerManager.updateServer(Bukkit.getServerId(), new UpdateServerDataRequest.Data()
+        ServerManager.updateServer(BukkitCommon.getServerId(), new UpdateServerDataRequest.Data()
                 .setType(ServerInfo.ServerType.UNKNOWN)
                 .setOnlinePlayers(Bukkit.getOnlinePlayers().size())
                 .setMaxPlayers(Bukkit.getMaxPlayers())
@@ -103,7 +103,7 @@ public class Entry extends JavaPlugin {
                 .setDetails(BukkitCommon.getDetails())
                 .setBootMillis(start));
 
-        ServerManager.makeWebSocketServerOwner(Bukkit.getServerId());
+        ServerManager.makeWebSocketServerOwner(BukkitCommon.getServerId());
 
         Runtime.getRuntime().addShutdownHook(shutdownHook = new Thread(() -> ServerManager.removeServer(BukkitCommon.getServerId())));
         Errorable<ValueType> val = SettingsManager.getSettingOrDefault("BUNGEE_CORD", new ValueType(false));

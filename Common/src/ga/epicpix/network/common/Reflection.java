@@ -82,7 +82,6 @@ public class Reflection {
             method.setAccessible(access);
             return obj;
         } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -97,7 +96,6 @@ public class Reflection {
             method.setAccessible(access);
             return obj;
         } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -110,9 +108,7 @@ public class Reflection {
             field.setAccessible(true);
             field.set(ofObj, newData);
             field.setAccessible(access);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
+        } catch (NoSuchFieldException | IllegalAccessException e) {}
     }
 
     @CallerSensitive

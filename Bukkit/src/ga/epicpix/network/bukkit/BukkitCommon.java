@@ -23,12 +23,12 @@ import java.util.Set;
 public class BukkitCommon {
 
     public static Object getPropertyManager() {
-        Object MinecraftServer = Reflection.getValueOfField(Bukkit.getServer().getClass(), "console", Bukkit.getServer());
-        if(MinecraftServer==null) throw new NullPointerException("Could not get a MinecraftServer instance.");
-        Object PropertyManager = Reflection.callMethod(MinecraftServer.getClass(), "getPropertyManager", MinecraftServer);
-        //1.14+ fix
-        if(PropertyManager==null) PropertyManager = Reflection.callMethod(MinecraftServer.getClass(), "getDedicatedServerProperties", MinecraftServer);
+        Object MinecraftServer = getMinecraftServer();
+        Object PropertyManager = Reflection.getValueOfField(MinecraftServer.getClass(), "propertyManager", MinecraftServer);
         if(PropertyManager==null) throw new NullPointerException("Could not get a PropertyManager instance.");
+        if(PropertyManager.getClass().getSimpleName().endsWith("DedicatedServerSettings")) {
+            PropertyManager = Reflection.getValueOfField(PropertyManager.getClass(), "properties", PropertyManager);
+        }
         return PropertyManager;
     }
 
@@ -108,9 +108,31 @@ public class BukkitCommon {
         }
     }
 
+    public static String hyphenToCamelCase(String val) {
+        StringBuilder n = new StringBuilder();
+        boolean upper = false;
+        for(char c : val.toCharArray()) {
+            if(c=='-') {
+                upper = true;
+            }else {
+                if(upper) {
+                    c = Character.toUpperCase(c);
+                    upper = false;
+                }
+                n.append(c);
+            }
+        }
+        return n.toString();
+    }
+
     public static void setPropertiesValue(String key, Object value) {
         Object PropertyManager = getPropertyManager();
-        Reflection.callMethodByClasses(PropertyManager.getClass(), "setProperty", PropertyManager, new Class[] {String.class, Object.class}, key, value);
+        if(!PropertyManager.getClass().getSimpleName().endsWith("DedicatedServerProperties")) {
+            Reflection.callMethodByClasses(PropertyManager.getClass(), "setProperty", PropertyManager, new Class[] {String.class, Object.class}, key, value);
+        }else {
+            key = hyphenToCamelCase(key);
+            Reflection.setValueOfField(PropertyManager.getClass(), key, PropertyManager, value);
+        }
     }
 
     public static void setAllowNether(boolean allow) {

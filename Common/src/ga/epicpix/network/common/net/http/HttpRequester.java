@@ -5,7 +5,7 @@ import ga.epicpix.network.common.net.Requester;
 
 public class HttpRequester implements Requester {
 
-    public void sendRequest(Request req) {
+    public void sendRequest(Requesta req) {
         if(!(req instanceof HttpRequest)) {
             throw new IllegalArgumentException("Request is not HttpRequest!");
         }

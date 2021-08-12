@@ -6,7 +6,7 @@ import ga.epicpix.network.common.SerializableJson;
 import ga.epicpix.network.common.text.ChatComponent;
 import ga.epicpix.network.common.net.websocket.Opcodes;
 
-public class UpdateRankRequest extends RequestData {
+public class UpdateRankRequest implements WebSocketRequest {
 
     private final String rank;
     private final Data data;

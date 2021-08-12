@@ -3,7 +3,7 @@ package ga.epicpix.network.common.net.websocket.requests.data;
 import com.google.gson.JsonObject;
 import ga.epicpix.network.common.net.websocket.Opcodes;
 
-public class DeleteRankRequest extends RequestData {
+public class DeleteRankRequest implements WebSocketRequest {
 
     private final String rank;
 

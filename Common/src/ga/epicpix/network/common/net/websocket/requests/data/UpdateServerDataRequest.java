@@ -7,7 +7,7 @@ import ga.epicpix.network.common.servers.ServerInfo;
 import ga.epicpix.network.common.servers.ServerVersion;
 import ga.epicpix.network.common.net.websocket.Opcodes;
 
-public class UpdateServerDataRequest extends RequestData {
+public class UpdateServerDataRequest implements WebSocketRequest {
 
     private final String serverName;
     private final Data data;

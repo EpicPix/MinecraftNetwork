@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import ga.epicpix.network.common.net.websocket.ClientType;
 import ga.epicpix.network.common.net.websocket.Opcodes;
 
-public class AuthenticateRequest extends RequestData {
+public class AuthenticateRequest implements WebSocketRequest {
 
     private final String username;
     private final String password;

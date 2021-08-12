@@ -2,7 +2,6 @@ package ga.epicpix.network.common.net.websocket;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import ga.epicpix.network.common.net.websocket.requests.WebSocketRequest;
 import ga.epicpix.network.common.net.websocket.requests.data.AuthenticateRequest;
 
 import java.net.http.HttpClient;
@@ -136,7 +135,7 @@ public final class WebSocketConnection implements WebSocket.Listener {
     }
 
     private boolean sendAuthenticateRequest(WebSocketCredentials credentials) {
-        return WebSocketRequest.sendRequest(WebSocketRequest.createRequest(AuthenticateRequest.build(credentials.getUsername(), credentials.getPassword(), getClientType(), capabilities))).get("success").getAsBoolean();
+        return WebSocketRequester.sendRequest(AuthenticateRequest.build(credentials.getUsername(), credentials.getPassword(), getClientType(), capabilities)).get("success").getAsBoolean();
     }
 
     void send(String data) {

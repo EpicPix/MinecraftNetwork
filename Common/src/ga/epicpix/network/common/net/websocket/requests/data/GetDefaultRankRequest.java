@@ -3,7 +3,7 @@ package ga.epicpix.network.common.net.websocket.requests.data;
 import com.google.gson.JsonObject;
 import ga.epicpix.network.common.net.websocket.Opcodes;
 
-public class GetDefaultRankRequest extends RequestData {
+public class GetDefaultRankRequest implements WebSocketRequest {
 
     private GetDefaultRankRequest() {}
 

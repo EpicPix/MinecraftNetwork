@@ -3,7 +3,7 @@ package ga.epicpix.network.common.ranks;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import ga.epicpix.network.common.net.websocket.Errorable;
-import ga.epicpix.network.common.net.websocket.requests.WebSocketRequest;
+import ga.epicpix.network.common.net.websocket.WebSocketRequester;
 import ga.epicpix.network.common.net.websocket.requests.data.*;
 
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class RankManager {
 
     public static Errorable<Rank> getRank(String rank) {
-        JsonObject obj = WebSocketRequest.sendRequest(WebSocketRequest.createRequest(GetRankRequest.build(rank)));
+        JsonObject obj = WebSocketRequester.sendRequest(GetRankRequest.build(rank));
         if(!obj.get("ok").getAsBoolean()) {
             return new Errorable<>(obj.get("errno").getAsInt());
         }
@@ -19,7 +19,7 @@ public class RankManager {
     }
 
     public static Errorable<ArrayList<Rank>> getRanks() {
-        JsonObject obj = WebSocketRequest.sendRequest(WebSocketRequest.createRequest(GetRanksRequest.build()));
+        JsonObject obj = WebSocketRequester.sendRequest(GetRanksRequest.build());
         if(!obj.get("ok").getAsBoolean()) {
             return new Errorable<>(obj.get("errno").getAsInt());
         }
@@ -31,7 +31,7 @@ public class RankManager {
     }
 
     public static Errorable<Rank> getDefaultRank() {
-        JsonObject obj = WebSocketRequest.sendRequest(WebSocketRequest.createRequest(GetDefaultRankRequest.build()));
+        JsonObject obj = WebSocketRequester.sendRequest(GetDefaultRankRequest.build());
         if(!obj.get("ok").getAsBoolean()) {
             return new Errorable<>(obj.get("errno").getAsInt());
         }
@@ -39,7 +39,7 @@ public class RankManager {
     }
 
     public static Errorable<Rank> updateRank(String rank, UpdateRankRequest.Data update) {
-        JsonObject obj = WebSocketRequest.sendRequest(WebSocketRequest.createRequest(UpdateRankRequest.build(rank, update)));
+        JsonObject obj = WebSocketRequester.sendRequest(UpdateRankRequest.build(rank, update));
         if(!obj.get("ok").getAsBoolean()) {
             return new Errorable<>(obj.get("errno").getAsInt());
         }
@@ -47,7 +47,7 @@ public class RankManager {
     }
 
     public static Errorable<Rank> createRank(String rank, UpdateRankRequest.Data data) {
-        JsonObject obj = WebSocketRequest.sendRequest(WebSocketRequest.createRequest(CreateRankRequest.build(rank, data)));
+        JsonObject obj = WebSocketRequester.sendRequest(CreateRankRequest.build(rank, data));
         if(!obj.get("ok").getAsBoolean()) {
             return new Errorable<>(obj.get("errno").getAsInt());
         }
@@ -55,7 +55,7 @@ public class RankManager {
     }
 
     public static Errorable<Boolean> deleteRank(String rank) {
-        JsonObject obj = WebSocketRequest.sendRequest(WebSocketRequest.createRequest(DeleteRankRequest.build(rank)));
+        JsonObject obj = WebSocketRequester.sendRequest(DeleteRankRequest.build(rank));
         if(!obj.get("ok").getAsBoolean()) {
             return new Errorable<>(obj.get("errno").getAsInt());
         }

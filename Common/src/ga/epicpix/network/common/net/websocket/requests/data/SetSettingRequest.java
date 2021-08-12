@@ -4,7 +4,7 @@ import com.google.gson.*;
 import ga.epicpix.network.common.values.ValueType;
 import ga.epicpix.network.common.net.websocket.Opcodes;
 
-public class SetSettingRequest extends RequestData {
+public class SetSettingRequest implements WebSocketRequest {
 
     private final String setting;
     private final ValueType value;

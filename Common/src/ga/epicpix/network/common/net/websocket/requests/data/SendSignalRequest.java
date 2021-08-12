@@ -5,7 +5,7 @@ import ga.epicpix.network.common.net.websocket.Opcodes;
 
 import static ga.epicpix.network.common.servers.ServerInfo.ServerSignal;
 
-public class SendSignalRequest extends RequestData {
+public class SendSignalRequest implements WebSocketRequest {
 
     private final String serverName;
     private final ServerSignal signal;

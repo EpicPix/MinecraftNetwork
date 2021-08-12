@@ -2,9 +2,9 @@ package ga.epicpix.network.common.settings;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import ga.epicpix.network.common.net.websocket.WebSocketRequester;
 import ga.epicpix.network.common.values.ValueType;
 import ga.epicpix.network.common.net.websocket.Errorable;
-import ga.epicpix.network.common.net.websocket.requests.WebSocketRequest;
 import ga.epicpix.network.common.net.websocket.requests.data.GetSettingOrDefaultRequest;
 import ga.epicpix.network.common.net.websocket.requests.data.GetSettingRequest;
 import ga.epicpix.network.common.net.websocket.requests.data.GetSettingsRequest;
@@ -15,7 +15,7 @@ import java.util.HashMap;
 public class SettingsManager {
 
     public static Errorable<ValueType> getSetting(String setting) {
-        JsonObject resp = WebSocketRequest.sendRequest(WebSocketRequest.createRequest(GetSettingRequest.build(setting)));
+        JsonObject resp = WebSocketRequester.sendRequest(GetSettingRequest.build(setting));
         if(!resp.get("ok").getAsBoolean()) {
             return new Errorable<>(resp.get("errno").getAsInt());
         }
@@ -23,7 +23,7 @@ public class SettingsManager {
     }
 
     public static Errorable<ValueType> getSettingOrDefault(String setting, ValueType defaults) {
-        JsonObject resp = WebSocketRequest.sendRequest(WebSocketRequest.createRequest(GetSettingOrDefaultRequest.build(setting, defaults)));
+        JsonObject resp = WebSocketRequester.sendRequest(GetSettingOrDefaultRequest.build(setting, defaults));
         if(!resp.get("ok").getAsBoolean()) {
             return new Errorable<>(resp.get("errno").getAsInt());
         }
@@ -31,7 +31,7 @@ public class SettingsManager {
     }
 
     public static Errorable<Boolean> setSetting(String setting, ValueType value) {
-        JsonObject resp = WebSocketRequest.sendRequest(WebSocketRequest.createRequest(SetSettingRequest.build(setting, value)));
+        JsonObject resp = WebSocketRequester.sendRequest(SetSettingRequest.build(setting, value));
         if(!resp.get("ok").getAsBoolean()) {
             return new Errorable<>(resp.get("errno").getAsInt());
         }
@@ -39,7 +39,7 @@ public class SettingsManager {
     }
 
     public static Errorable<HashMap<String, ValueType>> getSettings() {
-        JsonObject resp = WebSocketRequest.sendRequest(WebSocketRequest.createRequest(GetSettingsRequest.build()));
+        JsonObject resp = WebSocketRequester.sendRequest(GetSettingsRequest.build());
         if(!resp.get("ok").getAsBoolean()) {
             return new Errorable<>(resp.get("errno").getAsInt());
         }

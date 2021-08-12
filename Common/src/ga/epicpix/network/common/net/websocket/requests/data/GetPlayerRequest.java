@@ -5,7 +5,7 @@ import ga.epicpix.network.common.net.websocket.Opcodes;
 
 import java.util.UUID;
 
-public class GetPlayerRequest extends RequestData {
+public class GetPlayerRequest implements WebSocketRequest {
 
     private final UUID uuid;
     private final String username;

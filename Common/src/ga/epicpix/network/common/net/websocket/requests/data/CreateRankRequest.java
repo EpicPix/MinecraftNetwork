@@ -5,7 +5,7 @@ import ga.epicpix.network.common.net.websocket.Opcodes;
 
 import static ga.epicpix.network.common.net.websocket.requests.data.UpdateRankRequest.Data;
 
-public class CreateRankRequest extends RequestData {
+public class CreateRankRequest implements WebSocketRequest {
 
     private final String rank;
     private final Data data;

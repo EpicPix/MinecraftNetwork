@@ -1,7 +1,9 @@
 package ga.epicpix.network.common.net;
 
+import com.google.gson.JsonObject;
+
 public interface Requester {
 
-    void sendRequest(Request req);
+    JsonObject nSendRequest(Request req);
 
 }

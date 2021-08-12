@@ -27,6 +27,17 @@ jobs:
     runs-on: ubuntu-latest
     name: Compile Bukkit
     steps:
+      - name: Clone repository
+        uses: actions/checkout@v2
+
+      - name: Setup JDK
+        uses: joschi/setup-jdk@v2
+        with:
+          java-version: '11'
+      
+      - name: Get Gson
+        run: wget -O /tmp/gson.jar https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.2/gson-2.8.2.jar
+
       - name: Get Spigot 1.8.8
         run: wget -O /tmp/spigot.1.8.8.jar https://cdn.getbukkit.org/spigot/spigot-1.8.8-R0.1-SNAPSHOT-latest.jar
       
@@ -42,6 +53,17 @@ jobs:
     runs-on: ubuntu-latest
     name: Compile Bungee
     steps:
+      - name: Clone repository
+        uses: actions/checkout@v2
+
+      - name: Setup JDK
+        uses: joschi/setup-jdk@v2
+        with:
+          java-version: '11'
+      
+      - name: Get Gson
+        run: wget -O /tmp/gson.jar https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.2/gson-2.8.2.jar
+        
       - name: Get BungeeCord
         run: wget -O /tmp/BungeeCord.jar https://ci.md-5.net/job/BungeeCord/lastSuccessfulBuild/artifact/bootstrap/target/BungeeCord.jar
       

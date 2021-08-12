@@ -112,7 +112,11 @@ public class Reflection {
     }
 
     @CallerSensitive
-    public static String getCaller() {
-        return new Exception().getStackTrace()[2].getClassName();
+    public static Class<?> getCaller() {
+        try {
+            return Class.forName(new Exception().getStackTrace()[2].getClassName());
+        } catch (ClassNotFoundException e) {
+            return null;
+        }
     }
 }

@@ -2,6 +2,7 @@ package ga.epicpix.network.common.net.websocket;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import ga.epicpix.network.common.net.ServerControllerCredentials;
 import ga.epicpix.network.common.net.websocket.requests.AuthenticateRequest;
 
 import java.net.http.HttpClient;
@@ -103,11 +104,11 @@ public final class WebSocketConnection implements WebSocket.Listener {
 
     public static void connect() {
         if(!connected) {
-            connectWithCredentials(WebSocketCredentials.get());
+            connectWithCredentials(ServerControllerCredentials.get());
         }
     }
 
-    private static void connectWithCredentials(WebSocketCredentials creds) {
+    private static void connectWithCredentials(ServerControllerCredentials creds) {
         connection = new WebSocketConnection();
         requester = new WebSocketRequester(connection);
         try {
@@ -121,7 +122,7 @@ public final class WebSocketConnection implements WebSocket.Listener {
                         if(auth.length<2) {
                             System.err.println("The auth array is not 2 elements");
                         }else {
-                            connectWithCredentials(WebSocketCredentials.set(creds, auth[0], auth[1]));
+                            connectWithCredentials(ServerControllerCredentials.set(creds, auth[0], auth[1]));
                         }
                     }else {
                         System.err.println("Return type is not String[]!");
@@ -134,7 +135,7 @@ public final class WebSocketConnection implements WebSocket.Listener {
         }
     }
 
-    private boolean sendAuthenticateRequest(WebSocketCredentials credentials) {
+    private boolean sendAuthenticateRequest(ServerControllerCredentials credentials) {
         return WebSocketRequester.sendRequest(AuthenticateRequest.build(credentials.getUsername(), credentials.getPassword(), getClientType(), capabilities)).get("success").getAsBoolean();
     }
 

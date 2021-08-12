@@ -1,6 +1,7 @@
 package ga.epicpix.network.common;
 
 import ga.epicpix.network.common.annotations.CallerSensitive;
+import ga.epicpix.network.common.net.ServerControllerCredentials;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -31,7 +32,7 @@ public class Secrets {
     @CallerSensitive
     public static String getSecret(String secret) {
         if(secrets==null) loadSecrets();
-        if(secret.startsWith("serverController.") && !Reflection.getCaller().equals("ga.epicpix.network.common.http.websocket.WebSocketCredentials")) {
+        if(secret.startsWith("serverController.") && !Reflection.getCaller().equals(ServerControllerCredentials.class.getName())) {
             throw new IllegalCallerException("Tried to access Server Controller secrets!");
         }
         return (String) secrets.get(secret);

@@ -4,5 +4,5 @@ import com.google.gson.JsonObject;
 
 public interface ServerHook {
 
-    void handle(int opcode, JsonObject data, Requester requester);
+    void handle(int opcode, JsonObject data, WebSocketRequester requester);
 }

@@ -3,24 +3,24 @@ package ga.epicpix.network.common.net.websocket;
 import com.google.gson.JsonObject;
 import ga.epicpix.network.common.Reflection;
 import ga.epicpix.network.common.annotations.CallerSensitive;
-import ga.epicpix.network.common.net.websocket.requests.WebsocketRequest;
+import ga.epicpix.network.common.net.websocket.requests.WebSocketRequest;
 
 import java.util.ArrayList;
 
-public final class Requester {
+public final class WebSocketRequester {
 
     long nextRequestId = 0;
     final ArrayList<RequestFuture> futures = new ArrayList<>();
 
-    public Requester(WebSocketConnection connection) {
+    public WebSocketRequester(WebSocketConnection connection) {
         if(connection==null) {
             throw new IllegalArgumentException("WebSocketConnection is null");
         }
     }
 
     @CallerSensitive
-    public static JsonObject sendRequest(WebsocketRequest req) {
-        if(!Reflection.getCaller().equals(WebsocketRequest.class.getName())) {
+    public static JsonObject sendRequest(WebSocketRequest req) {
+        if(!Reflection.getCaller().equals(WebSocketRequest.class.getName())) {
             throw new SecurityException("Use the Request class to call sendRequest");
         }
         JsonObject resp = WebSocketConnection.requester.sendRequest(req.getData().toJson(), req.getOpcode());

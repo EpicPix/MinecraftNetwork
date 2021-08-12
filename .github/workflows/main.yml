@@ -1,8 +1,4 @@
-on: 
-  push:
-    paths:
-      - '**.java'
-name: Compile
+name: Compile Java Projects
 
 jobs:
   compile_common:
@@ -24,3 +20,31 @@ jobs:
         run: javac -cp ".:/tmp/gson.jar" $(find . -name "*.java")
         shell: bash
         working-directory: Common/src/
+  compile_bukkit:
+    needs: compile_common
+    name: Compile Bukkit
+    steps:
+      - name: Get Spigot 1.8.8
+        run: wget -O /tmp/spigot.1.8.8.jar https://cdn.getbukkit.org/spigot/spigot-1.8.8-R0.1-SNAPSHOT-latest.jar
+      
+      - name: Copy Common
+        run: cp -R Common/src/* Bukkit/src/
+
+      - name: Compile Bukkit on Spigot 1.8.8
+        run: javac -cp ".:/tmp/gson.jar;/tmp/spigot.1.8.8.jar" $(find . -name "*.java")
+        shell: bash
+        working-directory: Bukkit/src/
+  compile_bungee:
+    needs: compile_common
+    name: Compile Bungee
+    steps:
+      - name: Get BungeeCord
+        run: wget -O /tmp/BungeeCord.jar https://ci.md-5.net/job/BungeeCord/lastSuccessfulBuild/artifact/bootstrap/target/BungeeCord.jar
+      
+      - name: Copy Common
+        run: cp -R Common/src/* Bungee/src/
+
+      - name: Compile Bungee
+        run: javac -cp ".:/tmp/gson.jar;/tmp/BungeeCord.jar" $(find . -name "*.java")
+        shell: bash
+        working-directory: Bungee/src/

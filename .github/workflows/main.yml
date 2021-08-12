@@ -1,3 +1,5 @@
+on: push
+
 name: Compile Java Projects
 
 jobs:
@@ -42,9 +44,9 @@ jobs:
         run: wget -O /tmp/BungeeCord.jar https://ci.md-5.net/job/BungeeCord/lastSuccessfulBuild/artifact/bootstrap/target/BungeeCord.jar
       
       - name: Copy Common
-        run: cp -R Common/src/* Bungee/src/
+        run: cp -R Common/src/* BungeeCord/src/
 
       - name: Compile Bungee
         run: javac -cp ".:/tmp/gson.jar;/tmp/BungeeCord.jar" $(find . -name "*.java")
         shell: bash
-        working-directory: Bungee/src/
+        working-directory: BungeeCord/src/

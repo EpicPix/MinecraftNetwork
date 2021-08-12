@@ -43,9 +43,23 @@ jar cf BungeeCord.jar *
 
 cd ../../
 
+mkdir compile/CLI/
+cd compile/CLI/
+jar xf ../../libraries/gson.jar
+cd ../../
+cp -R Common/src/* compile/CLI/
+cp -R CLI/src/* compile/CLI/
+cd compile/CLI/
+javac -cp ".:../../libraries/gson.jar" $(find . -name "*.java")
+find . -name "*.java" -type f -delete
+jar cf CLI.jar *
+
+cd ../../
+
 rm -r builds
 mkdir builds
 cp compile/Bukkit/Bukkit.jar builds/Bukkit.jar
 cp compile/BungeeCord/BungeeCord.jar builds/BungeeCord.jar
+cp compile/CLI/CLI.jar builds/CLI.jar
 
 rm -r compile

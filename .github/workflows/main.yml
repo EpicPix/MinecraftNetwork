@@ -62,3 +62,22 @@ jobs:
         run: javac -cp ".:/tmp/gson.jar:/tmp/BungeeCord.jar" $(find . -name "*.java")
         shell: bash
         working-directory: BungeeCord/src/
+  compile_cli:
+    needs: compile_common
+    runs-on: ubuntu-latest
+    container: openjdk:11
+    name: CLI
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v2
+      
+      - name: Get Gson
+        run: wget -O /tmp/gson.jar https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.2/gson-2.8.2.jar
+
+      - name: Copy Common
+        run: cp -R Common/src/* CLI/src/
+
+      - name: Compile CLI
+        run: javac -cp ".:/tmp/gson.jar" $(find . -name "*.java")
+        shell: bash
+        working-directory: CLI/src/

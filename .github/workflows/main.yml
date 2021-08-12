@@ -45,7 +45,7 @@ jobs:
         run: cp -R Common/src/* Bukkit/src/
 
       - name: Compile Bukkit on Spigot 1.8.8
-        run: javac -cp ".:/tmp/gson.jar;/tmp/spigot.1.8.8.jar" $(find . -name "*.java")
+        run: javac -cp ".:/tmp/gson.jar:/tmp/spigot.1.8.8.jar" $(find . -name "*.java")
         shell: bash
         working-directory: Bukkit/src/
   compile_bungee:
@@ -63,7 +63,7 @@ jobs:
       
       - name: Get Gson
         run: wget -O /tmp/gson.jar https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.2/gson-2.8.2.jar
-        
+
       - name: Get BungeeCord
         run: wget -O /tmp/BungeeCord.jar https://ci.md-5.net/job/BungeeCord/lastSuccessfulBuild/artifact/bootstrap/target/BungeeCord.jar
       
@@ -71,6 +71,6 @@ jobs:
         run: cp -R Common/src/* BungeeCord/src/
 
       - name: Compile Bungee
-        run: javac -cp ".:/tmp/gson.jar;/tmp/BungeeCord.jar" $(find . -name "*.java")
+        run: javac -cp ".:/tmp/gson.jar:/tmp/BungeeCord.jar" $(find . -name "*.java")
         shell: bash
         working-directory: BungeeCord/src/

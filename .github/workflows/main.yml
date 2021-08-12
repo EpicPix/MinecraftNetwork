@@ -1,19 +1,15 @@
 on: push
 
-name: Compile Java Projects
+name: Compile
 
 jobs:
   compile_common:
     runs-on: ubuntu-latest
-    name: Compile Common
+    container: openjdk:11
+    name: Common
     steps:
       - name: Clone repository
         uses: actions/checkout@v2
-
-      - name: Setup JDK
-        uses: joschi/setup-jdk@v2
-        with:
-          java-version: '11'
       
       - name: Get Gson
         run: wget -O /tmp/gson.jar https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.2/gson-2.8.2.jar
@@ -25,15 +21,11 @@ jobs:
   compile_bukkit:
     needs: compile_common
     runs-on: ubuntu-latest
-    name: Compile Bukkit
+    container: openjdk:11
+    name: Bukkit
     steps:
       - name: Clone repository
         uses: actions/checkout@v2
-
-      - name: Setup JDK
-        uses: joschi/setup-jdk@v2
-        with:
-          java-version: '11'
       
       - name: Get Gson
         run: wget -O /tmp/gson.jar https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.2/gson-2.8.2.jar
@@ -51,15 +43,11 @@ jobs:
   compile_bungee:
     needs: compile_common
     runs-on: ubuntu-latest
-    name: Compile Bungee
+    container: openjdk:11
+    name: Bungee
     steps:
       - name: Clone repository
         uses: actions/checkout@v2
-
-      - name: Setup JDK
-        uses: joschi/setup-jdk@v2
-        with:
-          java-version: '11'
       
       - name: Get Gson
         run: wget -O /tmp/gson.jar https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.2/gson-2.8.2.jar

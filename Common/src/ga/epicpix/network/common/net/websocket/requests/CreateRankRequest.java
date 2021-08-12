@@ -1,9 +1,9 @@
-package ga.epicpix.network.common.net.websocket.requests.data;
+package ga.epicpix.network.common.net.websocket.requests;
 
 import com.google.gson.JsonObject;
 import ga.epicpix.network.common.net.websocket.Opcodes;
 
-import static ga.epicpix.network.common.net.websocket.requests.data.UpdateRankRequest.Data;
+import static ga.epicpix.network.common.net.websocket.requests.UpdateRankRequest.Data;
 
 public class CreateRankRequest implements WebSocketRequest {
 

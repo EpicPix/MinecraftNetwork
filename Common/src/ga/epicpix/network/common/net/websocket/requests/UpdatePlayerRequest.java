@@ -1,4 +1,4 @@
-package ga.epicpix.network.common.net.websocket.requests.data;
+package ga.epicpix.network.common.net.websocket.requests;
 
 import com.google.gson.JsonObject;
 import ga.epicpix.network.common.SerializableJson;

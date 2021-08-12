@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import ga.epicpix.network.common.net.websocket.Errorable;
 import ga.epicpix.network.common.net.websocket.WebSocketRequester;
-import ga.epicpix.network.common.net.websocket.requests.data.*;
+import ga.epicpix.network.common.net.websocket.requests.*;
 
 import java.util.ArrayList;
 

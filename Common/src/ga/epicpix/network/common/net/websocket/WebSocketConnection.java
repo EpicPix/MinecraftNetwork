@@ -2,7 +2,7 @@ package ga.epicpix.network.common.net.websocket;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import ga.epicpix.network.common.net.websocket.requests.data.AuthenticateRequest;
+import ga.epicpix.network.common.net.websocket.requests.AuthenticateRequest;
 
 import java.net.http.HttpClient;
 import java.net.http.WebSocket;

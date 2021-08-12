@@ -3,7 +3,7 @@ package ga.epicpix.network.common.net.websocket;
 import com.google.gson.JsonObject;
 import ga.epicpix.network.common.net.Request;
 import ga.epicpix.network.common.net.Requester;
-import ga.epicpix.network.common.net.websocket.requests.data.WebSocketRequest;
+import ga.epicpix.network.common.net.websocket.requests.WebSocketRequest;
 
 import java.util.ArrayList;
 

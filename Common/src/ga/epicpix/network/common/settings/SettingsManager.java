@@ -5,10 +5,10 @@ import com.google.gson.JsonObject;
 import ga.epicpix.network.common.net.websocket.WebSocketRequester;
 import ga.epicpix.network.common.values.ValueType;
 import ga.epicpix.network.common.net.websocket.Errorable;
-import ga.epicpix.network.common.net.websocket.requests.data.GetSettingOrDefaultRequest;
-import ga.epicpix.network.common.net.websocket.requests.data.GetSettingRequest;
-import ga.epicpix.network.common.net.websocket.requests.data.GetSettingsRequest;
-import ga.epicpix.network.common.net.websocket.requests.data.SetSettingRequest;
+import ga.epicpix.network.common.net.websocket.requests.GetSettingOrDefaultRequest;
+import ga.epicpix.network.common.net.websocket.requests.GetSettingRequest;
+import ga.epicpix.network.common.net.websocket.requests.GetSettingsRequest;
+import ga.epicpix.network.common.net.websocket.requests.SetSettingRequest;
 
 import java.util.HashMap;
 

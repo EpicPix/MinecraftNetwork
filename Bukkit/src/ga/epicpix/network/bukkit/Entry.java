@@ -15,7 +15,7 @@ import ga.epicpix.network.common.values.ValueType;
 import ga.epicpix.network.common.net.websocket.ClientType;
 import ga.epicpix.network.common.net.websocket.Errorable;
 import ga.epicpix.network.common.net.websocket.WebSocketConnection;
-import ga.epicpix.network.common.net.websocket.requests.data.UpdateServerDataRequest;
+import ga.epicpix.network.common.net.websocket.requests.UpdateServerDataRequest;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;

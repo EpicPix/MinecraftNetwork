@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import ga.epicpix.network.common.SerializableJson;
 import ga.epicpix.network.common.net.websocket.Errorable;
 import ga.epicpix.network.common.net.websocket.WebSocketRequester;
-import ga.epicpix.network.common.net.websocket.requests.data.GetVersionsRequest;
+import ga.epicpix.network.common.net.websocket.requests.GetVersionsRequest;
 
 import java.util.*;
 

@@ -1,4 +1,4 @@
-package ga.epicpix.network.common.net.websocket.requests.data;
+package ga.epicpix.network.common.net.websocket.requests;
 
 import com.google.gson.*;
 import ga.epicpix.network.common.values.ValueType;

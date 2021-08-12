@@ -1,22 +1,22 @@
-package ga.epicpix.network.common.net.websocket.requests.data;
+package ga.epicpix.network.common.net.websocket.requests;
 
 import com.google.gson.JsonObject;
 import ga.epicpix.network.common.net.websocket.Opcodes;
 
-public class DeleteRankRequest implements WebSocketRequest {
+public class GetRankRequest implements WebSocketRequest {
 
     private final String rank;
 
-    private DeleteRankRequest(String rank) {
+    private GetRankRequest(String rank) {
         this.rank = rank;
     }
 
-    public static DeleteRankRequest build(String serverName) {
-        return new DeleteRankRequest(serverName);
+    public static GetRankRequest build(String rank) {
+        return new GetRankRequest(rank);
     }
 
     public int getOpcode() {
-        return Opcodes.DELETE_RANK;
+        return Opcodes.GET_RANK;
     }
 
     public JsonObject toJson() {

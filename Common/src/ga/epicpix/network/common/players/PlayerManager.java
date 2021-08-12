@@ -4,7 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import ga.epicpix.network.common.net.websocket.Errorable;
 import ga.epicpix.network.common.net.websocket.WebSocketRequester;
-import ga.epicpix.network.common.net.websocket.requests.data.*;
+import ga.epicpix.network.common.net.websocket.requests.GetPlayerOrCreateRequest;
+import ga.epicpix.network.common.net.websocket.requests.GetPlayerRequest;
+import ga.epicpix.network.common.net.websocket.requests.UpdatePlayerOrCreateRequest;
+import ga.epicpix.network.common.net.websocket.requests.UpdatePlayerRequest;
 
 import java.util.UUID;
 

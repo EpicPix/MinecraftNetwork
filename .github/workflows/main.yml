@@ -81,3 +81,19 @@ jobs:
         run: javac -cp ".:/tmp/gson.jar" $(find . -name "*.java")
         shell: bash
         working-directory: CLI/src/
+  compile_controller:
+    runs-on: ubuntu-latest
+    container: node:14.17
+    name: ServerController
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v2
+      
+      - name: Install Dependencies
+        run: npm install 
+        working-directory: ServerController/
+      
+      - name: Compile ServerController Source
+        run: npx tsc
+        shell: bash
+        working-directory: ServerController/

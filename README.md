@@ -22,7 +22,7 @@ More data will be added later
 
 ## Java
 
- - Spigot (BungeeCord Module)
+ - Spigot (Bukkit Module)
  - BungeeCord (BungeeCord Module)
  - Gson (Common Module)
 

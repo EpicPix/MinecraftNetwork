@@ -24,6 +24,7 @@ jobs:
         working-directory: Common/src/
   compile_bukkit:
     needs: compile_common
+    runs-on: ubuntu-latest
     name: Compile Bukkit
     steps:
       - name: Get Spigot 1.8.8
@@ -38,6 +39,7 @@ jobs:
         working-directory: Bukkit/src/
   compile_bungee:
     needs: compile_common
+    runs-on: ubuntu-latest
     name: Compile Bungee
     steps:
       - name: Get BungeeCord

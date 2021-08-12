@@ -3,11 +3,14 @@ package ga.epicpix.network.common.net.websocket;
 import com.google.gson.JsonObject;
 import ga.epicpix.network.common.Reflection;
 import ga.epicpix.network.common.annotations.CallerSensitive;
+import ga.epicpix.network.common.net.Request;
+import ga.epicpix.network.common.net.Requester;
+import ga.epicpix.network.common.net.http.HttpRequest;
 import ga.epicpix.network.common.net.websocket.requests.WebSocketRequest;
 
 import java.util.ArrayList;
 
-public final class WebSocketRequester {
+public final class WebSocketRequester implements Requester {
 
     long nextRequestId = 0;
     final ArrayList<RequestFuture> futures = new ArrayList<>();
@@ -42,4 +45,10 @@ public final class WebSocketRequester {
         return future;
     }
 
+    public void sendRequest(Request req) {
+        if(!(req instanceof WebSocketRequest)) {
+            throw new IllegalArgumentException("Request is not WebSocketRequest!");
+        }
+        //TODO
+    }
 }

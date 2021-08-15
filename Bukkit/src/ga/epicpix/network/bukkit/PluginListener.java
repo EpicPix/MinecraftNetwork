@@ -66,6 +66,7 @@ public class PluginListener implements Listener {
         PermissionAttachment attachment = new PermissionAttachment(Entry.PLUGIN, player) {
             public Map<String, Boolean> getPermissions() {
                 base.clearPermissions();
+                @SuppressWarnings("unchecked")
                 Map<String, PermissionAttachmentInfo> permissions = (Map<String, PermissionAttachmentInfo>) Reflection.getValueOfField(base.getClass(), "permissions", base);
                 for(String perm : rank.getPermissions()) {
                     permissions.put(perm, new PermissionAttachmentInfo(player, perm, this, true));
@@ -73,7 +74,9 @@ public class PluginListener implements Listener {
                 return new HashMap<>();
             }
         };
-        ((List<PermissionAttachment>) Reflection.getValueOfField(base.getClass(), "attachments", base)).add(attachment);
+        @SuppressWarnings("unchecked")
+        List<PermissionAttachment> at = ((List<PermissionAttachment>) Reflection.getValueOfField(base.getClass(), "attachments", base));
+        at.add(attachment);
         player.recalculatePermissions();
     }
 

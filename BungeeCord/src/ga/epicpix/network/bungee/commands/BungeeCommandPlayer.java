@@ -1,6 +1,7 @@
 package ga.epicpix.network.bungee.commands;
 
 import ga.epicpix.network.common.commands.CommandPlayer;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public class BungeeCommandPlayer extends CommandPlayer {
@@ -20,6 +21,6 @@ public class BungeeCommandPlayer extends CommandPlayer {
     }
 
     public void sendMessage(String message) {
-        player.sendMessage(message);
+        player.sendMessage(TextComponent.fromLegacyText(message));
     }
 }

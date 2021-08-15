@@ -33,6 +33,7 @@ public abstract class AbstractCommandContext<Sender, Player extends Sender> {
         return arguments;
     }
 
+    @SuppressWarnings("unchecked")
     public final Player getPlayer() {
         return (Player) sender;
     }

@@ -7,6 +7,7 @@ import ga.epicpix.network.common.players.PlayerInfo;
 import ga.epicpix.network.common.players.PlayerManager;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.command.ConsoleCommandSender;
 
@@ -30,7 +31,7 @@ public abstract class Command {
                             }
                         }
                         if(!has) {
-                            sender.sendMessage(ChatColor.convertColorText("/red/You don't have enough permissions!"));
+                            sender.sendMessage(TextComponent.fromLegacyText(ChatColor.convertColorText("/red/You don't have enough permissions!")));
                             return;
                         }
                     }

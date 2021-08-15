@@ -64,6 +64,7 @@ public class BukkitCommon {
         return info;
     }
 
+    @SuppressWarnings("unchecked")
     public static Map<String, Command> getCommandMap() {
         SimpleCommandMap map = (SimpleCommandMap) Reflection.callMethod(Bukkit.getServer().getClass(), "getCommandMap", Bukkit.getServer());
         return (Map<String, Command>) Reflection.getValueOfField(map.getClass(), "knownCommands", map);
@@ -128,7 +129,7 @@ public class BukkitCommon {
     public static void setPropertiesValue(String key, Object value) {
         Object PropertyManager = getPropertyManager();
         if(!PropertyManager.getClass().getSimpleName().endsWith("DedicatedServerProperties")) {
-            Reflection.callMethodByClasses(PropertyManager.getClass(), "setProperty", PropertyManager, new Class[] {String.class, Object.class}, key, value);
+            Reflection.callMethodByClasses(PropertyManager.getClass(), "setProperty", PropertyManager, new Class<?>[] {String.class, Object.class}, key, value);
         }else {
             key = hyphenToCamelCase(key);
             Reflection.setValueOfField(PropertyManager.getClass(), key, PropertyManager, value);
@@ -141,9 +142,10 @@ public class BukkitCommon {
 
     public static void setAllowEnd(boolean allow) {
         Object configuration = Reflection.getValueOfField(Bukkit.getServer().getClass(), "configuration", Bukkit.getServer());
-        Reflection.callMethodByClasses(configuration.getClass(), "set", configuration, new Class[] {String.class, Object.class}, "settings.allow-end", allow);
+        Reflection.callMethodByClasses(configuration.getClass(), "set", configuration, new Class<?>[] {String.class, Object.class}, "settings.allow-end", allow);
     }
 
+    @SuppressWarnings("unchecked")
     public static void removeDefaultPermissions() {
         Object SimplePluginManager = Bukkit.getServer().getPluginManager();
         Map<Boolean, Set<Permission>> defaultPerms = (Map<Boolean, Set<Permission>>) Reflection.getValueOfField(SimplePluginManager.getClass(), "defaultPerms", SimplePluginManager);

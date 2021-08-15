@@ -37,6 +37,10 @@ public abstract class AbstractCommandContext<Sender, Player extends Sender> {
         return (Player) sender;
     }
 
+    public final String getCommandName() {
+        return commandName;
+    }
+
     public void sendUsage() {
         sendMessage("No usage defined");
     }

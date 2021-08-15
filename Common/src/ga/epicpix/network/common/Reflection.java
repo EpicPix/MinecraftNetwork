@@ -28,11 +28,8 @@ public class Reflection {
         try {
             Field field = getField(clazz, fieldName);
             if(field==null) return null;
-            boolean access = field.isAccessible();
             field.setAccessible(true);
-            Object obj = field.get(ofObj);
-            field.setAccessible(access);
-            return obj;
+            return field.get(ofObj);
         } catch (IllegalAccessException e) {
             return null;
         }
@@ -76,11 +73,8 @@ public class Reflection {
         try {
             Method method = getMethod(clazz, methodName, false, objs);
             if(method==null) throw new NoSuchMethodException("Method not found " + clazz.getName() + "." + methodName);
-            boolean access = method.isAccessible();
             method.setAccessible(true);
-            Object obj = method.invoke(ofObj, objs);
-            method.setAccessible(access);
-            return obj;
+            return method.invoke(ofObj, objs);
         } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             return null;
         }
@@ -90,11 +84,8 @@ public class Reflection {
         try {
             Method method = getMethod(clazz, methodName, true, (Object[]) classes);
             if(method==null) throw new NoSuchMethodException("Method not found " + clazz.getName() + "." + methodName);
-            boolean access = method.isAccessible();
             method.setAccessible(true);
-            Object obj = method.invoke(ofObj, objs);
-            method.setAccessible(access);
-            return obj;
+            return method.invoke(ofObj, objs);
         } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             return null;
         }
@@ -104,10 +95,8 @@ public class Reflection {
         try {
             Field field = getField(clazz, fieldName);
             if(field==null) throw new NoSuchFieldException("Field not found " + clazz.getName() + "." + fieldName);
-            boolean access = field.isAccessible();
             field.setAccessible(true);
             field.set(ofObj, newData);
-            field.setAccessible(access);
         } catch (NoSuchFieldException | IllegalAccessException e) {}
     }
 

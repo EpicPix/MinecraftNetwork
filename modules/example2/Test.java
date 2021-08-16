@@ -1,4 +1,6 @@
 package example2;
 
-public class Test {
+import ga.epicpix.network.common.modules.Module;
+
+public class Test extends Module {
 }

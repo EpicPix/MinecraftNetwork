@@ -2,5 +2,5 @@
   "name": "Example #2",
   "id": "example2",
   "main": "Test",
-  "depends": ["bungee"]
+  "library": "bungee"
 }

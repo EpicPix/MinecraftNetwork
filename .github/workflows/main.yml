@@ -100,9 +100,42 @@ jobs:
         run: npx tsc
         shell: bash
         working-directory: ServerController/
+  compile_modules:
+    needs: [compile_common, compile_bukkit, compile_bungee, compile_cli]
+    runs-on: ubuntu-latest
+    name: Modules
+    steps:
+      - name: Setup Java JDK
+        uses: joschi/setup-jdk@v2
+        with:
+          java-version: '11'
+          architecture: 'x64'
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+        
+      - name: Clone repository
+        uses: actions/checkout@v2
+      
+      - name: Download libraries
+        run: sh scripts/get_libraries.sh
+
+      - name: Compile Bukkit
+        run: sh scripts/compile_bukkit.sh
+
+      - name: Compile Bungee
+        run: sh scripts/compile_bungee.sh
+
+      - name: Compile CLI
+        run: sh scripts/compile_cli.sh
+
+      - name: Compile Modules
+        run: sh scripts/compile_modules.sh
   deploy:
     if: ${{ github.event_name == 'push'}}
-    needs: [ compile_common, compile_bukkit, compile_bungee, compile_cli, compile_controller ]
+    needs: [ compile_common, compile_bukkit, compile_bungee, compile_cli, compile_controller, compile_modules ]
     runs-on: ubuntu-latest
     name: Deploy
     steps:
@@ -113,7 +146,7 @@ jobs:
           java-version: '11'
           architecture: 'x64'
 
-      - name: Setup Java JDK
+      - name: Setup Node
         uses: actions/setup-node@v2
         with:
           node-version: '14'

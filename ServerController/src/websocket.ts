@@ -14,7 +14,7 @@ interface UserData {
 
 export interface ClientWebSocket extends WebSocket {
     userData: UserData,
-    respond: (request: any & {rid: number}, response: any & {rid: number}) => void,
+    respond: (request: any & {rid: number}, response: any) => void,
     checkAuth: () => boolean,
     hasCapability: (capability: number) => boolean
 }
@@ -54,7 +54,7 @@ wss.on('connection', function (ws: ClientWebSocket) {
         }
 
         if(!Number.isInteger(operationCode)) {
-            ws.close(4001, "Unknown opcode.");
+            ws.respond(json, {ok: false, errno: ErrorNumbers.UNSUPPORTED_OPCODE});
             return;
         }
 

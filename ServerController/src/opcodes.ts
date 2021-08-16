@@ -36,6 +36,9 @@ export enum StringOpcodes {
     UPDATE_PLAYER_OR_CREATE = 0x0032,
     GET_PLAYER_OR_CREATE = 0x0033,
 
+    GET_MODULE = 0x0040,
+    GET_MODULES = 0x0041,
+
     //From Server 0x8000-0xffff
 
     SERVER_SIGNAL = 0x8000,
@@ -63,6 +66,8 @@ export enum ErrorNumbers {
 
     RANK_ALREADY_EXISTS = 0x40,
 
+    NOT_IMPLEMENTED_YET = 0xfffd,
+    UNSUPPORTED_OPCODE = 0xfffe,
     INTERNAL_ERROR = 0xffff
 }
 

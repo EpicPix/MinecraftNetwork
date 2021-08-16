@@ -1,5 +1,7 @@
 # MinecraftNetwork
 
+[![Compile & Deploy](https://github.com/EpicPix/MinecraftNetwork/actions/workflows/main.yml/badge.svg)](https://github.com/EpicPix/MinecraftNetwork/actions/workflows/main.yml)
+
 A open source Minecraft Network Project using BungeeCord and Spigot with Node.js to create a ServerManager (Alpha)
 
 While compiling you will need to change [secrets.properties](Common/src/secrets.properties) to contain the secrets of the ServerManager

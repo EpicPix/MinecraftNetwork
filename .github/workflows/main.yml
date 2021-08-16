@@ -1,6 +1,5 @@
 on: 
   push:
-    branches: [ master ]
   pull_request:
     branches: [ master ]
 
@@ -103,7 +102,7 @@ jobs:
         working-directory: ServerController/
   deploy:
     needs: [ compile_common, compile_bukkit, compile_bungee, compile_cli, compile_controller ]
-    if: ${{ github.event_name == 'push' }}
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
     runs-on: ubuntu-latest
     name: Deploy
     steps:

@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: [ master ]
 
-name: Compile
+name: Compile & Deploy
 
 jobs:
   compile_common:
@@ -101,3 +101,18 @@ jobs:
         run: npx tsc
         shell: bash
         working-directory: ServerController/
+  deploy:
+    needs: [ compile_common, compile_bukkit, compile_bungee, compile_cli, compile_controller ]
+    if: ${{ github.event_name == 'push' }}
+    runs-on: ubuntu-latest
+    container: openjdk:11
+    name: Deploy
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v2
+
+      - name: Compile and Build jars
+        run: sh compile_all.sh
+      
+      - name: Deploy
+        run: sh deploy.sh

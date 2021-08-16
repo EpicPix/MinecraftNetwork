@@ -116,3 +116,9 @@ jobs:
       
       - name: Deploy
         run: sh deploy.sh
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: Compiled Jars
+          path: builds/

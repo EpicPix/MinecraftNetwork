@@ -105,9 +105,15 @@ jobs:
     needs: [ compile_common, compile_bukkit, compile_bungee, compile_cli, compile_controller ]
     if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
-    container: openjdk:11
     name: Deploy
     steps:
+
+      - name: Setup Java JDK
+        uses: joschi/setup-jdk@v2
+        with:
+          java-version: '11'
+          architecture: 'x64'
+
       - name: Clone repository
         uses: actions/checkout@v2
 

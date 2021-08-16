@@ -117,8 +117,20 @@ jobs:
       - name: Deploy
         run: sh deploy.sh
 
-      - name: Upload artifacts
+      - name: Upload Bukkit artifact
         uses: actions/upload-artifact@v2
         with:
-          name: Compiled Jars
-          path: builds/
+          name: Bukkit Plugin
+          path: builds/Bukkit.jar
+
+      - name: Upload BungeeCord artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: BungeeCord Plugin
+          path: builds/BungeeCord.jar
+
+      - name: Upload CLI artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: CLI
+          path: builds/CLI.jar

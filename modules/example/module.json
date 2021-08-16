@@ -1,5 +1,6 @@
 {
   "name": "Example",
   "id": "example",
-  "main": "Entry"
+  "main": "Entry",
+  "depends": ["bukkit"]
 }

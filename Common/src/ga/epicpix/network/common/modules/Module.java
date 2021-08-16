@@ -1,4 +1,4 @@
-package ga.epicpix.network.bukkit.modules;
+package ga.epicpix.network.common.modules;
 
 public class Module {
 

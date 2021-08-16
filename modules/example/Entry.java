@@ -1,6 +1,6 @@
 package example;
 
-import ga.epicpix.network.bukkit.modules.Module;
+import ga.epicpix.network.common.modules.Module;
 
 public class Entry extends Module {
 

@@ -17,7 +17,7 @@ jobs:
         run: sh scripts/get_libraries.sh
 
       - name: Compile Common
-        run: javac -cp ".:/../../libraries/gson.jar" $(find . -name "*.java")
+        run: javac -cp ".:../../libraries/gson.jar" $(find . -name "*.java")
         shell: bash
         working-directory: Common/src/
 

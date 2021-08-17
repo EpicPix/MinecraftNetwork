@@ -1,7 +1,27 @@
 const libraries = ['bukkit', 'bungee']
 
+const imports = {
+    common: [
+        "ga.epicpix.network.common.annotations.*",
+        "ga.epicpix.network.common.modules.Module",
+        "ga.epicpix.network.common.players.*",
+        "ga.epicpix.network.common.ranks.*",
+        "ga.epicpix.network.common.servers.*",
+        "ga.epicpix.network.common.settings.*"
+    ],
+    bukkit: [
+        "ga.epicpix.network.bukkit.Command",
+        "ga.epicpix.network.bukkit.CommandContext"
+    ],
+    bungee: [
+        "ga.epicpix.network.bungee.Command",
+        "ga.epicpix.network.bungee.CommandContext"
+    ]
+}
+
 const fs = require("fs");
 const path = require("path");
+const cp = require("child_process");
 
 const modulesPath = path.resolve(process.cwd(), "modules");
 const modulesFiles = fs.readdirSync(modulesPath);
@@ -47,11 +67,37 @@ if(error) {
 }
 
 const cmd = console.log;
-
+const msg = console.error;
 for(const [module, modulePath, moduleJson] of modules) {
     const id = moduleJson.id;
-    cmd(`mkdir -p compile/modules/${id}/`);
-    cmd(`cp -r modules/${id}/ compile/modules/${id}/`);
+    fs.mkdirSync(path.resolve('compile', 'modules', id), {recursive: true});
+    cp.execSync(`cp -r modules/${id}/ compile/modules/`);
+    const files = [path.resolve('compile', 'modules', id)];
+    for(var i = 0; i<files.length; i++) {
+        var current = files[i];
+        if(fs.lstatSync(current).isDirectory()) {
+            var contents = fs.readdirSync(current);
+            for(const f of contents) {
+                files.push(path.resolve(current, f));
+            }
+        }else {
+            const filename = path.basename(current);
+            if(filename.endsWith('.m.java')) {
+                const rel = current.replace(path.resolve('compile', 'modules').toString() + "/", '');
+                const package = path.dirname(rel).replace('/', '.');
+                var data = `package ${package};`;
+                for(const imp of imports['common']) {
+                    data += `import ${imp};`
+                }
+                for(const imp of imports[moduleJson.library]) {
+                    data += `import ${imp};`
+                }
+                data += fs.readFileSync(current).toString();
+                fs.rmSync(current);
+                fs.writeFileSync(path.resolve('compile', 'modules', path.dirname(rel), filename.replace('.m.java', '.java')), data);
+            }
+        }
+    }
     cmd(`cd compile/modules/${id}/`);
     var lib = "";
     if(moduleJson.library === 'bukkit') lib = '../../../libraries/spigot.1.8.8.jar:../../../builds/Bukkit.jar';

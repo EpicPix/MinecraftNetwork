@@ -6,121 +6,20 @@ on:
 name: Compile & Deploy
 
 jobs:
-  compile_common:
+  compile_java:
     runs-on: ubuntu-latest
-    container: openjdk:11
-    name: Common
+    name: Compile Java
     steps:
-      - name: Clone repository
-        uses: actions/checkout@v2
-      
-      - name: Get Gson
-        run: wget -O /tmp/gson.jar https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.2/gson-2.8.2.jar
-      
-      - name: Compile Common
-        run: javac -cp ".:/tmp/gson.jar" $(find . -name "*.java")
-        shell: bash
-        working-directory: Common/src/
-  compile_bukkit:
-    needs: compile_common
-    runs-on: ubuntu-latest
-    container: openjdk:11
-    name: Bukkit
-    steps:
-      - name: Clone repository
-        uses: actions/checkout@v2
-      
-      - name: Get Gson
-        run: wget -O /tmp/gson.jar https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.2/gson-2.8.2.jar
-
-      - name: Get Spigot 1.8.8
-        run: wget -O /tmp/spigot.1.8.8.jar https://cdn.getbukkit.org/spigot/spigot-1.8.8-R0.1-SNAPSHOT-latest.jar
-      
-      - name: Copy Common
-        run: cp -R Common/src/* Bukkit/src/
-
-      - name: Compile Bukkit on Spigot 1.8.8
-        run: javac -cp ".:/tmp/gson.jar:/tmp/spigot.1.8.8.jar" $(find . -name "*.java")
-        shell: bash
-        working-directory: Bukkit/src/
-  compile_bungee:
-    needs: compile_common
-    runs-on: ubuntu-latest
-    container: openjdk:11
-    name: Bungee
-    steps:
-      - name: Clone repository
-        uses: actions/checkout@v2
-      
-      - name: Get Gson
-        run: wget -O /tmp/gson.jar https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.2/gson-2.8.2.jar
-
-      - name: Get BungeeCord
-        run: wget -O /tmp/BungeeCord.jar https://ci.md-5.net/job/BungeeCord/lastSuccessfulBuild/artifact/bootstrap/target/BungeeCord.jar
-      
-      - name: Copy Common
-        run: cp -R Common/src/* BungeeCord/src/
-
-      - name: Compile Bungee
-        run: javac -cp ".:/tmp/gson.jar:/tmp/BungeeCord.jar" $(find . -name "*.java")
-        shell: bash
-        working-directory: BungeeCord/src/
-  compile_cli:
-    needs: compile_common
-    runs-on: ubuntu-latest
-    container: openjdk:11
-    name: CLI
-    steps:
-      - name: Clone repository
-        uses: actions/checkout@v2
-      
-      - name: Get Gson
-        run: wget -O /tmp/gson.jar https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.2/gson-2.8.2.jar
-
-      - name: Copy Common
-        run: cp -R Common/src/* CLI/src/
-
-      - name: Compile CLI
-        run: javac -cp ".:/tmp/gson.jar" $(find . -name "*.java")
-        shell: bash
-        working-directory: CLI/src/
-  compile_controller:
-    runs-on: ubuntu-latest
-    container: node:14.17
-    name: ServerController
-    steps:
-      - name: Clone repository
-        uses: actions/checkout@v2
-      
-      - name: Install Dependencies
-        run: npm install 
-        working-directory: ServerController/
-      
-      - name: Compile ServerController Source
-        run: npx tsc
-        shell: bash
-        working-directory: ServerController/
-  compile_modules:
-    needs: [compile_common, compile_bukkit, compile_bungee, compile_cli]
-    runs-on: ubuntu-latest
-    name: Modules
-    steps:
-      - name: Setup Java JDK
-        uses: joschi/setup-jdk@v2
-        with:
-          java-version: '11'
-          architecture: 'x64'
-
-      - name: Setup Node
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-        
       - name: Clone repository
         uses: actions/checkout@v2
       
       - name: Download libraries
         run: sh scripts/get_libraries.sh
+
+      - name: Compile Common
+        run: javac -cp ".:/../../gson.jar" $(find . -name "*.java")
+        shell: bash
+        working-directory: Common/src/
 
       - name: Compile Bukkit
         run: sh scripts/compile_bukkit.sh
@@ -133,9 +32,25 @@ jobs:
 
       - name: Compile Modules
         run: sh scripts/compile_modules.sh
+  compile_controller:
+    runs-on: ubuntu-latest
+    container: node:14.17
+    name: Compile Controller
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v2
+      
+      - name: Install Dependencies
+        run: npm install 
+        working-directory: ServerController/
+      
+      - name: Compile ServerController Source
+        run: npx tsc
+        shell: bash
+        working-directory: ServerController/
   deploy:
     if: ${{ github.event_name == 'push'}}
-    needs: [ compile_common, compile_bukkit, compile_bungee, compile_cli, compile_controller, compile_modules ]
+    needs: [ compile_java, compile_controller ]
     runs-on: ubuntu-latest
     name: Deploy
     steps:
@@ -177,3 +92,9 @@ jobs:
         with:
           name: CLI
           path: builds/CLI.jar
+
+      - name: Upload Modules artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: Modules
+          path: builds/modules/

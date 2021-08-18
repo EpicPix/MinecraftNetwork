@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import ga.epicpix.network.bukkit.commands.TestCommand;
 import ga.epicpix.network.bukkit.map.MapListener;
 import ga.epicpix.network.common.Reflection;
+import ga.epicpix.network.common.modules.ModuleLoader;
 import ga.epicpix.network.common.ranks.Rank;
 import ga.epicpix.network.common.servers.ServerInfo;
 import ga.epicpix.network.common.servers.ServerManager;
@@ -23,6 +24,9 @@ import org.bukkit.plugin.PluginLoadOrder;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Team;
 import org.spigotmc.SpigotConfig;
+
+import java.io.File;
+import java.io.IOException;
 
 import static ga.epicpix.network.common.servers.ServerInfo.ServerSignal;
 
@@ -134,6 +138,11 @@ public class Entry extends JavaPlugin {
                 BukkitCommon.removeCommandAliases();
             });
             System.out.println("Plugin enabled 2/2");
+            try {
+                ModuleLoader.enableModules(ModuleLoader.loadModules(new File("modules")));
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -142,6 +151,11 @@ public class Entry extends JavaPlugin {
         Runtime.getRuntime().removeShutdownHook(shutdownHook);
         PluginDescriptionFile f = getDescription();
         Reflection.setValueOfField(f.getClass(), "order", f, PluginLoadOrder.STARTUP);
+        try {
+            ModuleLoader.unloadModules();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

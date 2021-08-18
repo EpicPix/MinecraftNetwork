@@ -104,7 +104,9 @@ for(const [module, modulePath, moduleJson] of modules) {
     else if(moduleJson.library === 'bungee') lib = '../../../libraries/BungeeCord.jar:../../../builds/BungeeCord.jar';
     cmd(`javac -cp ".:${lib}" $(find . -name "*.java")`);
     cmd('find . -name "*.java" -type f -delete');
+    fs.mkdirSync(path.resolve('compile', 'modules', id, id), {recursive: true});
+    cmd(`mv *.class ${id}/`)
     cmd('jar cf module.jar *');
-    cmd(`cp module.jar ../../../builds/modules/${id}.jar`);
+    cmd(`cp module.jar ../../../builds/modules/${id}.module`);
     cmd(`cd ../../../`);
 }

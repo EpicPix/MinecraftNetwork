@@ -34,5 +34,30 @@ More data will be added later
 
  To install dependencies for node you have to go to the ServerController folder and run `npm install` and that will install all dependencies for node
 
+# Building
 
- ***Todo add more things in 2 months lmao***
+## Java
+
+Go to the root directory of the project and run
+`sh scripts/compile_all.sh` to compile everything like
+
+- Bukkit Plugin
+- BungeeCord Plugin
+- CLI
+- Modules
+
+and you can also run an invidiual script like `scripts/compile_modules.sh` but for that one you will need to already have Bukkit plugin and BungeeCord plugin installed, you will find the built jar in `builds/` and for modules its `builds/modules/`
+
+## Node
+
+You just have to run `npx tsc` in the `ServerController` folder
+
+# Starting
+
+## Bukkit/BungeeCord
+
+Todo.
+
+## ServerController
+
+To start ServerController go to the `ServerController` folder and run `npm start` which will compile and start the ServerController

@@ -32,7 +32,7 @@ public class Secrets {
     @CallerSensitive
     public static String getSecret(String secret) {
         if(secrets==null) loadSecrets();
-        if(secret.startsWith("serverController.") && !Reflection.getCaller().equals(ServerControllerCredentials.class.getName())) {
+        if(secret.startsWith("serverController.") && Reflection.getCaller()!=ServerControllerCredentials.class) {
             throw new IllegalCallerException("Tried to access Server Controller secrets!");
         }
         return (String) secrets.get(secret);

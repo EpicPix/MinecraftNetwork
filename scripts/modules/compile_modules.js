@@ -66,8 +66,10 @@ if(error) {
     process.exit(1);
 }
 
-const cmd = console.log;
-const msg = console.error;
+const cmd = function(run) {
+    cp.execSync(run);
+};
+
 for(const [module, modulePath, moduleJson] of modules) {
     const id = moduleJson.id;
     fs.mkdirSync(path.resolve('compile', 'modules', id), {recursive: true});
@@ -98,15 +100,15 @@ for(const [module, modulePath, moduleJson] of modules) {
             }
         }
     }
-    cmd(`cd compile/modules/${id}/`);
+    process.chdir(`compile/modules/${id}/`);
     var lib = "";
     if(moduleJson.library === 'bukkit') lib = '../../../libraries/spigot.1.8.8.jar:../../../builds/Bukkit.jar';
     else if(moduleJson.library === 'bungee') lib = '../../../libraries/BungeeCord.jar:../../../builds/BungeeCord.jar';
     cmd(`javac -cp ".:${lib}" $(find . -name "*.java")`);
     cmd('find . -name "*.java" -type f -delete');
-    fs.mkdirSync(path.resolve('compile', 'modules', id, id), {recursive: true});
+    fs.mkdirSync(id, {recursive: true});
     cmd(`mv *.class ${id}/`)
     cmd('jar cf module.jar *');
     cmd(`cp module.jar ../../../builds/modules/${id}.module`);
-    cmd(`cd ../../../`);
+    process.chdir('../../../')
 }

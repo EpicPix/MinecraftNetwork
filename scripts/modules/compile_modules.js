@@ -22,6 +22,7 @@ const imports = {
 const fs = require("fs");
 const path = require("path");
 const cp = require("child_process");
+const { generate } = require("./module_gen");
 
 const modulesPath = path.resolve(process.cwd(), "modules");
 const modulesFiles = fs.readdirSync(modulesPath);
@@ -102,13 +103,15 @@ for(const [module, modulePath, moduleJson] of modules) {
     }
     process.chdir(`compile/modules/${id}/`);
     var lib = "";
-    if(moduleJson.library === 'bukkit') lib = '../../../libraries/spigot.1.8.8.jar:../../../builds/Bukkit.jar';
-    else if(moduleJson.library === 'bungee') lib = '../../../libraries/BungeeCord.jar:../../../builds/BungeeCord.jar';
+    if(moduleJson.library === 'bukkit') lib = '../../../../libraries/spigot.1.8.8.jar:../../../../builds/Bukkit.jar';
+    else if(moduleJson.library === 'bungee') lib = '../../../../libraries/BungeeCord.jar:../../../../builds/BungeeCord.jar';
+    fs.mkdirSync(id, {recursive: true});
+    cmd(`mv *.java ${id}/`)
+    process.chdir(id);
     cmd(`javac -cp ".:${lib}" $(find . -name "*.java")`);
     cmd('find . -name "*.java" -type f -delete');
-    fs.mkdirSync(id, {recursive: true});
-    cmd(`mv *.class ${id}/`)
-    cmd('jar cf module.jar *');
-    cmd(`cp module.jar ../../../builds/modules/${id}.module`);
+    process.chdir('..');
+    fs.writeFileSync('module.module', generate(moduleJson, id));
+    cmd(`cp module.module ../../../builds/modules/${id}.module`);
     process.chdir('../../../')
 }

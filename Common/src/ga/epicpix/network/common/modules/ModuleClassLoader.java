@@ -1,50 +1,49 @@
 package ga.epicpix.network.common.modules;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLClassLoader;
+import java.io.InputStream;
 import java.util.HashMap;
-import java.util.jar.JarFile;
 
-public class ModuleClassLoader extends URLClassLoader {
+public class ModuleClassLoader extends ClassLoader {
 
-    private final ModuleData data;
-    private final JarFile file;
+    private ModuleData data;
+    private ModuleFile file;
 
-    private final HashMap<String, Class<?>> classes = new HashMap<>();
+    private HashMap<String, Class<?>> classes = new HashMap<>();
 
     public ModuleClassLoader(File module, ClassLoader parent) throws IOException {
-        super(new URL[] {module.toURI().toURL()}, parent);
-        file = new JarFile(module);
-        String moduleJsonStr = new String(file.getInputStream(file.getEntry("module.json")).readAllBytes());
-        data = ModuleData.fromJson(new Gson().fromJson(moduleJsonStr, JsonObject.class));
+        super(parent);
+        file = new ModuleFile(module);
+        data = file.getData();
+    }
+
+    public InputStream getResourceAsStream(String name) {
+        return null;
     }
 
     public Class<?> findClass(String name) throws ClassNotFoundException {
-        try {
-            Class<?> clz = classes.get(name);
-            if(clz==null) {
-                byte[] b = file.getInputStream(file.getEntry(name.replace('.', '/') + ".class")).readAllBytes();
-                classes.put(name, clz = defineClass(name, b, 0, b.length));
+        Class<?> clz = classes.get(name);
+        if(clz==null) {
+            byte[] b = file.getFileData(name.replace('.', '/') + ".class");
+            if(b==null) {
+                throw new ClassNotFoundException(name);
             }
-            return clz;
-        } catch (IOException e) {
-            e.printStackTrace();
+            classes.put(name, clz = defineClass(name, b, 0, b.length));
         }
-        throw new ClassNotFoundException(name);
+        return clz;
     }
 
     public ModuleData getData() {
         return data;
     }
 
-    protected void destroy() throws IOException {
-        file.close();
+    protected void destroy() {
+        data = null;
+        file.clear();
+        file = null;
         classes.clear();
+        classes = null;
     }
 
 }

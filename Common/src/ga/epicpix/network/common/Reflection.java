@@ -7,11 +7,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-public class Reflection {
+public final class Reflection {
 
     public static Field getField(Class<?> clazz, String fieldName) {
-        ArrayList<Field> fields = new ArrayList<>();
+        List<Field> fields = new ArrayList<>();
         while(clazz!=Object.class) {
             fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
             clazz = clazz.getSuperclass();
@@ -36,7 +37,7 @@ public class Reflection {
     }
 
     public static Method getMethod(Class<?> clazz, String methodName, boolean classes, Object... objs) {
-        ArrayList<Method> methods = new ArrayList<>();
+        List<Method> methods = new ArrayList<>();
         while(clazz!=Object.class) {
             methods.addAll(Arrays.asList(clazz.getDeclaredMethods()));
             clazz = clazz.getSuperclass();

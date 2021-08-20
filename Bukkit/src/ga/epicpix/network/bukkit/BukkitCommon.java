@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class BukkitCommon {
+public final class BukkitCommon {
 
     public static Object getPropertyManager() {
         Object MinecraftServer = getMinecraftServer();
@@ -72,19 +72,19 @@ public class BukkitCommon {
 
     public static TextComponent toTextComponent(ChatComponent comp) {
         TextComponent tc = new TextComponent();
-        tc.setText(comp.text);
+        tc.setText(comp.getText());
         tc.setColor(ChatColor.WHITE);
         for(ChatColor c : ChatColor.values()) {
-            if(c.getName().equalsIgnoreCase(comp.color)) {
+            if(c.getName().equalsIgnoreCase(comp.getColor())) {
                 tc.setColor(c);
                 break;
             }
         }
-        tc.setBold(comp.bold);
-        tc.setStrikethrough(comp.strikethrough);
-        tc.setItalic(comp.italic);
-        tc.setObfuscated(comp.obfuscated);
-        tc.setUnderlined(comp.underlined);
+        tc.setBold(comp.isBold());
+        tc.setStrikethrough(comp.isStrikethrough());
+        tc.setItalic(comp.isItalic());
+        tc.setObfuscated(comp.isObfuscated());
+        tc.setUnderlined(comp.isUnderlined());
         return tc;
     }
 

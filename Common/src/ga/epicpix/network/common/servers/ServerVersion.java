@@ -12,7 +12,7 @@ import java.util.*;
 
 public class ServerVersion implements SerializableJson {
 
-    private static final ArrayList<ServerVersion> VERSIONS = new ArrayList<>();
+    private static final List<ServerVersion> VERSIONS = new ArrayList<>();
 
     //Use this like it's null for this type
     public static final ServerVersion UNKNOWN = new ServerVersion(-1, "???");

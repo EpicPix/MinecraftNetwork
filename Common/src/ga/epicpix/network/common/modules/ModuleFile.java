@@ -5,11 +5,12 @@ import com.google.gson.JsonObject;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ModuleFile {
 
     private ModuleData data;
-    private ArrayList<ModuleFileData> fileData = new ArrayList<>();
+    private List<ModuleFileData> fileData = new ArrayList<>();
 
     public static class ModuleFileData {
 

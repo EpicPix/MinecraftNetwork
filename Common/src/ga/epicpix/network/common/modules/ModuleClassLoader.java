@@ -29,7 +29,8 @@ public class ModuleClassLoader extends ClassLoader {
             if(b==null) {
                 throw new ClassNotFoundException(name);
             }
-            classes.put(name, clz = defineClass(name, b, 0, b.length));
+            clz = defineClass(name, b, 0, b.length);
+            classes.put(name, clz);
         }
         return clz;
     }

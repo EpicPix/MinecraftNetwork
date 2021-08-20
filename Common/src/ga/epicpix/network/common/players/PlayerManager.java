@@ -11,7 +11,7 @@ import ga.epicpix.network.common.net.websocket.requests.UpdatePlayerRequest;
 
 import java.util.UUID;
 
-public class PlayerManager {
+public final class PlayerManager {
 
     public static Errorable<PlayerInfo> getPlayer(UUID uuid) {
         return getPlayer(uuid, null);

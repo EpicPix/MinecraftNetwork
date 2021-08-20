@@ -1,17 +1,45 @@
 package ga.epicpix.network.common.text;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonElement;
 
 public class ChatComponent {
 
-    public String text;
-    public String color;
-    public Boolean bold;
-    public Boolean strikethrough;
-    public Boolean italic;
-    public Boolean obfuscated;
-    public Boolean underlined;
+    private String text;
+    private String color;
+    private Boolean bold;
+    private Boolean strikethrough;
+    private Boolean italic;
+    private Boolean obfuscated;
+    private Boolean underlined;
+
+    public String getText() {
+        return text;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public Boolean isBold() {
+        return bold;
+    }
+
+    public Boolean isStrikethrough() {
+        return strikethrough;
+    }
+
+    public Boolean isItalic() {
+        return italic;
+    }
+
+    public Boolean isObfuscated() {
+        return obfuscated;
+    }
+
+    public Boolean isUnderlined() {
+        return underlined;
+    }
 
     public ChatComponent setText(String text) {
         this.text = text;
@@ -48,7 +76,7 @@ public class ChatComponent {
         return this;
     }
 
-    public static ChatComponent getFromJsonObject(JsonObject obj) {
+    public static ChatComponent getFromJsonObject(JsonElement obj) {
         return new Gson().fromJson(obj, ChatComponent.class);
     }
 

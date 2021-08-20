@@ -57,7 +57,7 @@ public class Entry extends JavaPlugin {
         WebSocketConnection.setSettingsUpdateHandler((opcode, data, requester) -> {
             if(isEnabled()) {
                 JsonObject setting = data.getAsJsonObject("setting");
-                if (setting.get("stringVersion").getAsString().equals("BUNGEE_CORD")) {
+                if ("BUNGEE_CORD".equals(setting.get("stringVersion").getAsString())) {
                     BukkitCommon.setBungeeCord(ValueType.getValueTypeFromJson(setting.getAsJsonObject("value")).getAsBoolean());
                 }
             }
@@ -128,7 +128,7 @@ public class Entry extends JavaPlugin {
             PluginDescriptionFile f = getDescription();
             Reflection.setValueOfField(f.getClass(), "order", f, PluginLoadOrder.POSTWORLD);
             System.out.println("Plugin enabled 1/2");
-            if(Bukkit.getWorlds().size()!=0) {
+            if(!Bukkit.getWorlds().isEmpty()) {
                 onEnable();
             }
         }else {

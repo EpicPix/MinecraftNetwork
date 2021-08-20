@@ -4,7 +4,7 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
-public class CommonUtils {
+public final class CommonUtils {
 
     public static String toString(String string) {
         return string==null?"null":("'" + string + "'");
@@ -35,7 +35,7 @@ public class CommonUtils {
 
     public static InetAddress possibleAddress() {
         ArrayList<InetAddress> addresses = possibleAddresses();
-        if(addresses.size()!=0) {
+        if(!addresses.isEmpty()) {
             return addresses.get(0);
         }
         return InetAddress.getLoopbackAddress();
@@ -49,7 +49,7 @@ public class CommonUtils {
         return builder.toString();
     }
 
-    public static String replaceAt(String str, int at, String to) {
+    public static String replaceAt(String str, int at, CharSequence to) {
         StringBuilder n = new StringBuilder(str);
         for(int i = 0; i<to.length(); i++) {
             n.setCharAt(i + at, to.charAt(i));
@@ -57,7 +57,7 @@ public class CommonUtils {
         return n.toString();
     }
 
-    public static String replaceCharactersSpecial(String in, String check, char what, char with) {
+    public static String replaceCharactersSpecial(String in, CharSequence check, char what, char with) {
         int amt = Math.min(in.length(), check.length());
         int left = Math.max(0, in.length()-check.length());
         StringBuilder gen = new StringBuilder();

@@ -1,6 +1,6 @@
 package ga.epicpix.network.common.net.websocket;
 
-public class Opcodes {
+public final class Opcodes {
 
     public static final int AUTHENTICATE = 0x0000;
 

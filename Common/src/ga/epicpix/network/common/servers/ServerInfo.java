@@ -26,7 +26,7 @@ public class ServerInfo {
     }
 
     public static class ServerType {
-        private static final ArrayList<ServerType> types = new ArrayList<>();
+        private static final List<ServerType> types = new ArrayList<>();
 
         public static final ServerType UNKNOWN = new ServerType("UNKNOWN");
 
@@ -55,7 +55,9 @@ public class ServerInfo {
 
         public static ServerType getType(String id, boolean ignoreCase) {
             for (ServerType type : types) {
-                if ((ignoreCase && type.getId().equalsIgnoreCase(id)) || (!ignoreCase && type.getId().equals(id))) {
+                if(ignoreCase && type.getId().equalsIgnoreCase(id)) {
+                    return type;
+                }else if(!ignoreCase && type.getId().equals(id)) {
                     return type;
                 }
             }

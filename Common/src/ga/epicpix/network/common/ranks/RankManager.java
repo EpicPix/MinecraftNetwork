@@ -8,7 +8,7 @@ import ga.epicpix.network.common.net.websocket.requests.*;
 
 import java.util.ArrayList;
 
-public class RankManager {
+public final class RankManager {
 
     public static Errorable<Rank> getRank(String rank) {
         JsonObject obj = WebSocketRequester.sendRequest(GetRankRequest.build(rank));

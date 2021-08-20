@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class Secrets {
+public final class Secrets {
 
     private static Properties secrets;
 

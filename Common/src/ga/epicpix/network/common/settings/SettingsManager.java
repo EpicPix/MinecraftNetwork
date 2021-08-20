@@ -12,7 +12,7 @@ import ga.epicpix.network.common.net.websocket.requests.SetSettingRequest;
 
 import java.util.HashMap;
 
-public class SettingsManager {
+public final class SettingsManager {
 
     public static Errorable<ValueType> getSetting(String setting) {
         JsonObject resp = WebSocketRequester.sendRequest(GetSettingRequest.build(setting));

@@ -4,10 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.List;
 
-public class ModuleLoader {
+public final class ModuleLoader {
 
-    private static final ArrayList<Module> loadedModules = new ArrayList<>();
+    private static final List<Module> loadedModules = new ArrayList<>();
 
     public static Module loadModule(File file) throws IOException, ClassNotFoundException {
         ModuleClassLoader loader = new ModuleClassLoader(file, ModuleLoader.class.getClassLoader());
@@ -37,7 +38,7 @@ public class ModuleLoader {
         return modules;
     }
 
-    public static void enableModules(ArrayList<Module> modules) {
+    public static void enableModules(List<? extends Module> modules) {
         for(Module m : modules) {
             try {
                 m.enable();

@@ -10,6 +10,8 @@ import java.net.http.WebSocket;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Supplier;
@@ -25,14 +27,14 @@ public final class WebSocketConnection implements WebSocket.Listener {
 
     private static boolean connected = false;
 
-    private static final HashMap<String, Supplier<Object>> hooks = new HashMap<>();
+    private static final Map<String, Supplier<Object>> hooks = new HashMap<>();
 
     private static ServerHook signalHandler = null;
     private static ServerHook settingsChangedHandler = null;
     private static ServerHook rankChangedHandler = null;
 
     private static final ServerHook serverHook = (opcode, data, requester) -> {
-        ArrayList<Capability> caps = new ArrayList<>();
+        List<Capability> caps = new ArrayList<>();
         for(Capability c : Capability.values()) {
             if((capabilities&c.getBits())==c.getBits()) {
                 caps.add(c);
@@ -139,7 +141,7 @@ public final class WebSocketConnection implements WebSocket.Listener {
         return WebSocketRequester.sendRequest(AuthenticateRequest.build(credentials.getUsername(), credentials.getPassword(), getClientType(), capabilities)).get("success").getAsBoolean();
     }
 
-    void send(String data) {
+    void send(CharSequence data) {
         webSocket.sendText(data, true).join();
     }
 

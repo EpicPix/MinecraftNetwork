@@ -8,7 +8,7 @@ import ga.epicpix.network.common.net.websocket.requests.*;
 
 import java.util.ArrayList;
 
-public class ServerManager {
+public final class ServerManager {
 
     public static Errorable<ServerInfo> updateServer(String server, UpdateServerDataRequest.Data data) {
         if(server==null) {

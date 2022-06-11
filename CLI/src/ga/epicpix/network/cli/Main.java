@@ -172,7 +172,7 @@ public class Main {
                 if(resp.hasFailed()) {
                     System.out.println("/red/Could not request the module list!");
                 }else {
-                    System.out.println("Response: " + ModuleManager.getModules());
+                    showModulesListing(resp.getValue());
                 }
             }else if(cmdline.equals("module")) {
                 if(getParam(cmd, 1) != null) {
@@ -322,6 +322,49 @@ public class Main {
             x += 1+itemEntryLength(ipLen);
             serverOut = replaceAt(serverOut, x, ansi("/aqua/" + convertTime(time-server.start) + "/green/", false));
 
+            System.out.println(serverOut);
+        }
+
+        printlnGreen(replaceCharactersSpecial("╚" + "═".repeat( rep.length()-2) + "╝", rep, '|', '╧'));
+
+    }
+
+    public static void showModulesListing(ArrayList<ModuleData> moduleData) {
+
+        if(moduleData.size()==0) {
+            showErrorMessage("No modules found.");
+            return;
+        }
+
+        final long time = System.currentTimeMillis();
+        int idLen = getLongestFromCompute(2, ModuleData::getId, moduleData) + 2;
+        int nameLen = getLongestFromCompute(4, ModuleData::getName, moduleData) + 2;
+        int libraryLen = getLongestFromCompute(7, ModuleData::getLibrary, moduleData) + 2;
+        int versionLen = getLongestFromCompute(7, ModuleData::getVersion, moduleData) + 2;
+
+        String rep = "║" + " ".repeat(idLen) + "|" + " ".repeat(nameLen) + "|" + " ".repeat(libraryLen) + "|" + " ".repeat(versionLen) + "║";
+
+        rep = setStrings(rep, new StringInfo(idLen, "Id"), new StringInfo(nameLen, "Name"), new StringInfo(libraryLen, "Library"), new StringInfo(versionLen, "Version"));
+
+        printlnGreen(replaceCharactersSpecial("╔" + "═".repeat(rep.length()-2) + "╗", rep, '|', '╤'));
+        printlnGreen(rep.replace('|', '│'));
+        printlnGreen(replaceCharactersSpecial("╟" + "─".repeat(rep.length()-2) + "╢", rep, '|', '┼'));
+
+        for(ModuleData server : moduleData) {
+            String serverOut = ansi("/green/║" + " ".repeat(itemEntryLength(idLen))
+                + "│" + " ".repeat(itemEntryLength(nameLen))
+                + "│" + " ".repeat(itemEntryLength(libraryLen))
+                + "│" + " ".repeat(itemEntryLength(versionLen)) + "║", true);
+
+            int x = 2+ansiLength(GREEN);
+            serverOut = replaceAt(serverOut, x, ansi("/aqua/" + server.getId() + "/green/", false));
+            x += 1+itemEntryLength(idLen);
+            serverOut = replaceAt(serverOut, x, ansi("/aqua/" + server.getName() + "/green/", false));
+            x += 1+itemEntryLength(nameLen);
+            serverOut = replaceAt(serverOut, x, ansi("/aqua/" + server.getLibrary() + "/green/", false));
+            x += 1+itemEntryLength(libraryLen);
+            serverOut = replaceAt(serverOut, x, ansi("/aqua/" + server.getVersion() + "/green/", false));
+            x += 1+itemEntryLength(versionLen);
             System.out.println(serverOut);
         }
 

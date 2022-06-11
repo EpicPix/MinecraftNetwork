@@ -37,8 +37,8 @@ function generate(module, folder) {
         buffers.push(len);
         buffers.push(Buffer.from(classes[i]));
         const d = fs.readFileSync(classes[i]);
-        const dlen = Buffer.alloc(2);
-        dlen.writeUInt16BE(d.length);
+        const dlen = Buffer.alloc(4);
+        dlen.writeUInt32BE(d.length);
         buffers.push(dlen);
         buffers.push(d);
     }

@@ -29,7 +29,7 @@ public class ModuleFile {
         for(int i = 0; i<files; i++) {
             ModuleFileData fdata = new ModuleFileData();
             fdata.file = new String(in.readNBytes(in.readUnsignedShort()));
-            fdata.data = in.readNBytes(in.readUnsignedShort());
+            fdata.data = in.readNBytes(in.readInt());
             fileData.add(fdata);
         }
     }

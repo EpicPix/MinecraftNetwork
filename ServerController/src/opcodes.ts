@@ -56,6 +56,7 @@ export enum ErrorNumbers {
     NO_UUID_FIELD = 0x07,
     NO_USERNAME_FIELD = 0x08,
     NO_UUID_OR_USERNAME_FIELD = 0x09,
+    NO_ID_FIELD = 0x0A,
 
     SERVER_NOT_FOUND = 0x20,
     NO_SERVER_WEBSOCKET = 0x21,

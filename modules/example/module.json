@@ -2,5 +2,6 @@
   "name": "Example",
   "id": "example",
   "main": "Entry",
-  "library": "bukkit"
+  "library": "bukkit",
+  "version": "1.0.0"
 }

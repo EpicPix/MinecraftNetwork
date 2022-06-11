@@ -35,7 +35,7 @@ for(const module of modulesFiles) {
     const modulePath = path.resolve(modulesPath, module);
     const moduleJsonPath = path.resolve(modulePath, 'module.json');
     if(!fs.existsSync(moduleJsonPath)) {
-        // Using this to check for every module and check if it exists, then if there was an error.. exit
+        // Using this to check for every module and check if it exists, then if there was an error then exit
         console.error(`Missing module.json in module ${module}`);
         error = true;
         continue;
@@ -57,8 +57,21 @@ for(const [module,, moduleJson] of modules) {
         continue;
     }
     moduleIds.push(moduleJson.id);
-    if(!libraries.includes(moduleJson.library)) {
-        console.error(`Unknown library '${moduleJson.library}' in module ${module}`); 
+    if(moduleJson.library) {
+        if (!libraries.includes(moduleJson.library)) {
+            console.error(`Unknown library '${moduleJson.library}' in module ${module}`);
+            error = true;
+        }
+    }else {
+        console.error(`Module '${moduleJson.id}' does not have a library`);
+        error = true;
+    }
+    if(!moduleJson.name) {
+        console.error(`Module '${moduleJson.id}' does not have a name`);
+        error = true;
+    }
+    if(!moduleJson.version) {
+        console.error(`Module '${moduleJson.id}' does not have version data`);
         error = true;
     }
 }
@@ -87,8 +100,8 @@ for(const [module, modulePath, moduleJson] of modules) {
             const filename = path.basename(current);
             if(filename.endsWith('.m.java')) {
                 const rel = current.replace(path.resolve('compile', 'modules').toString() + "/", '');
-                const package = path.dirname(rel).replace('/', '.');
-                var data = `package ${package};`;
+                const pack = path.dirname(rel).replace('/', '.');
+                var data = `package ${pack};`;
                 for(const imp of imports['common']) {
                     data += `import ${imp};`
                 }

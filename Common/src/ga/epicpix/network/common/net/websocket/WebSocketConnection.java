@@ -104,13 +104,14 @@ public final class WebSocketConnection implements WebSocket.Listener {
         return clientType;
     }
 
-    public static void connect() {
+    public static boolean connect() {
         if(!connected) {
-            connectWithCredentials(ServerControllerCredentials.get());
+            return connectWithCredentials(ServerControllerCredentials.get());
         }
+        return true;
     }
 
-    private static void connectWithCredentials(ServerControllerCredentials creds) {
+    private static boolean connectWithCredentials(ServerControllerCredentials creds) {
         connection = new WebSocketConnection();
         requester = new WebSocketRequester(connection);
         try {
@@ -134,7 +135,9 @@ public final class WebSocketConnection implements WebSocket.Listener {
         } catch(CompletionException e) {
             connection = null;
             System.err.println("Could not connect");
+            return false;
         }
+        return true;
     }
 
     private boolean sendAuthenticateRequest(ServerControllerCredentials credentials) {

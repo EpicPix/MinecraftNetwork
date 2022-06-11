@@ -1,5 +1,11 @@
 package ga.epicpix.network.cli;
 
+import com.google.gson.JsonObject;
+import ga.epicpix.network.common.modules.Module;
+import ga.epicpix.network.common.net.websocket.WebSocketRequester;
+import ga.epicpix.network.common.net.websocket.requests.GetModuleRequest;
+import ga.epicpix.network.common.net.websocket.requests.GetModulesRequest;
+import ga.epicpix.network.common.net.websocket.requests.ListServersRequest;
 import ga.epicpix.network.common.ranks.Rank;
 import ga.epicpix.network.common.ranks.RankManager;
 import ga.epicpix.network.common.servers.ServerManager;
@@ -86,7 +92,9 @@ public class Main {
             }
             return new String[] {username, password};
         });
-        WebSocketConnection.connect();
+        if(!WebSocketConnection.connect()) {
+            return;
+        }
 
         System.out.println("Network Manager CLI");
         System.out.println("Type \"help\" for help");
@@ -158,6 +166,17 @@ public class Main {
                     System.out.println("/red/Could not request server list!");
                 }else {
                     showServerListing(resp.getValue());
+                }
+            }else if(cmdline.equals("modules")) {
+                JsonObject data = WebSocketRequester.sendRequest(GetModulesRequest.build());
+                System.out.println("Response: " + data);
+            }else if(cmdline.equals("module")) {
+                if(getParam(cmd, 1) != null) {
+                    String id = getParam(cmd, 1);
+                    JsonObject data = WebSocketRequester.sendRequest(GetModuleRequest.build(id));
+                    System.out.println("Response: " + data);
+                }else {
+                    System.out.println("/red/Wrong usage! Use \"help\" for help");
                 }
             }else {
                 System.out.println("/red/Unknown command. Type \"help\" for help");
@@ -312,11 +331,11 @@ public class Main {
         builder.append("/red/");
         builder.append("╔══════════════════════════════╗").append("\n");
         builder.append("║                              ║").append("\n");
-        builder.append("╚══════════════════════════════╝").append("\n");
+        builder.append("╚══════════════════════════════╝");
         //Replace part of the string to contain error message
         int at = builder.indexOf("║") / 2 + builder.lastIndexOf("║") / 2 - (errmsg.length()-1) / 2;
         for(int i = 0; i<errmsg.length(); i++) builder.setCharAt(at+i, errmsg.charAt(i));
-        System.out.print(builder);
+        System.out.println(builder);
     }
 
 }

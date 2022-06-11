@@ -33,4 +33,7 @@ public class Errorable<T> {
         return value;
     }
 
+    public String toString() {
+        return "Errorable{errorCode=" + errorCode + ", value=" + value + "}";
+    }
 }

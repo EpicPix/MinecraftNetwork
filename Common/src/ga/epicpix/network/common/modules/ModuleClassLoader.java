@@ -1,6 +1,5 @@
 package ga.epicpix.network.common.modules;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -12,10 +11,10 @@ public class ModuleClassLoader extends ClassLoader {
 
     private HashMap<String, Class<?>> classes = new HashMap<>();
 
-    public ModuleClassLoader(File module, ClassLoader parent) throws IOException {
+    public ModuleClassLoader(ModuleFile module, ClassLoader parent) throws IOException {
         super(parent);
-        file = new ModuleFile(module);
-        data = file.getData();
+        this.file = module;
+        data = module.getData();
     }
 
     public InputStream getResourceAsStream(String name) {

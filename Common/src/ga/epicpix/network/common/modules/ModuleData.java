@@ -1,19 +1,19 @@
 package ga.epicpix.network.common.modules;
 
-import com.google.gson.JsonObject;
-
 public class ModuleData {
 
     private final String name;
     private final String id;
     private final String main;
     private final ModuleLibrary library;
+    private final String version;
 
-    private ModuleData(String name, String id, String main, ModuleLibrary library) {
+    private ModuleData(String name, String id, String main, ModuleLibrary library, String version) {
         this.name = name;
         this.id = id;
         this.main = main;
         this.library = library;
+        this.version = version;
     }
 
     public String getName() {
@@ -32,13 +32,11 @@ public class ModuleData {
         return library;
     }
 
-    protected static ModuleData fromJson(JsonObject json) {
-        return new ModuleData(
-                json.get("name").getAsString(),
-                json.get("id").getAsString(),
-                json.get("main").getAsString(),
-                ModuleLibrary.valueOf(json.get("library").getAsString().toUpperCase())
-        );
+    public String getVersion() {
+        return version;
     }
 
+    public String toString() {
+        return "ModuleData{name='" + name + "', id='" + id + "', main='" + main + "', library=" + library + ", version='" + version + "'}";
+    }
 }

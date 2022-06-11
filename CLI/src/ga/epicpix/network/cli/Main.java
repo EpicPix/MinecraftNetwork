@@ -1,11 +1,10 @@
 package ga.epicpix.network.cli;
 
 import com.google.gson.JsonObject;
-import ga.epicpix.network.common.modules.Module;
+import ga.epicpix.network.common.modules.ModuleData;
+import ga.epicpix.network.common.modules.ModuleManager;
 import ga.epicpix.network.common.net.websocket.WebSocketRequester;
 import ga.epicpix.network.common.net.websocket.requests.GetModuleRequest;
-import ga.epicpix.network.common.net.websocket.requests.GetModulesRequest;
-import ga.epicpix.network.common.net.websocket.requests.ListServersRequest;
 import ga.epicpix.network.common.ranks.Rank;
 import ga.epicpix.network.common.ranks.RankManager;
 import ga.epicpix.network.common.servers.ServerManager;
@@ -23,6 +22,7 @@ import java.io.Console;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Scanner;
 
@@ -168,8 +168,12 @@ public class Main {
                     showServerListing(resp.getValue());
                 }
             }else if(cmdline.equals("modules")) {
-                JsonObject data = WebSocketRequester.sendRequest(GetModulesRequest.build());
-                System.out.println("Response: " + data);
+                Errorable<ArrayList<ModuleData>> resp = ModuleManager.getModules();
+                if(resp.hasFailed()) {
+                    System.out.println("/red/Could not request the module list!");
+                }else {
+                    System.out.println("Response: " + ModuleManager.getModules());
+                }
             }else if(cmdline.equals("module")) {
                 if(getParam(cmd, 1) != null) {
                     String id = getParam(cmd, 1);

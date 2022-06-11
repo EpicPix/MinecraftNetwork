@@ -16,22 +16,23 @@ public class ModuleFile {
 
         private ModuleFileData() {}
 
-        public String file;
+        public String filename;
         public byte[] data;
 
     }
 
-    public ModuleFile(File file) throws IOException {
-        DataInputStream in = new DataInputStream(new FileInputStream(file));
-        String moduleJsonStr = new String(in.readNBytes(in.readUnsignedShort()));
-        data = ModuleData.fromJson(new Gson().fromJson(moduleJsonStr, JsonObject.class));
-        int files = in.readUnsignedShort();
+    public ModuleFile(byte[] in) throws IOException {
+        DataInputStream din = new DataInputStream(new ByteArrayInputStream(in));
+        String moduleJsonStr = new String(din.readNBytes(din.readUnsignedShort()));
+        data = new Gson().fromJson(moduleJsonStr, ModuleData.class);
+        int files = din.readUnsignedShort();
         for(int i = 0; i<files; i++) {
             ModuleFileData fdata = new ModuleFileData();
-            fdata.file = new String(in.readNBytes(in.readUnsignedShort()));
-            fdata.data = in.readNBytes(in.readInt());
+            fdata.filename = new String(din.readNBytes(din.readUnsignedShort()));
+            fdata.data = din.readNBytes(din.readInt());
             fileData.add(fdata);
         }
+        din.close();
     }
 
     public ModuleData getData() {
@@ -40,7 +41,7 @@ public class ModuleFile {
 
     public byte[] getFileData(String file) {
         for(ModuleFileData f : fileData) {
-            if(f.file.equals(file)) {
+            if(f.filename.equals(file)) {
                 return f.data;
             }
         }

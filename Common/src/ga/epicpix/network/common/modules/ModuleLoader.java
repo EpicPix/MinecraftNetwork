@@ -3,6 +3,7 @@ package ga.epicpix.network.common.modules;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,8 +11,8 @@ public final class ModuleLoader {
 
     private static final List<Module> loadedModules = new ArrayList<>();
 
-    public static Module loadModule(File file) throws IOException, ClassNotFoundException {
-        ModuleClassLoader loader = new ModuleClassLoader(file, ModuleLoader.class.getClassLoader());
+    public static Module loadModule(ModuleFile moduleFile) throws IOException, ClassNotFoundException {
+        ModuleClassLoader loader = new ModuleClassLoader(moduleFile, ModuleLoader.class.getClassLoader());
         Class<?> main = Class.forName(loader.getData().getId() + "." + loader.getData().getMain(), true, loader);
         Class<? extends Module> classModule = main.asSubclass(Module.class);
         try {
@@ -22,6 +23,10 @@ public final class ModuleLoader {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static Module loadModule(File module) throws IOException, ClassNotFoundException {
+        return loadModule(new ModuleFile(Files.readAllBytes(module.toPath())));
     }
 
     public static ArrayList<Module> loadModules(File directory) throws IOException, ClassNotFoundException {

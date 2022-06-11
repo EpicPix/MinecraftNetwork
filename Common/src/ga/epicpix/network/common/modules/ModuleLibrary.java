@@ -1,7 +1,10 @@
 package ga.epicpix.network.common.modules;
 
+import com.google.gson.annotations.SerializedName;
+
 public enum ModuleLibrary {
 
-    BUKKIT, BUNGEE
+    @SerializedName("bukkit") BUKKIT,
+    @SerializedName("bungee") BUNGEE,
 
 }

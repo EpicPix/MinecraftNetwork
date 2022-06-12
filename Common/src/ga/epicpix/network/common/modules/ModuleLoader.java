@@ -42,6 +42,12 @@ public final class ModuleLoader {
 
         // Reflection
         @SerializedName("Reflection") REFLECTION("Reflection"),
+
+        // Modules
+        @SerializedName("ModuleLoader.load") LOAD_MODULE("Load Module"),
+        @SerializedName("ModuleLoader.unload") UNLOAD_MODULE("Unload Module"),
+        @SerializedName("ModuleLoader.enable") ENABLE_MODULE("Enable Module"),
+        @SerializedName("ModuleLoader.disable") DISABLE_MODULE("Disable Module"),
         ;
 
         private final String name;
@@ -56,6 +62,7 @@ public final class ModuleLoader {
     }
 
     public static Module loadModule(ModuleFile moduleFile) throws IOException, ClassNotFoundException {
+        checkModulePermission(ModulePermission.LOAD_MODULE);
         ModuleClassLoader loader = new ModuleClassLoader(moduleFile, ModuleLoader.class.getClassLoader());
         Class<?> main = Class.forName(loader.getData().getId() + "." + loader.getData().getMain(), true, loader);
         Class<? extends Module> classModule = main.asSubclass(Module.class);
@@ -87,20 +94,38 @@ public final class ModuleLoader {
         return modules;
     }
 
-    public static void enableModules(List<? extends Module> modules) {
-        for(Module m : modules) {
-            try {
-                m.enable();
-            }catch(Exception e) {
-                e.printStackTrace();
-            }
+    public static void enableModule(Module module) {
+        checkModulePermission(ModulePermission.ENABLE_MODULE);
+        try {
+            module.enable();
+        }catch(Exception e) {
+            e.printStackTrace();
         }
     }
 
+    public static void enableModules(List<? extends Module> modules) {
+        checkModulePermission(ModulePermission.ENABLE_MODULE);
+        for(Module m : modules) {
+            enableModule(m);
+        }
+    }
+
+    public static void disableModule(Module module) {
+        checkModulePermission(ModulePermission.DISABLE_MODULE);
+        module.disable();
+    }
+
+    public static void unloadModule(Module module) {
+        checkModulePermission(ModulePermission.UNLOAD_MODULE);
+        disableModule(module);
+        ((ModuleClassLoader) module.getClass().getClassLoader()).destroy();
+
+    }
+
     public static void unloadModules() throws IOException {
+        checkModulePermission(ModulePermission.UNLOAD_MODULE);
         for(Module mod : loadedModules) {
-            mod.disable();
-            ((ModuleClassLoader) mod.getClass().getClassLoader()).destroy();
+            unloadModule(mod);
         }
         loadedModules.clear();
     }

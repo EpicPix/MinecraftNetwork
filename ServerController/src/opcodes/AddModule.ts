@@ -18,6 +18,10 @@ export function run(websocket, json) {
                 websocket.respond(json, {ok: false, errno: ErrorNumbers.INVALID_MODULE_INFO});
                 return;
             }
+            if(!Array.isArray(moduleInfo.permissions)) {
+                websocket.respond(json, {ok: false, errno: ErrorNumbers.INVALID_MODULE_INFO});
+                return;
+            }
             saveModule(moduleBytes, moduleInfo.id, moduleInfo.version);
             websocket.respond(json, {ok: true, module: moduleInfo});
         }else {

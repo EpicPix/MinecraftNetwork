@@ -3,5 +3,6 @@
   "id": "example2",
   "main": "Test",
   "library": "bungee",
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "permissions": []
 }

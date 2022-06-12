@@ -1,12 +1,8 @@
 package ga.epicpix.network.cli;
 
-import com.google.gson.JsonObject;
 import ga.epicpix.network.common.modules.ModuleData;
 import ga.epicpix.network.common.modules.ModuleFile;
 import ga.epicpix.network.common.modules.ModuleManager;
-import ga.epicpix.network.common.net.websocket.WebSocketRequester;
-import ga.epicpix.network.common.net.websocket.requests.AddModuleRequest;
-import ga.epicpix.network.common.net.websocket.requests.GetModuleRequest;
 import ga.epicpix.network.common.ranks.Rank;
 import ga.epicpix.network.common.ranks.RankManager;
 import ga.epicpix.network.common.servers.ServerManager;
@@ -27,7 +23,6 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.Scanner;
 
@@ -166,7 +161,7 @@ public class Main {
                     System.out.println("/red/Wrong usage! Use \"help\" for help");
                 }
             }else if(cmdline.equals("servers")) {
-                Errorable<ArrayList<ServerInfo>> resp = ServerManager.requestServerList();
+                Errorable<ArrayList<ServerInfo>> resp = ServerManager.listServers();
                 if(resp.hasFailed()) {
                     System.out.println("/red/Could not request server list!");
                 }else {

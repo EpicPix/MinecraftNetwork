@@ -1,6 +1,7 @@
 package ga.epicpix.network.common.net.websocket.requests;
 
 import com.google.gson.JsonObject;
+import ga.epicpix.network.common.modules.ModuleLoader;
 import ga.epicpix.network.common.net.websocket.Opcodes;
 
 public class GetSettingRequest implements WebSocketRequest {
@@ -12,6 +13,7 @@ public class GetSettingRequest implements WebSocketRequest {
     }
 
     public static GetSettingRequest build(String setting) {
+        ModuleLoader.checkModulePermission(ModuleLoader.ModulePermission.GET_SETTING);
         return new GetSettingRequest(setting);
     }
 

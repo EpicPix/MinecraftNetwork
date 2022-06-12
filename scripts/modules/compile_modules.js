@@ -74,6 +74,10 @@ for(const [module,, moduleJson] of modules) {
         console.error(`Module '${moduleJson.id}' does not have version data`);
         error = true;
     }
+    if(!Array.isArray(moduleJson.permissions)) {
+        console.error(`Module '${moduleJson.id}' does not have a permissions array`);
+        error = true;
+    }
 }
 
 if(error) {

@@ -3,6 +3,7 @@ package ga.epicpix.network.common.net.websocket.requests;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import ga.epicpix.network.common.SerializableJson;
+import ga.epicpix.network.common.modules.ModuleLoader;
 import ga.epicpix.network.common.text.ChatComponent;
 import ga.epicpix.network.common.net.websocket.Opcodes;
 
@@ -62,6 +63,7 @@ public class UpdateRankRequest implements WebSocketRequest {
     }
 
     public static UpdateRankRequest build(String serverName, Data data) {
+        ModuleLoader.checkModulePermission(ModuleLoader.ModulePermission.UPDATE_RANK);
         return new UpdateRankRequest(serverName, data);
     }
 

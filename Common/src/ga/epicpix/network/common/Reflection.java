@@ -1,6 +1,7 @@
 package ga.epicpix.network.common;
 
 import ga.epicpix.network.common.annotations.CallerSensitive;
+import ga.epicpix.network.common.modules.ModuleClassLoader;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -103,6 +104,21 @@ public final class Reflection {
     }
 
     @CallerSensitive
+    public static Class<?> getModuleCaller() {
+        var o = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)
+            .walk(
+                s -> s.map(StackWalker.StackFrame::getDeclaringClass)
+                    .dropWhile(clz -> !(clz.getClassLoader() instanceof ModuleClassLoader))
+                    .findFirst()
+            );
+        if(o.isEmpty()) {
+            return null;
+        }
+        return o.get();
+    }
+
+
+    @CallerSensitive
     public static Class<?> getCaller() {
         var o = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)
             .walk(
@@ -110,9 +126,9 @@ public final class Reflection {
                     .skip(2)
                     .findFirst()
             );
-        if(o.isEmpty()) {{
+        if(o.isEmpty()) {
             return null;
-        }}
+        }
         return o.get();
     }
 }

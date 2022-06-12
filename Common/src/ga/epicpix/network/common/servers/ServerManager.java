@@ -57,7 +57,7 @@ public final class ServerManager {
         return new Errorable<>(true);
     }
 
-    public static Errorable<ArrayList<ServerInfo>> requestServerList() {
+    public static Errorable<ArrayList<ServerInfo>> listServers() {
         JsonObject data = WebSocketRequester.sendRequest(ListServersRequest.build());
         if(!data.get("ok").getAsBoolean()) {
             return new Errorable<>(data.get("errno").getAsInt());

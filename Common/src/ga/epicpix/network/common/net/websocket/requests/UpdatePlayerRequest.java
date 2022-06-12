@@ -2,6 +2,7 @@ package ga.epicpix.network.common.net.websocket.requests;
 
 import com.google.gson.JsonObject;
 import ga.epicpix.network.common.SerializableJson;
+import ga.epicpix.network.common.modules.ModuleLoader;
 import ga.epicpix.network.common.net.websocket.Opcodes;
 
 import java.util.UUID;
@@ -56,6 +57,7 @@ public class UpdatePlayerRequest implements WebSocketRequest {
     }
 
     public static UpdatePlayerRequest build(UUID uuid, String username, Data data) {
+        ModuleLoader.checkModulePermission(ModuleLoader.ModulePermission.UPDATE_PLAYER);
         if(uuid==null && username==null) {
             throw new IllegalArgumentException("UUID or Username must not be null");
         }

@@ -1,6 +1,7 @@
 package ga.epicpix.network.common.net.websocket.requests;
 
 import com.google.gson.JsonObject;
+import ga.epicpix.network.common.modules.ModuleLoader;
 import ga.epicpix.network.common.net.websocket.Opcodes;
 
 import java.util.Base64;
@@ -14,6 +15,7 @@ public class AddModuleRequest implements WebSocketRequest {
     }
 
     public static AddModuleRequest build(byte[] module) {
+        ModuleLoader.checkModulePermission(ModuleLoader.ModulePermission.ADD_MODULE);
         return new AddModuleRequest(Base64.getEncoder().encodeToString(module));
     }
 

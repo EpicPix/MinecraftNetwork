@@ -1,6 +1,7 @@
 package ga.epicpix.network.common.net.websocket.requests;
 
 import com.google.gson.JsonObject;
+import ga.epicpix.network.common.modules.ModuleLoader;
 import ga.epicpix.network.common.net.websocket.Opcodes;
 
 public class DeleteRankRequest implements WebSocketRequest {
@@ -12,6 +13,7 @@ public class DeleteRankRequest implements WebSocketRequest {
     }
 
     public static DeleteRankRequest build(String serverName) {
+        ModuleLoader.checkModulePermission(ModuleLoader.ModulePermission.DELETE_RANK);
         return new DeleteRankRequest(serverName);
     }
 

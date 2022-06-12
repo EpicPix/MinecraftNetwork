@@ -1,0 +1,10 @@
+{
+  "id": "servercmd",
+  "name": "Server Command",
+  "version": "1.0.0",
+  "main": "ModuleEntry",
+  "library": "bungee",
+  "permissions": [
+    "ServerManager.getServerInfo"
+  ]
+}

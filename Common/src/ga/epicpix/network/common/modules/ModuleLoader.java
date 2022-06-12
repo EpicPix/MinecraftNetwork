@@ -97,6 +97,7 @@ public final class ModuleLoader {
     public static void enableModule(Module module) {
         checkModulePermission(ModulePermission.ENABLE_MODULE);
         try {
+            /* pre-enable */ if(ModuleEventManager.enableModule != null) ModuleEventManager.enableModule.accept(module);
             module.enable();
         }catch(Exception e) {
             e.printStackTrace();
@@ -112,6 +113,7 @@ public final class ModuleLoader {
 
     public static void disableModule(Module module) {
         checkModulePermission(ModulePermission.DISABLE_MODULE);
+        if(ModuleEventManager.disableModule != null) ModuleEventManager.disableModule.accept(module);
         module.disable();
     }
 
@@ -140,6 +142,19 @@ public final class ModuleLoader {
                 }
             }
             throw new SecurityException("Module '" + mcl.getData().getName() + "' does not have " + permission.getName() + " permission");
+        }
+    }
+
+    public static void checkReflectionModulePermission() {
+        var moduleClass = Reflection.getCaller();
+        if(moduleClass != null && moduleClass.getClassLoader() instanceof ModuleClassLoader) {
+            ModuleClassLoader mcl = (ModuleClassLoader) moduleClass.getClassLoader();
+            for(var perm : mcl.getData().getPermissions()) {
+                if(perm == ModulePermission.REFLECTION) {
+                    return;
+                }
+            }
+            throw new SecurityException("Module '" + mcl.getData().getName() + "' does not have " + ModulePermission.REFLECTION.getName() + " permission");
         }
     }
 

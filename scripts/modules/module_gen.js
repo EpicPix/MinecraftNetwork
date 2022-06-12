@@ -5,9 +5,8 @@ function generate(module, folder) {
 
     const classes = [];
     const travel = [folder];
-    for(var i = 0; i<travel.length; i++) {
-        var current = travel[i];
-        travel.pop(i--);
+    for(let i = 0; i<travel.length; i++) {
+        let current = travel[i];
         if(fs.lstatSync(current).isDirectory()) {
             var contents = fs.readdirSync(current);
             for(const f of contents) {
@@ -31,7 +30,7 @@ function generate(module, folder) {
 
     const buffers = [];
 
-    for(var i = 0; i<classes.length; i++) {
+    for(let i = 0; i<classes.length; i++) {
         const len = Buffer.alloc(2);
         len.writeUInt16BE(classes[i].length);
         buffers.push(len);

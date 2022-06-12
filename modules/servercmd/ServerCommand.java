@@ -1,4 +1,4 @@
-package ga.epicpix.network.bungee.commands;
+package servercmd;
 
 import ga.epicpix.network.bungee.Command;
 import ga.epicpix.network.bungee.CommandContext;

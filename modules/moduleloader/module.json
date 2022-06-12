@@ -3,7 +3,7 @@
   "name": "Module Loader",
   "version": "1.0.0",
   "main": "ModuleEntry",
-  "library": "BUKKIT",
+  "library": "bukkit",
   "permissions": [
     "ModuleManager.getModules",
     "ModuleManager.getModule",

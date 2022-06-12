@@ -1,9 +1,9 @@
 package ga.epicpix.network.bukkit;
 
 import com.google.gson.JsonObject;
-import ga.epicpix.network.bukkit.commands.TestCommand;
 import ga.epicpix.network.bukkit.map.MapListener;
 import ga.epicpix.network.common.Reflection;
+import ga.epicpix.network.common.modules.ModuleEventManager;
 import ga.epicpix.network.common.modules.ModuleLoader;
 import ga.epicpix.network.common.ranks.Rank;
 import ga.epicpix.network.common.servers.ServerInfo;
@@ -27,6 +27,8 @@ import org.spigotmc.SpigotConfig;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Map;
 
 import static ga.epicpix.network.common.servers.ServerInfo.ServerSignal;
 
@@ -116,7 +118,6 @@ public class Entry extends JavaPlugin {
         }else {
             BukkitCommon.setBungeeCord(val.getValue().getAsBoolean());
         }
-        Command.registerCommand(new TestCommand());
     }
 
     public void onEnable() {
@@ -138,6 +139,21 @@ public class Entry extends JavaPlugin {
                 BukkitCommon.removeCommandAliases();
             });
             System.out.println("Plugin enabled 2/2");
+
+
+            ModuleEventManager.onEnableModule((module) -> {
+                Command.moduleToCommands.put(module, new ArrayList<>());
+            });
+
+            ModuleEventManager.onDisableModule((module) -> {
+                Map<String, org.bukkit.command.Command> map = BukkitCommon.getCommandMap();
+                for(var cmd : Command.moduleToCommands.get(module)) {
+                    map.remove(cmd.getName(), cmd);
+                }
+                Command.moduleToCommands.remove(module);
+            });
+
+
             try {
                 ModuleLoader.enableModules(ModuleLoader.loadModules(new File("modules")));
             } catch (IOException | ClassNotFoundException e) {

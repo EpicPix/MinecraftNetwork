@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public final class Reflection {
 
@@ -103,10 +104,15 @@ public final class Reflection {
 
     @CallerSensitive
     public static Class<?> getCaller() {
-        try {
-            return Class.forName(new Exception().getStackTrace()[2].getClassName());
-        } catch (ClassNotFoundException e) {
+        var o = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)
+            .walk(
+                s -> s.map(StackWalker.StackFrame::getDeclaringClass)
+                    .skip(2)
+                    .findFirst()
+            );
+        if(o.isEmpty()) {{
             return null;
-        }
+        }}
+        return o.get();
     }
 }

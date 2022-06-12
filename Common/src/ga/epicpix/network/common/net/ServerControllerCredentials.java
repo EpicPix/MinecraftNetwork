@@ -32,8 +32,10 @@ public class ServerControllerCredentials {
 
     @CallerSensitive
     public static ServerControllerCredentials get() {
-        if(Reflection.getCaller()!=WebSocketConnection.class && Reflection.getCaller()!=HttpConnection.class) {
-            throw new SecurityException("Cannot get credentials!");
+        var caller = Reflection.getCaller();
+        if(caller != WebSocketConnection.class && caller != HttpConnection.class) {
+            if(caller == null) throw new SecurityException("Cannot get credentials");
+            throw new SecurityException("Cannot get credentials from " + caller);
         }
         String url = Secrets.getSecret("serverController.url");
         String username = Secrets.getSecret("serverController.username");

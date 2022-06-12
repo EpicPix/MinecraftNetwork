@@ -7,6 +7,7 @@ public class ModuleEntry extends Module {
 
     public void enable() {
         Command.registerCommand(this, new ModuleCommand());
+        Command.registerCommand(this, new ModulesCommand());
     }
 
 }

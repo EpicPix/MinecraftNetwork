@@ -48,6 +48,7 @@ public final class ModuleLoader {
         @SerializedName("ModuleLoader.unload") UNLOAD_MODULE("Unload Module"),
         @SerializedName("ModuleLoader.enable") ENABLE_MODULE("Enable Module"),
         @SerializedName("ModuleLoader.disable") DISABLE_MODULE("Disable Module"),
+        @SerializedName("ModuleLoader.listModules") LIST_MODULES("List Modules"),
         ;
 
         private final String name;
@@ -130,6 +131,11 @@ public final class ModuleLoader {
             unloadModule(mod);
         }
         loadedModules.clear();
+    }
+
+    public static Module[] getLoadedModules() {
+
+        return loadedModules.toArray(new Module[0]);
     }
 
     public static void checkModulePermission(ModulePermission permission) {

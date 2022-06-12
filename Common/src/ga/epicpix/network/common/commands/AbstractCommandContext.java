@@ -43,7 +43,7 @@ public abstract class AbstractCommandContext<Sender, Player extends Sender> {
     }
 
     public void sendUsage() {
-        sendMessage("No usage defined");
+        sendMessage("/red/No usage defined");
     }
 
     public final PlayerInfo getPlayerInfo() {

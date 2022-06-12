@@ -3,8 +3,6 @@ package moduleloader;
 import ga.epicpix.network.bukkit.Command;
 import ga.epicpix.network.bukkit.CommandContext;
 
-import java.util.Arrays;
-
 public class ModuleCommand extends Command {
 
     public String getName() {
@@ -18,7 +16,12 @@ public class ModuleCommand extends Command {
     public CommandContext createContext() {
         return new CommandContext(getName()) {
             public void run() {
-                sendMessage("Arguments: " + Arrays.toString(getArguments()));
+                String[] arguments = getArguments();
+                if(arguments.length>=1) {
+
+                }else {
+                    sendMessage("/red/Usage: /" + getCommandName() + " <list>");
+                }
             }
         };
     }

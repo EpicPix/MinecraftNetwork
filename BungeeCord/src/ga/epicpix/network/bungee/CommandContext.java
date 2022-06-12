@@ -23,9 +23,5 @@ public abstract class CommandContext extends CommonCommandContext {
         return getSender() instanceof BungeeCommandConsole;
     }
 
-    public final void sendMessage(String message) {
-        getSender().sendMessage(message);
-    }
-
     public abstract void run();
 }

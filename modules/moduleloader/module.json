@@ -11,6 +11,7 @@
     "ModuleLoader.load",
     "ModuleLoader.unload",
     "ModuleLoader.enable",
-    "ModuleLoader.disable"
+    "ModuleLoader.disable",
+    "ModuleLoader.listModules"
   ]
 }

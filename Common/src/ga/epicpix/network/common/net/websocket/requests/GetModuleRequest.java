@@ -6,18 +6,21 @@ import ga.epicpix.network.common.net.websocket.Opcodes;
 public class GetModuleRequest implements WebSocketRequest {
 
     private final String id;
+    private final String version;
 
-    private GetModuleRequest(String id) {
+    private GetModuleRequest(String id, String version) {
         this.id = id;
+        this.version = version;
     }
 
-    public static GetModuleRequest build(String id) {
-        return new GetModuleRequest(id);
+    public static GetModuleRequest build(String id, String version) {
+        return new GetModuleRequest(id, version);
     }
 
     public JsonObject toJson() {
         JsonObject obj = new JsonObject();
         obj.addProperty("id", id);
+        obj.addProperty("version", version);
         return obj;
     }
 

@@ -21,18 +21,20 @@ public class ModuleFile {
 
     }
 
-    public ModuleFile(byte[] in) throws IOException {
-        DataInputStream din = new DataInputStream(new ByteArrayInputStream(in));
-        String moduleJsonStr = new String(din.readNBytes(din.readUnsignedShort()));
-        data = new Gson().fromJson(moduleJsonStr, ModuleData.class);
-        int files = din.readUnsignedShort();
-        for(int i = 0; i<files; i++) {
-            ModuleFileData fdata = new ModuleFileData();
-            fdata.filename = new String(din.readNBytes(din.readUnsignedShort()));
-            fdata.data = din.readNBytes(din.readInt());
-            fileData.add(fdata);
-        }
-        din.close();
+    public ModuleFile(byte[] in) {
+        try {
+            DataInputStream din = new DataInputStream(new ByteArrayInputStream(in));
+            String moduleJsonStr = new String(din.readNBytes(din.readUnsignedShort()));
+            data = new Gson().fromJson(moduleJsonStr, ModuleData.class);
+            int files = din.readUnsignedShort();
+            for (int i = 0; i < files; i++) {
+                ModuleFileData fdata = new ModuleFileData();
+                fdata.filename = new String(din.readNBytes(din.readUnsignedShort()));
+                fdata.data = din.readNBytes(din.readInt());
+                fileData.add(fdata);
+            }
+            din.close();
+        }catch(IOException ignored) {}
     }
 
     public ModuleData getData() {

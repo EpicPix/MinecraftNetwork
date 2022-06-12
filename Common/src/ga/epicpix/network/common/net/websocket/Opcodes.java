@@ -31,6 +31,7 @@ public final class Opcodes {
 
     public static final int GET_MODULE = 0x0040;
     public static final int GET_MODULES = 0x0041;
+    public static final int ADD_MODULE = 0x0042;
 
     public static final int SERVER_SIGNAL = 0x8000;
     public static final int SETTINGS_UPDATE = 0x8001;

@@ -2,8 +2,10 @@ package ga.epicpix.network.cli;
 
 import com.google.gson.JsonObject;
 import ga.epicpix.network.common.modules.ModuleData;
+import ga.epicpix.network.common.modules.ModuleFile;
 import ga.epicpix.network.common.modules.ModuleManager;
 import ga.epicpix.network.common.net.websocket.WebSocketRequester;
+import ga.epicpix.network.common.net.websocket.requests.AddModuleRequest;
 import ga.epicpix.network.common.net.websocket.requests.GetModuleRequest;
 import ga.epicpix.network.common.ranks.Rank;
 import ga.epicpix.network.common.ranks.RankManager;
@@ -19,7 +21,10 @@ import ga.epicpix.network.common.net.websocket.Errorable;
 import ga.epicpix.network.common.net.websocket.WebSocketConnection;
 
 import java.io.Console;
+import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -177,8 +182,35 @@ public class Main {
             }else if(cmdline.equals("module")) {
                 if(getParam(cmd, 1) != null) {
                     String id = getParam(cmd, 1);
-                    JsonObject data = WebSocketRequester.sendRequest(GetModuleRequest.build(id));
-                    System.out.println("Response: " + data);
+                    if(getParam(cmd, 2) != null) {
+                        String version = getParam(cmd, 2);
+                        Errorable<ModuleFile> resp = ModuleManager.getModule(id, version);
+                        if (resp.hasFailed()) {
+                            System.out.println("/red/Could not get module!");
+                        } else {
+                            var data = resp.getValue().getData();
+                            System.out.println("/green/Module '/aqua/" + data.getName() + "/green/' with id '/aqua/" + data.getId() + "/green/' that uses the /aqua/" + data.getLibrary() + "/green/ library, module version: /aqua/" + data.getVersion() + "/green/");
+                        }
+                    }else {
+                        System.out.println("/red/Wrong usage! Use \"help\" for help");
+                    }
+                }else {
+                    System.out.println("/red/Wrong usage! Use \"help\" for help");
+                }
+            }else if(cmdline.equals("uploadmodule")) {
+                if(getParam(cmd, 1) != null) {
+                    try {
+                        byte[] moduleBytes = Files.readAllBytes(new File(getParam(cmd, 1)).toPath());
+                        Errorable<ModuleData> resp = ModuleManager.addModule(moduleBytes);
+                        if(resp.hasFailed()) {
+                            System.out.println("/red/Could not upload the module!");
+                        }else {
+                            var module = resp.getValue();
+                            System.out.println("/green/Uploaded module '/aqua/" + module.getName() + "/green/' with id '/aqua/" + module.getId() + "/green/' that uses the /aqua/" + module.getLibrary() + "/green/ library, module version: /aqua/" + module.getVersion() + "/green/");
+                        }
+                    }catch(IOException e) {
+                        System.out.println("/red/Could not read bytes from " + getParam(cmd, 1));
+                    }
                 }else {
                     System.out.println("/red/Wrong usage! Use \"help\" for help");
                 }

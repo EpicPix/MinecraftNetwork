@@ -38,6 +38,7 @@ export enum StringOpcodes {
 
     GET_MODULE = 0x0040,
     GET_MODULES = 0x0041,
+    ADD_MODULE = 0x0042,
 
     //From Server 0x8000-0xffff
 
@@ -57,6 +58,8 @@ export enum ErrorNumbers {
     NO_USERNAME_FIELD = 0x08,
     NO_UUID_OR_USERNAME_FIELD = 0x09,
     NO_ID_FIELD = 0x0A,
+    NO_MODULE_FIELD = 0x0B,
+    NO_VERSION_FIELD = 0x0C,
 
     SERVER_NOT_FOUND = 0x20,
     NO_SERVER_WEBSOCKET = 0x21,
@@ -64,6 +67,9 @@ export enum ErrorNumbers {
     RANK_NOT_FOUND = 0x23,
     PLAYER_ALREADY_EXISTS = 0x24,
     PLAYER_NOT_FOUND = 0x25,
+    INVALID_DATA = 0x26,
+    INVALID_MODULE_INFO = 0x27,
+    MODULE_NOT_FOUND = 0x28,
 
     RANK_ALREADY_EXISTS = 0x40,
 

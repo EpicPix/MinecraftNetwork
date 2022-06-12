@@ -40,7 +40,7 @@ public class Entry extends Plugin {
 
         try {
             ModuleLoader.enableModules(ModuleLoader.loadModules(new File("modules")));
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

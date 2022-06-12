@@ -5,7 +5,6 @@ import ga.epicpix.network.common.Reflection;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,26 +61,26 @@ public final class ModuleLoader {
         }
     }
 
-    public static Module loadModule(ModuleFile moduleFile) throws IOException, ClassNotFoundException {
+    public static Module loadModule(ModuleFile moduleFile) {
         checkModulePermission(ModulePermission.LOAD_MODULE);
-        ModuleClassLoader loader = new ModuleClassLoader(moduleFile, ModuleLoader.class.getClassLoader());
-        Class<?> main = Class.forName(loader.getData().getId() + "." + loader.getData().getMain(), true, loader);
-        Class<? extends Module> classModule = main.asSubclass(Module.class);
         try {
+            ModuleClassLoader loader = new ModuleClassLoader(moduleFile, ModuleLoader.class.getClassLoader());
+            Class<?> main = Class.forName(loader.getData().getId() + "." + loader.getData().getMain(), true, loader);
+            Class<? extends Module> classModule = main.asSubclass(Module.class);
             Module module = classModule.getDeclaredConstructor().newInstance();
             loadedModules.add(module);
             return module;
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (IOException | ReflectiveOperationException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static Module loadModule(File module) throws IOException, ClassNotFoundException {
+    public static Module loadModule(File module) throws IOException {
         return loadModule(new ModuleFile(Files.readAllBytes(module.toPath())));
     }
 
-    public static ArrayList<Module> loadModules(File directory) throws IOException, ClassNotFoundException {
+    public static ArrayList<Module> loadModules(File directory) throws IOException {
         directory.mkdirs();
         File[] files = directory.listFiles();
         ArrayList<Module> modules = new ArrayList<>();
@@ -122,19 +121,17 @@ public final class ModuleLoader {
         checkModulePermission(ModulePermission.UNLOAD_MODULE);
         disableModule(module);
         ((ModuleClassLoader) module.getClass().getClassLoader()).destroy();
-
+        loadedModules.remove(module);
     }
 
     public static void unloadModules() throws IOException {
         checkModulePermission(ModulePermission.UNLOAD_MODULE);
-        for(Module mod : loadedModules) {
-            unloadModule(mod);
+        while(loadedModules.size() != 0) {
+            unloadModule(loadedModules.get(0));
         }
-        loadedModules.clear();
     }
 
     public static Module[] getLoadedModules() {
-
         return loadedModules.toArray(new Module[0]);
     }
 

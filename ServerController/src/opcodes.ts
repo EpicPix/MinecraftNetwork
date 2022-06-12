@@ -30,12 +30,13 @@ export enum StringOpcodes {
     CREATE_RANK = 0x0024,
     DELETE_RANK = 0x0025,
 
-    //Players? 0x0030-0x003f
+    //Players 0x0030-0x003f
     GET_PLAYER = 0x0030,
     UPDATE_PLAYER = 0x0031,
     UPDATE_PLAYER_OR_CREATE = 0x0032,
     GET_PLAYER_OR_CREATE = 0x0033,
 
+    //Modules 0x0040-0x0004f
     GET_MODULE = 0x0040,
     GET_MODULES = 0x0041,
     ADD_MODULE = 0x0042,

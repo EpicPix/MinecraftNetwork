@@ -156,7 +156,7 @@ public class Entry extends JavaPlugin {
 
             try {
                 ModuleLoader.enableModules(ModuleLoader.loadModules(new File("modules")));
-            } catch (IOException | ClassNotFoundException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }

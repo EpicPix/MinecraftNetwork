@@ -1,8 +1,0 @@
-{
-  "name": "Example",
-  "id": "example",
-  "main": "Entry",
-  "library": "bukkit",
-  "version": "1.0.0",
-  "permissions": []
-}

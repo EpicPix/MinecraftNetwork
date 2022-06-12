@@ -1,0 +1,16 @@
+{
+  "id": "moduleloader",
+  "name": "Module Loader",
+  "version": "1.0.0",
+  "main": "ModuleEntry",
+  "library": "BUKKIT",
+  "permissions": [
+    "ModuleManager.getModules",
+    "ModuleManager.getModule",
+    "ModuleManager.addModule",
+    "ModuleLoader.load",
+    "ModuleLoader.unload",
+    "ModuleLoader.enable",
+    "ModuleLoader.disable"
+  ]
+}

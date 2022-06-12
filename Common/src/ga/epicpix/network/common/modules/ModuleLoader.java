@@ -39,6 +39,9 @@ public final class ModuleLoader {
 
         // Other websocket requests
         @SerializedName("WebSocketRequests.getVersions") GET_VERSIONS("Get Versions"),
+
+        // Reflection
+        @SerializedName("Reflection") REFLECTION("Reflection"),
         ;
 
         private final String name;

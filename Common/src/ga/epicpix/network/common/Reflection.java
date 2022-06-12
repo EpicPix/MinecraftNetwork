@@ -2,6 +2,7 @@ package ga.epicpix.network.common;
 
 import ga.epicpix.network.common.annotations.CallerSensitive;
 import ga.epicpix.network.common.modules.ModuleClassLoader;
+import ga.epicpix.network.common.modules.ModuleLoader;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -9,11 +10,11 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 public final class Reflection {
 
     public static Field getField(Class<?> clazz, String fieldName) {
+        ModuleLoader.checkModulePermission(ModuleLoader.ModulePermission.REFLECTION);
         List<Field> fields = new ArrayList<>();
         while(clazz!=Object.class) {
             fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
@@ -28,6 +29,7 @@ public final class Reflection {
     }
 
     public static Object getValueOfField(Class<?> clazz, String fieldName, Object ofObj) {
+        ModuleLoader.checkModulePermission(ModuleLoader.ModulePermission.REFLECTION);
         try {
             Field field = getField(clazz, fieldName);
             if(field==null) return null;
@@ -39,6 +41,7 @@ public final class Reflection {
     }
 
     public static Method getMethod(Class<?> clazz, String methodName, boolean classes, Object... objs) {
+        ModuleLoader.checkModulePermission(ModuleLoader.ModulePermission.REFLECTION);
         List<Method> methods = new ArrayList<>();
         while(clazz!=Object.class) {
             methods.addAll(Arrays.asList(clazz.getDeclaredMethods()));
@@ -73,6 +76,7 @@ public final class Reflection {
     }
 
     public static Object callMethod(Class<?> clazz, String methodName, Object ofObj, Object... objs) {
+        ModuleLoader.checkModulePermission(ModuleLoader.ModulePermission.REFLECTION);
         try {
             Method method = getMethod(clazz, methodName, false, objs);
             if(method==null) throw new NoSuchMethodException("Method not found " + clazz.getName() + "." + methodName);
@@ -84,6 +88,7 @@ public final class Reflection {
     }
 
     public static Object callMethodByClasses(Class<?> clazz, String methodName, Object ofObj, Class<?>[] classes, Object... objs) {
+        ModuleLoader.checkModulePermission(ModuleLoader.ModulePermission.REFLECTION);
         try {
             Method method = getMethod(clazz, methodName, true, (Object[]) classes);
             if(method==null) throw new NoSuchMethodException("Method not found " + clazz.getName() + "." + methodName);
@@ -95,6 +100,7 @@ public final class Reflection {
     }
 
     public static void setValueOfField(Class<?> clazz, String fieldName, Object ofObj, Object newData) {
+        ModuleLoader.checkModulePermission(ModuleLoader.ModulePermission.REFLECTION);
         try {
             Field field = getField(clazz, fieldName);
             if(field==null) throw new NoSuchFieldException("Field not found " + clazz.getName() + "." + fieldName);

@@ -34,6 +34,17 @@ public class ModuleClassLoader extends ClassLoader {
         return clz;
     }
 
+    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+        if(name.startsWith("java.lang.reflect.")) {
+            try {
+                ModuleLoader.checkModulePermission(ModuleLoader.ModulePermission.REFLECTION);
+            }catch(SecurityException e) {
+                throw new SecurityException("Cannot access " + name + ": " + e.getMessage());
+            }
+        }
+        return super.loadClass(name, resolve);
+    }
+
     public ModuleData getData() {
         return data;
     }

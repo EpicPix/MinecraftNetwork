@@ -2,6 +2,7 @@ package ga.epicpix.network.common.net.websocket;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import ga.epicpix.network.common.annotations.CannotUseFromModule;
 import ga.epicpix.network.common.net.ServerControllerCredentials;
 import ga.epicpix.network.common.net.websocket.requests.AuthenticateRequest;
 
@@ -104,6 +105,7 @@ public final class WebSocketConnection implements WebSocket.Listener {
         return clientType;
     }
 
+    @CannotUseFromModule
     public static boolean connect() {
         if(!connected) {
             return connectWithCredentials(ServerControllerCredentials.get());
@@ -111,6 +113,7 @@ public final class WebSocketConnection implements WebSocket.Listener {
         return true;
     }
 
+    @CannotUseFromModule
     private static boolean connectWithCredentials(ServerControllerCredentials creds) {
         connection = new WebSocketConnection();
         requester = new WebSocketRequester(connection);
@@ -140,6 +143,7 @@ public final class WebSocketConnection implements WebSocket.Listener {
         return true;
     }
 
+    @CannotUseFromModule
     private boolean sendAuthenticateRequest(ServerControllerCredentials credentials) {
         return WebSocketRequester.sendRequest(AuthenticateRequest.build(credentials.getUsername(), credentials.getPassword(), getClientType(), capabilities)).get("success").getAsBoolean();
     }

@@ -1,8 +1,10 @@
 package ga.epicpix.network.common;
 
 import ga.epicpix.network.common.annotations.CallerSensitive;
+import ga.epicpix.network.common.annotations.ChecksPermission;
 import ga.epicpix.network.common.modules.ModuleClassLoader;
 import ga.epicpix.network.common.modules.ModuleLoader;
+import ga.epicpix.network.common.modules.ModulePermission;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -13,6 +15,7 @@ import java.util.List;
 
 public final class Reflection {
 
+    @ChecksPermission(ModulePermission.REFLECTION)
     public static Field getField(Class<?> clazz, String fieldName) {
         ModuleLoader.checkReflectionModulePermission();
         List<Field> fields = new ArrayList<>();
@@ -28,6 +31,7 @@ public final class Reflection {
         return null;
     }
 
+    @ChecksPermission(ModulePermission.REFLECTION)
     public static Object getValueOfField(Class<?> clazz, String fieldName, Object ofObj) {
         ModuleLoader.checkReflectionModulePermission();
         try {
@@ -40,6 +44,7 @@ public final class Reflection {
         }
     }
 
+    @ChecksPermission(ModulePermission.REFLECTION)
     public static Method getMethod(Class<?> clazz, String methodName, boolean classes, Object... objs) {
         ModuleLoader.checkReflectionModulePermission();
         List<Method> methods = new ArrayList<>();
@@ -75,6 +80,7 @@ public final class Reflection {
         return null;
     }
 
+    @ChecksPermission(ModulePermission.REFLECTION)
     public static Object callMethod(Class<?> clazz, String methodName, Object ofObj, Object... objs) {
         ModuleLoader.checkReflectionModulePermission();
         try {
@@ -87,6 +93,7 @@ public final class Reflection {
         }
     }
 
+    @ChecksPermission(ModulePermission.REFLECTION)
     public static Object callMethodByClasses(Class<?> clazz, String methodName, Object ofObj, Class<?>[] classes, Object... objs) {
         ModuleLoader.checkReflectionModulePermission();
         try {
@@ -99,6 +106,7 @@ public final class Reflection {
         }
     }
 
+    @ChecksPermission(ModulePermission.REFLECTION)
     public static void setValueOfField(Class<?> clazz, String fieldName, Object ofObj, Object newData) {
         ModuleLoader.checkReflectionModulePermission();
         try {

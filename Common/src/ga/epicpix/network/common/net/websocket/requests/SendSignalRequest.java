@@ -1,7 +1,9 @@
 package ga.epicpix.network.common.net.websocket.requests;
 
 import com.google.gson.JsonObject;
+import ga.epicpix.network.common.annotations.ChecksPermission;
 import ga.epicpix.network.common.modules.ModuleLoader;
+import ga.epicpix.network.common.modules.ModulePermission;
 import ga.epicpix.network.common.net.websocket.Opcodes;
 
 import static ga.epicpix.network.common.servers.ServerInfo.ServerSignal;
@@ -16,8 +18,9 @@ public class SendSignalRequest implements WebSocketRequest {
         this.signal = signal;
     }
 
+    @ChecksPermission(ModulePermission.SEND_SIGNAL)
     public static SendSignalRequest build(String serverName, ServerSignal signal) {
-        ModuleLoader.checkModulePermission(ModuleLoader.ModulePermission.SEND_SIGNAL);
+        ModuleLoader.checkModulePermission(ModulePermission.SEND_SIGNAL);
         return new SendSignalRequest(serverName, signal);
     }
 

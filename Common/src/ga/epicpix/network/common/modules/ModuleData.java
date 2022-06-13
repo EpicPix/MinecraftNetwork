@@ -9,9 +9,9 @@ public class ModuleData {
     private final String main;
     private final ModuleLibrary library;
     private final String version;
-    private final ModuleLoader.ModulePermission[] permissions;
+    private final ModulePermission[] permissions;
 
-    private ModuleData(String name, String id, String main, ModuleLibrary library, String version, ModuleLoader.ModulePermission[] permissions) {
+    private ModuleData(String name, String id, String main, ModuleLibrary library, String version, ModulePermission[] permissions) {
         this.name = name;
         this.id = id;
         this.main = main;
@@ -44,7 +44,7 @@ public class ModuleData {
         return "ModuleData{name='" + name + "', id='" + id + "', main='" + main + "', library=" + library + ", version='" + version + "', permissions=" + Arrays.toString(permissions) + "}";
     }
 
-    public ModuleLoader.ModulePermission[] getPermissions() {
+    public ModulePermission[] getPermissions() {
         return permissions.clone();
     }
 }

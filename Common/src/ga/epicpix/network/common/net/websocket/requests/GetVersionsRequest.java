@@ -1,15 +1,18 @@
 package ga.epicpix.network.common.net.websocket.requests;
 
 import com.google.gson.JsonObject;
+import ga.epicpix.network.common.annotations.ChecksPermission;
 import ga.epicpix.network.common.modules.ModuleLoader;
+import ga.epicpix.network.common.modules.ModulePermission;
 import ga.epicpix.network.common.net.websocket.Opcodes;
 
 public class GetVersionsRequest implements WebSocketRequest {
 
     private GetVersionsRequest() {}
 
+    @ChecksPermission(ModulePermission.GET_VERSIONS)
     public static GetVersionsRequest build() {
-        ModuleLoader.checkModulePermission(ModuleLoader.ModulePermission.GET_VERSIONS);
+        ModuleLoader.checkModulePermission(ModulePermission.GET_VERSIONS);
         return new GetVersionsRequest();
     }
 

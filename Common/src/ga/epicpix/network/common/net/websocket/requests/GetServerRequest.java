@@ -1,7 +1,9 @@
 package ga.epicpix.network.common.net.websocket.requests;
 
 import com.google.gson.JsonObject;
+import ga.epicpix.network.common.annotations.ChecksPermission;
 import ga.epicpix.network.common.modules.ModuleLoader;
+import ga.epicpix.network.common.modules.ModulePermission;
 import ga.epicpix.network.common.net.websocket.Opcodes;
 
 public class GetServerRequest implements WebSocketRequest {
@@ -12,8 +14,9 @@ public class GetServerRequest implements WebSocketRequest {
         this.server = server;
     }
 
+    @ChecksPermission(ModulePermission.GET_SERVER_INFO)
     public static GetServerRequest build(String server) {
-        ModuleLoader.checkModulePermission(ModuleLoader.ModulePermission.GET_SERVER_INFO);
+        ModuleLoader.checkModulePermission(ModulePermission.GET_SERVER_INFO);
         return new GetServerRequest(server);
     }
 

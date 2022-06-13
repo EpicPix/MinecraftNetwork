@@ -2,7 +2,9 @@ package ga.epicpix.network.common.net.websocket.requests;
 
 import com.google.gson.JsonObject;
 import ga.epicpix.network.common.SerializableJson;
+import ga.epicpix.network.common.annotations.ChecksPermission;
 import ga.epicpix.network.common.modules.ModuleLoader;
+import ga.epicpix.network.common.modules.ModulePermission;
 import ga.epicpix.network.common.servers.ServerDetails;
 import ga.epicpix.network.common.servers.ServerInfo;
 import ga.epicpix.network.common.servers.ServerVersion;
@@ -69,8 +71,9 @@ public class UpdateServerDataRequest implements WebSocketRequest {
         }
     }
 
+    @ChecksPermission(ModulePermission.UPDATE_SERVER)
     public static UpdateServerDataRequest build(String serverName, Data data) {
-        ModuleLoader.checkModulePermission(ModuleLoader.ModulePermission.UPDATE_SERVER);
+        ModuleLoader.checkModulePermission(ModulePermission.UPDATE_SERVER);
         return new UpdateServerDataRequest(serverName, data);
     }
 

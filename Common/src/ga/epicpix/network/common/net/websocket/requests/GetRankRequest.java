@@ -1,7 +1,9 @@
 package ga.epicpix.network.common.net.websocket.requests;
 
 import com.google.gson.JsonObject;
+import ga.epicpix.network.common.annotations.ChecksPermission;
 import ga.epicpix.network.common.modules.ModuleLoader;
+import ga.epicpix.network.common.modules.ModulePermission;
 import ga.epicpix.network.common.net.websocket.Opcodes;
 
 public class GetRankRequest implements WebSocketRequest {
@@ -12,8 +14,9 @@ public class GetRankRequest implements WebSocketRequest {
         this.rank = rank;
     }
 
+    @ChecksPermission(ModulePermission.GET_RANK)
     public static GetRankRequest build(String rank) {
-        ModuleLoader.checkModulePermission(ModuleLoader.ModulePermission.GET_RANK);
+        ModuleLoader.checkModulePermission(ModulePermission.GET_RANK);
         return new GetRankRequest(rank);
     }
 

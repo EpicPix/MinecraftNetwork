@@ -2,6 +2,9 @@ package ga.epicpix.network.common.servers;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import ga.epicpix.network.common.annotations.CannotUseFromModule;
+import ga.epicpix.network.common.annotations.ChecksPermission;
+import ga.epicpix.network.common.modules.ModulePermission;
 import ga.epicpix.network.common.net.websocket.Errorable;
 import ga.epicpix.network.common.net.websocket.WebSocketRequester;
 import ga.epicpix.network.common.net.websocket.requests.*;
@@ -10,6 +13,7 @@ import java.util.ArrayList;
 
 public final class ServerManager {
 
+    @ChecksPermission(ModulePermission.UPDATE_SERVER)
     public static Errorable<ServerInfo> updateServer(String server, UpdateServerDataRequest.Data data) {
         if(server==null) {
             throw new NullPointerException("Server is null");
@@ -27,6 +31,7 @@ public final class ServerManager {
         return new Errorable<>(ServerInfo.fromJson(resp.getAsJsonObject("server")));
     }
 
+    @ChecksPermission(ModulePermission.REMOVE_SERVER)
     public static Errorable<Boolean> removeServer(String server) {
         if(server==null) {
             throw new NullPointerException("Server is null");
@@ -41,6 +46,7 @@ public final class ServerManager {
         return new Errorable<>(true);
     }
 
+    @CannotUseFromModule
     public static Errorable<Boolean> makeWebSocketServerOwner(String server) {
         JsonObject data = WebSocketRequester.sendRequest(MakeWebSocketServerOwnerRequest.build(server));
         if(!data.get("ok").getAsBoolean()) {
@@ -49,6 +55,7 @@ public final class ServerManager {
         return new Errorable<>(true);
     }
 
+    @ChecksPermission(ModulePermission.SEND_SIGNAL)
     public static Errorable<Boolean> sendSignal(String server, ServerInfo.ServerSignal signal) {
         JsonObject data = WebSocketRequester.sendRequest(SendSignalRequest.build(server, signal));
         if(!data.get("ok").getAsBoolean()) {
@@ -57,6 +64,7 @@ public final class ServerManager {
         return new Errorable<>(true);
     }
 
+    @ChecksPermission(ModulePermission.LIST_SERVERS)
     public static Errorable<ArrayList<ServerInfo>> listServers() {
         JsonObject data = WebSocketRequester.sendRequest(ListServersRequest.build());
         if(!data.get("ok").getAsBoolean()) {
@@ -69,6 +77,7 @@ public final class ServerManager {
         return new Errorable<>(infos);
     }
 
+    @ChecksPermission(ModulePermission.GET_SERVER_INFO)
     public static Errorable<ServerInfo> getServerInfo(String server) {
         JsonObject data = WebSocketRequester.sendRequest(GetServerRequest.build(server));
         if(!data.get("ok").getAsBoolean()) {

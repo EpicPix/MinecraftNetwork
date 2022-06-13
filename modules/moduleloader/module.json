@@ -7,7 +7,6 @@
   "permissions": [
     "ModuleManager.getModules",
     "ModuleManager.getModule",
-    "ModuleManager.addModule",
     "ModuleLoader.load",
     "ModuleLoader.unload",
     "ModuleLoader.enable",

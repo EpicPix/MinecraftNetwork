@@ -1,7 +1,9 @@
 package ga.epicpix.network.common.net.websocket.requests;
 
 import com.google.gson.JsonObject;
+import ga.epicpix.network.common.annotations.ChecksPermission;
 import ga.epicpix.network.common.modules.ModuleLoader;
+import ga.epicpix.network.common.modules.ModulePermission;
 import ga.epicpix.network.common.net.websocket.Opcodes;
 
 import static ga.epicpix.network.common.net.websocket.requests.UpdateRankRequest.Data;
@@ -16,8 +18,9 @@ public class CreateRankRequest implements WebSocketRequest {
         this.data = data;
     }
 
+    @ChecksPermission(ModulePermission.CREATE_RANK)
     public static CreateRankRequest build(String serverName, Data data) {
-        ModuleLoader.checkModulePermission(ModuleLoader.ModulePermission.CREATE_RANK);
+        ModuleLoader.checkModulePermission(ModulePermission.CREATE_RANK);
         return new CreateRankRequest(serverName, data);
     }
 

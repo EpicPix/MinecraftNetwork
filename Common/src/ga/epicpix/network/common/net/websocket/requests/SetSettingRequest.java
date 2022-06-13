@@ -1,7 +1,9 @@
 package ga.epicpix.network.common.net.websocket.requests;
 
 import com.google.gson.*;
+import ga.epicpix.network.common.annotations.ChecksPermission;
 import ga.epicpix.network.common.modules.ModuleLoader;
+import ga.epicpix.network.common.modules.ModulePermission;
 import ga.epicpix.network.common.values.ValueType;
 import ga.epicpix.network.common.net.websocket.Opcodes;
 
@@ -15,8 +17,9 @@ public class SetSettingRequest implements WebSocketRequest {
         this.value = value;
     }
 
+    @ChecksPermission(ModulePermission.SET_SETTING)
     public static SetSettingRequest build(String server, ValueType value) {
-        ModuleLoader.checkModulePermission(ModuleLoader.ModulePermission.SET_SETTING);
+        ModuleLoader.checkModulePermission(ModulePermission.SET_SETTING);
         return new SetSettingRequest(server, value);
     }
 

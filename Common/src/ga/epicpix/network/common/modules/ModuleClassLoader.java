@@ -37,7 +37,7 @@ public class ModuleClassLoader extends ClassLoader {
     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
         if(name.startsWith("java.lang.reflect.")) {
             try {
-                ModuleLoader.checkModulePermission(ModuleLoader.ModulePermission.REFLECTION);
+                ModuleLoader.checkModulePermission(ModulePermission.REFLECTION);
             }catch(SecurityException e) {
                 throw new SecurityException("Cannot access " + name + ": " + e.getMessage());
             }

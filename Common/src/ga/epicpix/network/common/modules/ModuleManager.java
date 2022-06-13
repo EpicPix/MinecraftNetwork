@@ -2,6 +2,7 @@ package ga.epicpix.network.common.modules;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import ga.epicpix.network.common.annotations.ChecksPermission;
 import ga.epicpix.network.common.net.websocket.Errorable;
 import ga.epicpix.network.common.net.websocket.WebSocketRequester;
 import ga.epicpix.network.common.net.websocket.requests.AddModuleRequest;
@@ -14,6 +15,7 @@ import java.util.Collections;
 
 public class ModuleManager {
 
+    @ChecksPermission(ModulePermission.GET_MODULES)
     public static Errorable<ArrayList<ModuleData>> getModules() {
         JsonObject obj = WebSocketRequester.sendRequest(GetModulesRequest.build());
         if(!obj.get("ok").getAsBoolean()) {
@@ -24,6 +26,8 @@ public class ModuleManager {
         return new Errorable<>(data);
     }
 
+
+    @ChecksPermission(ModulePermission.GET_MODULE)
     public static Errorable<ModuleFile> getModule(String id, String version) {
         JsonObject obj = WebSocketRequester.sendRequest(GetModuleRequest.build(id, version));
         if(!obj.get("ok").getAsBoolean()) {
@@ -32,6 +36,7 @@ public class ModuleManager {
         return new Errorable<>(new ModuleFile(Base64.getDecoder().decode(obj.get("module").getAsString())));
     }
 
+    @ChecksPermission(ModulePermission.ADD_MODULE)
     public static Errorable<ModuleData> addModule(byte[] moduleBytes) {
         JsonObject obj = WebSocketRequester.sendRequest(AddModuleRequest.build(moduleBytes));
         if(!obj.get("ok").getAsBoolean()) {

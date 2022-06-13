@@ -2,6 +2,7 @@ package ga.epicpix.network.common.net.websocket.requests;
 
 import com.google.gson.JsonObject;
 import ga.epicpix.network.common.Reflection;
+import ga.epicpix.network.common.annotations.CannotUseFromModule;
 import ga.epicpix.network.common.modules.ModuleLoader;
 import ga.epicpix.network.common.net.websocket.Opcodes;
 
@@ -13,6 +14,7 @@ public class MakeWebSocketServerOwnerRequest implements WebSocketRequest {
         this.serverName = serverName;
     }
 
+    @CannotUseFromModule
     public static MakeWebSocketServerOwnerRequest build(String serverName) {
         var moduleClass = Reflection.getModuleCaller();
         if(moduleClass != null) throw new SecurityException("Cannot create MakeWebSocketServerOwnerRequest from a module");

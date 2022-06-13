@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import ga.epicpix.network.common.SerializableJson;
+import ga.epicpix.network.common.annotations.ChecksPermission;
+import ga.epicpix.network.common.modules.ModulePermission;
 import ga.epicpix.network.common.net.websocket.Errorable;
 import ga.epicpix.network.common.net.websocket.WebSocketRequester;
 import ga.epicpix.network.common.net.websocket.requests.GetVersionsRequest;
@@ -56,6 +58,7 @@ public class ServerVersion implements SerializableJson {
     }
 
     // This is required to be called if you want to use any version methods
+    @ChecksPermission(ModulePermission.GET_VERSIONS)
     public static Errorable<Boolean> load() {
         JsonObject data = WebSocketRequester.sendRequest(GetVersionsRequest.build());
         if(!data.get("ok").getAsBoolean()) {

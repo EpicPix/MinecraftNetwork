@@ -1,7 +1,9 @@
 package ga.epicpix.network.common.net.websocket.requests;
 
 import com.google.gson.JsonObject;
+import ga.epicpix.network.common.annotations.ChecksPermission;
 import ga.epicpix.network.common.modules.ModuleLoader;
+import ga.epicpix.network.common.modules.ModulePermission;
 import ga.epicpix.network.common.net.websocket.Opcodes;
 
 import java.util.UUID;
@@ -16,8 +18,9 @@ public class GetPlayerRequest implements WebSocketRequest {
         this.username = username;
     }
 
+    @ChecksPermission(ModulePermission.GET_PLAYER)
     public static GetPlayerRequest build(UUID uuid, String username) {
-        ModuleLoader.checkModulePermission(ModuleLoader.ModulePermission.GET_PLAYER);
+        ModuleLoader.checkModulePermission(ModulePermission.GET_PLAYER);
         if(uuid == null && username == null) {
             throw new IllegalArgumentException("UUID or Username must not be null");
         }

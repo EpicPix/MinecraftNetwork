@@ -3,6 +3,8 @@ package ga.epicpix.network.bungee;
 import ga.epicpix.network.bungee.commands.BungeeCommandConsole;
 import ga.epicpix.network.bungee.commands.BungeeCommandPlayer;
 import ga.epicpix.network.common.modules.Module;
+import ga.epicpix.network.common.modules.ModuleLoader;
+import ga.epicpix.network.common.modules.ModulePermission;
 import ga.epicpix.network.common.text.ChatColor;
 import ga.epicpix.network.common.players.PlayerInfo;
 import ga.epicpix.network.common.players.PlayerManager;
@@ -20,6 +22,7 @@ public abstract class Command {
     static HashMap<Module, ArrayList<net.md_5.bungee.api.plugin.Command>> moduleToCommands = new HashMap<>();
 
     public static void registerCommand(Module module, Command cmd) {
+        ModuleLoader.checkModulePermission(ModulePermission.REGISTER_COMMAND);
         var bungeeCommand = new net.md_5.bungee.api.plugin.Command(cmd.getName()) {
             public void execute(CommandSender sender, String[] args) {
                 PlayerInfo info = null;

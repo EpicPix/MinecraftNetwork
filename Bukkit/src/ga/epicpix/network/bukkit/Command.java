@@ -3,6 +3,8 @@ package ga.epicpix.network.bukkit;
 import ga.epicpix.network.bukkit.commands.BukkitCommandConsole;
 import ga.epicpix.network.bukkit.commands.BukkitCommandPlayer;
 import ga.epicpix.network.common.modules.Module;
+import ga.epicpix.network.common.modules.ModuleLoader;
+import ga.epicpix.network.common.modules.ModulePermission;
 import ga.epicpix.network.common.text.ChatColor;
 import ga.epicpix.network.common.players.PlayerInfo;
 import ga.epicpix.network.common.players.PlayerManager;
@@ -19,6 +21,7 @@ public abstract class Command {
     static HashMap<Module, ArrayList<org.bukkit.command.Command>> moduleToCommands = new HashMap<>();
 
     public static void registerCommand(Module module, Command cmd) {
+        ModuleLoader.checkModulePermission(ModulePermission.REGISTER_COMMAND);
         Map<String, org.bukkit.command.Command> map = BukkitCommon.getCommandMap();
         var bukkitCommand = new org.bukkit.command.Command(cmd.getName()) {
 

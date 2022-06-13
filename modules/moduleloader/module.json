@@ -11,6 +11,7 @@
     "ModuleLoader.unload",
     "ModuleLoader.enable",
     "ModuleLoader.disable",
-    "ModuleLoader.listModules"
+    "ModuleLoader.listModules",
+    "Command.registerCommand"
   ]
 }

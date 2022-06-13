@@ -37,6 +37,9 @@ public enum ModulePermission {
     @SerializedName("ModuleLoader.enable") ENABLE_MODULE("Enable Module"),
     @SerializedName("ModuleLoader.disable") DISABLE_MODULE("Disable Module"),
     @SerializedName("ModuleLoader.listModules") LIST_MODULES("List Modules"),
+
+    // Commands
+    @SerializedName("Command.registerCommand") REGISTER_COMMAND("Register Command"),
     ;
 
     private final String name;

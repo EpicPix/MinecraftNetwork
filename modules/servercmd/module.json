@@ -5,6 +5,7 @@
   "main": "ModuleEntry",
   "library": "bungee",
   "permissions": [
-    "ServerManager.getServerInfo"
+    "ServerManager.getServerInfo",
+    "Command.registerCommand"
   ]
 }

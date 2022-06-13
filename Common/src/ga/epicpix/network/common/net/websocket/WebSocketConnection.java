@@ -133,6 +133,8 @@ public final class WebSocketConnection implements WebSocket.Listener {
                     }else {
                         System.err.println("Return type is not String[]!");
                     }
+                }else {
+                    return false;
                 }
             }
         } catch(CompletionException e) {

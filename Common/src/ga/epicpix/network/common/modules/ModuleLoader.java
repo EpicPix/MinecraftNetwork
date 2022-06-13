@@ -95,10 +95,8 @@ public final class ModuleLoader {
     }
 
     public static void enableModule(Module module) {
-        checkModulePermission(ModulePermission.ENABLE_MODULE);
         try {
-            /* pre-enable */ if(ModuleEventManager.enableModule != null) ModuleEventManager.enableModule.accept(module);
-            module.enable();
+            module.setEnabled(true);
         }catch(Exception e) {
             e.printStackTrace();
         }
@@ -112,9 +110,11 @@ public final class ModuleLoader {
     }
 
     public static void disableModule(Module module) {
-        checkModulePermission(ModulePermission.DISABLE_MODULE);
-        if(ModuleEventManager.disableModule != null) ModuleEventManager.disableModule.accept(module);
-        module.disable();
+        try {
+            module.setEnabled(false);
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void unloadModule(Module module) {

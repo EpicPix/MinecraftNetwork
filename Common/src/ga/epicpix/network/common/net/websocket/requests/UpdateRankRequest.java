@@ -28,28 +28,34 @@ public class UpdateRankRequest implements WebSocketRequest {
         private String nameColor;
         private String chatColor;
 
-        public void setPriority(Integer priority) {
+        public Data setPriority(Integer priority) {
             this.priority = priority;
+            return this;
         }
 
-        public void setPrefix(ChatComponent[] prefix) {
+        public Data setPrefix(ChatComponent[] prefix) {
             this.prefix = prefix;
+            return this;
         }
 
-        public void setSuffix(ChatComponent[] suffix) {
+        public Data setSuffix(ChatComponent[] suffix) {
             this.suffix = suffix;
+            return this;
         }
 
-        public void setPermissions(String[] permissions) {
+        public Data setPermissions(String[] permissions) {
             this.permissions = permissions;
+            return this;
         }
 
-        public void setNameColor(String nameColor) {
+        public Data setNameColor(String nameColor) {
             this.nameColor = nameColor;
+            return this;
         }
 
-        public void setChatColor(String chatColor) {
+        public Data setChatColor(String chatColor) {
             this.chatColor = chatColor;
+            return this;
         }
 
         public JsonObject toJson() {

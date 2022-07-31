@@ -18,6 +18,7 @@ export function run(websocket, json) {
                     return;
                 }
                 rank = {priority: 10, prefix: [], suffix: [], permissions: [], nameColor: "white", chatColor: "white"};
+                rank.id = json['rank'];
                 ranks.push(rank);
                 var data = json['data'];
                 var copy = function(a, b, c) {
